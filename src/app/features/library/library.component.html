@@ -1,0 +1,52 @@
+<div class="library">
+  <!-- Page Header -->
+  <header class="library__header">
+    <h1 class="library__title">הספרייה שלי</h1>
+    <p class="library__subtitle">הקורסים שרכשת ויש לך גישה אליהם</p>
+  </header>
+
+  <!-- Content -->
+  @if (isLoading()) {
+    <!-- Loading State -->
+    <app-course-grid
+      [courses]="[]"
+      [loading]="true"
+      [skeletonCount]="3"
+    />
+  } @else if (isEmpty()) {
+    <!-- Empty State -->
+    <div class="library__empty">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+        </svg>
+      </div>
+      <h2 class="empty-title">הספרייה שלך ריקה</h2>
+      <p class="empty-text">עדיין לא רכשת קורסים. גלה את מגוון הקורסים שלנו והתחל ללמוד!</p>
+      <app-button variant="primary" (buttonClick)="onBrowseCatalog()">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        עיין בקטלוג הקורסים
+      </app-button>
+    </div>
+  } @else {
+    <!-- Course Grid -->
+    <div class="library__grid">
+      <app-course-grid
+        [courses]="courses()"
+        [showPrices]="false"
+        (courseClick)="onCourseClick($event)"
+      />
+    </div>
+
+    <!-- Browse More -->
+    <div class="library__more">
+      <p class="more-text">רוצה להוסיף עוד קורסים לספרייה?</p>
+      <app-button variant="outline" (buttonClick)="onBrowseCatalog()">
+        עיין בקטלוג הקורסים
+      </app-button>
+    </div>
+  }
+</div>

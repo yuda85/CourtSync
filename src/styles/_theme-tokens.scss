@@ -1,0 +1,135 @@
+// Theme Tokens - CSS Custom Properties for Light and Dark themes
+// CourtSync branded color scheme
+
+// Light Theme (Default)
+html[data-theme="light"],
+html:not([data-theme]) {
+  // Core palette
+  --bg: #F6FAFF;              /* soft blue-white */
+  --surface: #FFFFFF;         /* cards / panels */
+  --surface-2: #EEF6FF;       /* subtle sections */
+  --text: #0B1A33;            /* deep navy text */
+  --muted: #4A6078;           /* secondary text */
+  --border: #D6E6F5;          /* light borders */
+
+  --primary: #1E8ED8;         /* slightly deeper for contrast on white */
+  --primary-hover: #1576B8;
+  --primary-contrast: #FFFFFF;/* text on primary */
+
+  --link: #1E8ED8;
+  --focus: #30B8F0;
+
+  --shadow: 0 10px 24px rgba(11, 26, 51, 0.12);
+
+  // Semantic mappings for Tailwind config
+  --color-primary-50: #E6F4FC;
+  --color-primary-100: #CCE9F9;
+  --color-primary-200: #99D3F3;
+  --color-primary-300: #66BDED;
+  --color-primary-400: #30B8F0;
+  --color-primary-500: #1E8ED8;
+  --color-primary-600: #1576B8;
+  --color-primary-700: #0E5E98;
+  --color-primary-800: #094678;
+  --color-primary-900: #052E58;
+
+  // Background colors
+  --color-bg-primary: var(--bg);
+  --color-bg-secondary: var(--surface-2);
+  --color-bg-tertiary: #E8F2FC;
+
+  // Surface colors
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface);
+
+  // Text colors
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--muted);
+  --color-text-tertiary: #8A9BB0;
+  --color-text-inverse: #FFFFFF;
+
+  // Border colors
+  --color-border: var(--border);
+  --color-border-light: #E8F2FC;
+
+  // Status colors
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: var(--primary);
+
+  // Shadows
+  --shadow-sm: 0 1px 2px 0 rgba(11, 26, 51, 0.05);
+  --shadow-md: 0 4px 12px -2px rgba(11, 26, 51, 0.08);
+  --shadow-lg: var(--shadow);
+  --shadow-xl: 0 20px 40px -8px rgba(11, 26, 51, 0.15);
+
+  // Gradient overlays
+  --gradient-hero: linear-gradient(135deg, #F6FAFF 0%, #FFFFFF 50%, #EEF6FF 100%);
+}
+
+// Dark Theme
+html[data-theme="dark"] {
+  // Core palette
+  --bg: #081020;              /* main background */
+  --surface: #0B1A33;         /* cards / panels */
+  --surface-2: #0E2142;       /* elevated surface */
+  --text: #F8F8F8;            /* primary text */
+  --muted: #B7C4D6;           /* secondary text */
+  --border: #1B2B45;          /* borders / dividers */
+
+  --primary: #30B8F0;         /* brand cyan */
+  --primary-hover: #48C0F0;
+  --primary-contrast: #081020;/* text on primary */
+
+  --link: #7AD6FF;
+  --focus: #7AD6FF;
+
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+
+  // Semantic mappings for Tailwind config
+  --color-primary-50: #052E58;
+  --color-primary-100: #094678;
+  --color-primary-200: #0E5E98;
+  --color-primary-300: #1576B8;
+  --color-primary-400: #1E8ED8;
+  --color-primary-500: #30B8F0;
+  --color-primary-600: #48C0F0;
+  --color-primary-700: #7AD6FF;
+  --color-primary-800: #A8E4FF;
+  --color-primary-900: #D6F2FF;
+
+  // Background colors
+  --color-bg-primary: var(--bg);
+  --color-bg-secondary: var(--surface);
+  --color-bg-tertiary: var(--surface-2);
+
+  // Surface colors
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-2);
+
+  // Text colors
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--muted);
+  --color-text-tertiary: #6B7D95;
+  --color-text-inverse: #081020;
+
+  // Border colors
+  --color-border: var(--border);
+  --color-border-light: #152235;
+
+  // Status colors (adjusted for dark mode)
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+  --color-info: var(--primary);
+
+  // Shadows (softer for dark mode)
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: var(--shadow);
+  --shadow-xl: 0 20px 40px -8px rgba(0, 0, 0, 0.5);
+
+  // Gradient overlays
+  --gradient-hero: linear-gradient(135deg, #0B1A33 0%, #081020 50%, #0E2142 100%);
+}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="he-IL" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>CourtSync - פלטפורמת למידה</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CourtSync - פלטפורמת למידה מתקדמת להצלחה במבחנים">
+  <meta name="theme-color" content="#3b82f6">
+
+  <!-- SPA Redirect Script for GitHub Pages -->
+  <script>
+    // This script redirects all 404s to the index.html for SPA routing
+    // It preserves the path in sessionStorage so the app can handle it
+    (function() {
+      var segmentCount = 1; // Number of path segments to keep (for repo name)
+      var l = window.location;
+
+      // Store the current path for the app to read
+      sessionStorage.setItem('redirect', l.pathname + l.search + l.hash);
+
+      // Redirect to the base URL
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/'
+      );
+    })();
+  </script>
+</head>
+<body>
+  <!-- This page will redirect to index.html -->
+</body>
+</html>

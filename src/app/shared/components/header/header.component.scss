@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap');
+
+.header {
+  @apply fixed top-0 left-0 right-0 z-50;
+  @apply transition-all duration-300 ease-out;
+  font-family: 'Rubik', 'Heebo', 'Inter', sans-serif;
+  background: transparent;
+
+  &--scrolled {
+    @apply backdrop-blur-xl;
+    @apply border-b;
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--color-border);
+    box-shadow: 0 4px 30px rgba(11, 26, 51, 0.08);
+  }
+
+  // Solid background for pages with colored hero sections
+  &--solid {
+    @apply backdrop-blur-xl;
+    @apply border-b;
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--color-border);
+    box-shadow: 0 4px 20px rgba(11, 26, 51, 0.1);
+  }
+}
+
+// Dark mode scrolled header - using :global to escape component encapsulation
+:host-context([data-theme="dark"]) .header--scrolled {
+  background: rgba(8, 16, 32, 0.9);
+  border-color: var(--color-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+// Dark mode solid header
+:host-context([data-theme="dark"]) .header--solid {
+  background: rgba(8, 16, 32, 0.95);
+  border-color: var(--color-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.header-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  @apply flex items-center justify-between;
+  @apply h-20 sm:h-22;
+}
+
+.header-brand {
+  @apply flex items-center gap-3;
+  @apply text-slate-900 no-underline;
+  @apply transition-all duration-300;
+  @apply hover:opacity-90;
+}
+
+:host-context([data-theme="dark"]) .header-brand {
+  @apply text-white;
+}
+
+.brand-icon {
+  @apply w-10 h-10 sm:w-11 sm:h-11;
+  @apply flex items-center justify-center;
+  @apply rounded-xl;
+  background: linear-gradient(135deg, #0E5E98 0%, #1E8ED8 100%);
+  box-shadow: 0 4px 14px rgba(30, 142, 216, 0.35);
+  color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 142, 216, 0.45);
+  }
+
+  svg {
+    @apply w-6 h-6 sm:w-7 sm:h-7;
+  }
+}
+
+.brand-text-wrapper {
+  @apply flex flex-col;
+}
+
+.brand-text {
+  @apply text-xl sm:text-2xl font-bold;
+  @apply tracking-tight leading-none;
+  font-family: 'Rubik', sans-serif;
+}
+
+.brand-tagline {
+  @apply text-xs;
+  @apply opacity-60 mt-0.5;
+  letter-spacing: 0.02em;
+}
+
+// Navigation
+.header-nav {
+  @apply hidden lg:flex items-center gap-1;
+}
+
+.nav-link {
+  @apply px-4 py-2 rounded-lg;
+  @apply text-sm font-medium;
+  @apply transition-all duration-200;
+  color: var(--color-text-secondary);
+
+  &:hover {
+    color: var(--color-text-primary);
+    background: var(--color-bg-secondary);
+  }
+}
+
+.header-actions {
+  @apply flex items-center gap-2 sm:gap-3;
+}
+
+.google-icon {
+  @apply w-5 h-5 flex-shrink-0;
+}
+
+// Mobile Menu Toggle
+.mobile-menu-toggle {
+  @apply lg:hidden;
+  @apply w-10 h-10 rounded-lg;
+  @apply flex items-center justify-center;
+  @apply transition-colors duration-200;
+  color: var(--color-text-primary);
+
+  &:hover {
+    background: var(--color-bg-secondary);
+  }
+
+  svg {
+    @apply w-6 h-6;
+  }
+}
+
+// Mobile Menu
+.mobile-menu {
+  @apply lg:hidden;
+  @apply absolute top-full left-0 right-0;
+  @apply bg-white/95 backdrop-blur-xl;
+  @apply border-b;
+  border-color: var(--color-border);
+  box-shadow: 0 10px 40px rgba(11, 26, 51, 0.1);
+  animation: slideDown 0.3s ease-out;
+
+  [data-theme="dark"] & {
+    @apply bg-slate-900/95;
+  }
+}
+
+.mobile-nav {
+  @apply flex flex-col p-4;
+}
+
+.mobile-nav-link {
+  @apply px-4 py-3 rounded-lg;
+  @apply text-base font-medium;
+  @apply transition-all duration-200;
+  color: var(--color-text-primary);
+
+  &:hover {
+    background: var(--color-bg-secondary);
+  }
+}
+
+// User Info
+.user-info {
+  @apply flex items-center gap-2;
+  @apply px-2 py-1 rounded-lg;
+}
+
+.user-avatar {
+  @apply w-9 h-9 rounded-full;
+  @apply border-2;
+  border-color: var(--color-border);
+  @apply object-cover;
+  @apply transition-transform duration-200;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.user-avatar-placeholder {
+  @apply w-9 h-9 rounded-full;
+  @apply flex items-center justify-center;
+  @apply text-sm font-semibold;
+  background: linear-gradient(135deg, #1E8ED8, #30B8F0);
+  color: white;
+}
+
+.user-name {
+  @apply text-sm font-medium;
+  @apply max-w-[150px] truncate;
+  color: var(--color-text-primary);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

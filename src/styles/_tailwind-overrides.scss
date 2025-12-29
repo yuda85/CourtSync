@@ -1,0 +1,158 @@
+// Tailwind Overrides and Custom Utilities
+// Additional styles that work alongside Tailwind
+
+// Custom utility classes using CSS variables
+.bg-surface {
+  background-color: var(--color-surface);
+}
+
+.bg-surface-elevated {
+  background-color: var(--color-surface-elevated);
+}
+
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-tertiary {
+  color: var(--color-text-tertiary);
+}
+
+.border-theme {
+  border-color: var(--color-border);
+}
+
+.border-theme-light {
+  border-color: var(--color-border-light);
+}
+
+// Shadow utilities
+.shadow-theme-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow-theme-md {
+  box-shadow: var(--shadow-md);
+}
+
+.shadow-theme-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+.shadow-theme-xl {
+  box-shadow: var(--shadow-xl);
+}
+
+// Gradient utilities
+.bg-gradient-hero {
+  background: var(--gradient-hero);
+}
+
+// Focus ring that adapts to theme
+.focus-ring {
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-primary-500);
+  }
+}
+
+// Card component base styles
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  &-elevated {
+    background-color: var(--color-surface-elevated);
+  }
+}
+
+// Glass effect (for overlays and modals)
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  [data-theme="dark"] & {
+    background: rgba(15, 23, 42, 0.8);
+  }
+}
+
+// Smooth transitions for theme changes
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Animation utilities
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+
+// Responsive container
+.container-app {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  @media (min-width: 640px) {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}

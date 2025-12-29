@@ -1,0 +1,46 @@
+<!-- Loading State -->
+@if (loading()) {
+  <div class="course-grid">
+    @for (i of skeletonArray; track i) {
+      <div class="course-grid__skeleton">
+        <div class="skeleton-cover"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-line skeleton-line--title"></div>
+          <div class="skeleton-line skeleton-line--text"></div>
+          <div class="skeleton-line skeleton-line--text skeleton-line--short"></div>
+          <div class="skeleton-meta">
+            <div class="skeleton-badge"></div>
+            <div class="skeleton-badge skeleton-badge--small"></div>
+          </div>
+          <div class="skeleton-line skeleton-line--price"></div>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<!-- Empty State -->
+@else if (isEmpty) {
+  <div class="course-grid__empty">
+    <div class="empty-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+      </svg>
+    </div>
+    <p class="empty-message">{{ emptyMessage() }}</p>
+  </div>
+}
+
+<!-- Courses Grid -->
+@else {
+  <div class="course-grid">
+    @for (course of courses(); track trackByCourseId($index, course)) {
+      <app-course-card
+        [course]="course"
+        [showPrice]="showPrices()"
+        [compact]="compact()"
+        (cardClick)="onCourseClick($event)"
+      />
+    }
+  </div>
+}

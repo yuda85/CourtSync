@@ -1,0 +1,79 @@
+<article
+  class="course-card"
+  [class.course-card--compact]="compact()"
+  tabindex="0"
+  role="button"
+  [attr.aria-label]="'קורס: ' + course().title"
+  (click)="onClick()"
+  (keydown)="onKeydown($event)"
+>
+  <!-- Cover Image / Gradient Fallback -->
+  <div class="course-card__cover">
+    @if (course().coverImageUrl) {
+      <img
+        [src]="course().coverImageUrl"
+        [alt]="course().title"
+        class="course-card__image"
+      />
+    } @else {
+      <div class="course-card__gradient bg-gradient-to-br {{ subjectGradient }}">
+        <svg class="course-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+        </svg>
+      </div>
+    }
+
+    <!-- Subject Badge (on cover) -->
+    <span class="course-card__subject {{ subjectColorClass }}">
+      {{ course().subject }}
+    </span>
+
+    <!-- Free Badge -->
+    @if (isFree && showPrice()) {
+      <span class="course-card__free-badge">
+        חינם
+      </span>
+    }
+  </div>
+
+  <!-- Card Content -->
+  <div class="course-card__content">
+    <!-- Title -->
+    <h3 class="course-card__title">
+      {{ course().title }}
+    </h3>
+
+    <!-- Description (hidden in compact mode) -->
+    @if (!compact()) {
+      <p class="course-card__description">
+        {{ course().shortDescription }}
+      </p>
+    }
+
+    <!-- Meta Info -->
+    <div class="course-card__meta">
+      <!-- Level -->
+      <span class="course-card__level {{ levelBadgeClass }}">
+        {{ course().level }}
+      </span>
+
+      <!-- Duration -->
+      <span class="course-card__duration">
+        <svg class="course-card__meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12,6 12,12 16,14" />
+        </svg>
+        {{ formattedDuration }}
+      </span>
+    </div>
+
+    <!-- Price (if shown) -->
+    @if (showPrice()) {
+      <div class="course-card__price-row">
+        <span class="course-card__price" [class.course-card__price--free]="isFree">
+          {{ formattedPrice }}
+        </span>
+      </div>
+    }
+  </div>
+</article>

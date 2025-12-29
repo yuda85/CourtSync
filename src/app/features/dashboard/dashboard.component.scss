@@ -1,0 +1,218 @@
+.dashboard {
+  @apply space-y-8;
+  font-family: 'Heebo', 'Inter', sans-serif;
+}
+
+// Welcome Section
+.welcome-section {
+  @apply flex items-center justify-between;
+  @apply p-6 sm:p-8;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1.5rem;
+}
+
+.welcome-content {
+  @apply flex-1;
+}
+
+.welcome-title {
+  @apply text-2xl sm:text-3xl font-bold mb-2;
+  color: var(--color-text-primary);
+}
+
+.welcome-subtitle {
+  @apply text-base sm:text-lg;
+  color: var(--color-text-secondary);
+}
+
+.welcome-avatar {
+  @apply w-16 h-16 sm:w-20 sm:h-20;
+  @apply rounded-full;
+  @apply border-4 border-white shadow-lg;
+  @apply hidden sm:block;
+
+  [data-theme="dark"] & {
+    @apply border-slate-700;
+  }
+}
+
+// Stats Grid
+.stats-grid {
+  @apply grid gap-4 sm:gap-6;
+  grid-template-columns: repeat(2, 1fr);
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.stat-card {
+  @apply p-5 sm:p-6;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.stat-icon {
+  @apply w-12 h-12 mb-4;
+  @apply flex items-center justify-center;
+  @apply rounded-xl;
+
+  svg {
+    @apply w-6 h-6;
+  }
+
+  .stat-card-blue & {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #2563eb;
+
+    [data-theme="dark"] & {
+      background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+      color: #93c5fd;
+    }
+  }
+
+  .stat-card-green & {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    color: #16a34a;
+
+    [data-theme="dark"] & {
+      background: linear-gradient(135deg, #14532d, #166534);
+      color: #86efac;
+    }
+  }
+
+  .stat-card-purple & {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    color: #7c3aed;
+
+    [data-theme="dark"] & {
+      background: linear-gradient(135deg, #4c1d95, #5b21b6);
+      color: #c4b5fd;
+    }
+  }
+
+  .stat-card-orange & {
+    background: linear-gradient(135deg, #ffedd5, #fed7aa);
+    color: #ea580c;
+
+    [data-theme="dark"] & {
+      background: linear-gradient(135deg, #7c2d12, #9a3412);
+      color: #fdba74;
+    }
+  }
+}
+
+.stat-content {
+  @apply flex flex-col;
+}
+
+.stat-value {
+  @apply text-2xl sm:text-3xl font-bold;
+  color: var(--color-text-primary);
+}
+
+.stat-label {
+  @apply text-sm;
+  color: var(--color-text-secondary);
+}
+
+// Quick Actions
+.quick-actions {
+  @apply space-y-4;
+}
+
+.section-title {
+  @apply text-xl font-bold;
+  color: var(--color-text-primary);
+}
+
+.actions-grid {
+  @apply grid gap-4;
+  grid-template-columns: repeat(3, 1fr);
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.action-card {
+  @apply flex items-center gap-4;
+  @apply p-4 sm:p-5;
+  @apply w-full;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-primary-300);
+
+    [data-theme="dark"] & {
+      border-color: var(--color-primary-700);
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.action-icon {
+  @apply w-10 h-10;
+  @apply flex items-center justify-center;
+  @apply rounded-lg;
+  background: var(--color-primary-100);
+  color: var(--color-primary-600);
+
+  [data-theme="dark"] & {
+    background: var(--color-primary-900);
+    color: var(--color-primary-400);
+  }
+
+  svg {
+    @apply w-5 h-5;
+  }
+}
+
+.action-label {
+  @apply text-sm font-medium;
+  color: var(--color-text-primary);
+}
+
+// Placeholder Section
+.placeholder-section {
+  @apply p-8 sm:p-12;
+  background: var(--color-surface);
+  border: 2px dashed var(--color-border);
+  border-radius: 1.5rem;
+}
+
+.placeholder-content {
+  @apply text-center;
+}
+
+.placeholder-icon {
+  @apply w-16 h-16 mx-auto mb-4;
+  color: var(--color-text-tertiary);
+}
+
+.placeholder-title {
+  @apply text-lg font-semibold mb-2;
+  color: var(--color-text-primary);
+}
+
+.placeholder-text {
+  @apply text-base;
+  color: var(--color-text-secondary);
+  max-width: 400px;
+  margin: 0 auto;
+}

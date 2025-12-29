@@ -1,0 +1,467 @@
+<div class="landing">
+  <!-- Header -->
+  <app-header [showSignIn]="true" [showUserInfo]="false" />
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <!-- Background Pattern -->
+    <div class="hero-bg">
+      <div class="hero-bg-pattern"></div>
+      <div class="hero-bg-gradient"></div>
+    </div>
+
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge animate-fade-in">
+          <span class="badge-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clip-rule="evenodd"/>
+            </svg>
+          </span>
+          <span>הצטרפו ל-10,000+ סטודנטים מצליחים</span>
+        </div>
+
+        <h1 class="hero-title animate-slide-up">
+          הדרך החכמה
+          <span class="hero-title-highlight">להצליח במשפטים</span>
+        </h1>
+
+        <p class="hero-subtitle animate-slide-up" style="animation-delay: 0.1s">
+          פלטפורמת הלמידה המובילה לסטודנטים למשפט. קורסים ממוקדי מבחנים,
+          שיעורים קצרים וברורים, ומסלולי למידה מותאמים אישית שיעזרו לך
+          להצליח בכל בחינה.
+        </p>
+
+        <div class="hero-actions animate-slide-up" style="animation-delay: 0.2s">
+          <app-button
+            variant="primary"
+            size="lg"
+            [loading]="isLoading()"
+            (clicked)="onGetStarted()"
+          >
+            <span>התחל ללמוד בחינם</span>
+            <svg class="btn-arrow" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+          </app-button>
+          <a href="#courses" class="hero-secondary-btn">
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+            </svg>
+            <span>צפה בקורסים</span>
+          </a>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="hero-trust animate-fade-in" style="animation-delay: 0.3s">
+          <div class="trust-avatars">
+            <div class="trust-avatar">
+              <img src="https://placehold.co/40x40/1E8ED8/white?text=ש" alt="תמונת פרופיל של סטודנט">
+            </div>
+            <div class="trust-avatar">
+              <img src="https://placehold.co/40x40/30B8F0/white?text=מ" alt="תמונת פרופיל של סטודנטית">
+            </div>
+            <div class="trust-avatar">
+              <img src="https://placehold.co/40x40/0E5E98/white?text=א" alt="תמונת פרופיל של סטודנט">
+            </div>
+            <div class="trust-avatar trust-avatar-more">+9,997</div>
+          </div>
+          <div class="trust-text">
+            <div class="trust-stars">
+              @for (star of [1,2,3,4,5]; track star) {
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              }
+            </div>
+            <span>4.9/5 מבוסס על 1,200+ ביקורות</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual -->
+      <div class="hero-visual animate-fade-in" style="animation-delay: 0.2s">
+        <div class="hero-image-wrapper">
+          <img
+            src="https://placehold.co/600x500/EEF6FF/1E8ED8?text=סטודנט+לומד+משפט"
+            alt="סטודנט לומד משפט בפלטפורמת CourtSync"
+            class="hero-image"
+          >
+          <!-- Floating Cards -->
+          <div class="floating-card floating-card-1">
+            <div class="floating-card-icon progress">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+              </svg>
+            </div>
+            <div class="floating-card-content">
+              <span class="floating-card-value">92%</span>
+              <span class="floating-card-label">ציון במבחן</span>
+            </div>
+          </div>
+          <div class="floating-card floating-card-2">
+            <div class="floating-card-icon lessons">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+            <div class="floating-card-content">
+              <span class="floating-card-value">24/32</span>
+              <span class="floating-card-label">שיעורים הושלמו</span>
+            </div>
+          </div>
+          <div class="floating-card floating-card-3">
+            <div class="floating-card-icon streak">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div class="floating-card-content">
+              <span class="floating-card-value">₪299</span>
+              <span class="floating-card-label">בלבד לקורס</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stats-container">
+        @for (stat of stats; track stat.label) {
+          <div class="stat-item">
+            <span class="stat-value">{{ stat.value }}</span>
+            <span class="stat-label">{{ stat.label }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="how-it-works">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">איך זה עובד</span>
+        <h2 class="section-title">ארבעה צעדים להצלחה במבחן</h2>
+        <p class="section-subtitle">
+          התהליך שלנו פשוט ויעיל. עקוב אחרי הצעדים והגע למבחן מוכן.
+        </p>
+      </div>
+
+      <div class="steps-grid">
+        @for (step of steps; track step.number; let i = $index) {
+          <div class="step-card" [style.animation-delay]="i * 0.1 + 's'">
+            <div class="step-number">{{ step.number }}</div>
+            <div class="step-icon">
+              @if (step.icon === 'search') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+              }
+              @if (step.icon === 'play') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              }
+              @if (step.icon === 'check') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 11l3 3L22 4"/>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>
+              }
+              @if (step.icon === 'trophy') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                  <path d="M4 22h16"/>
+                  <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                  <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                </svg>
+              }
+            </div>
+            <h3 class="step-title">{{ step.title }}</h3>
+            <p class="step-description">{{ step.description }}</p>
+            @if (i < steps.length - 1) {
+              <div class="step-connector"></div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">למה CourtSync</span>
+        <h2 class="section-title">הכלים שיעזרו לך להצליח</h2>
+        <p class="section-subtitle">
+          בנינו את הפלטפורמה המושלמת לסטודנטים למשפט שרוצים להצליח במבחנים
+        </p>
+      </div>
+
+      <div class="features-grid">
+        @for (feature of features; track feature.title; let i = $index) {
+          <div class="feature-card" [style.animation-delay]="i * 0.1 + 's'">
+            <div class="feature-icon">
+              @if (feature.icon === 'target') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="6"/>
+                  <circle cx="12" cy="12" r="2"/>
+                </svg>
+              }
+              @if (feature.icon === 'clock') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              }
+              @if (feature.icon === 'path') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6L6 18"/>
+                  <path d="M8 6h10v10"/>
+                </svg>
+              }
+              @if (feature.icon === 'chart') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 3v18h18"/>
+                  <path d="m19 9-5 5-4-4-3 3"/>
+                </svg>
+              }
+              @if (feature.icon === 'book') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+              }
+              @if (feature.icon === 'users') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              }
+            </div>
+            <h3 class="feature-title">{{ feature.title }}</h3>
+            <p class="feature-description">{{ feature.description }}</p>
+            <span class="feature-highlight">{{ feature.highlight }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Courses Section -->
+  <section id="courses" class="featured-courses">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">הקורסים שלנו</span>
+        <h2 class="section-title">קורסים ממוקדי מבחנים</h2>
+        <p class="section-subtitle">
+          כל הקורסים הבסיסיים והמתקדמים שתצטרך לאורך הלימודים
+        </p>
+      </div>
+
+      <app-course-grid
+        [courses]="featuredCourses()"
+        [loading]="featuredLoading()"
+        [skeletonCount]="3"
+        emptyMessage="קורסים יעלו בקרוב"
+        (courseClick)="onFeaturedCourseClick($event)"
+      />
+
+      <div class="featured-cta">
+        <app-button variant="outline" size="lg" (clicked)="onViewAllCourses()">
+          <svg class="btn-arrow-rtl" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+          </svg>
+          <span>צפה בכל הקורסים</span>
+        </app-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="testimonials">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">מה אומרים עלינו</span>
+        <h2 class="section-title">סיפורי הצלחה של סטודנטים</h2>
+        <p class="section-subtitle">
+          אלפי סטודנטים כבר השתמשו ב-CourtSync והצליחו במבחנים
+        </p>
+      </div>
+
+      <div class="testimonials-grid">
+        @for (testimonial of testimonials; track testimonial.name; let i = $index) {
+          <div class="testimonial-card" [style.animation-delay]="i * 0.15 + 's'">
+            <div class="testimonial-rating">
+              @for (star of [1,2,3,4,5]; track star) {
+                <svg viewBox="0 0 20 20" fill="currentColor" [class.filled]="star <= testimonial.rating">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              }
+            </div>
+            <p class="testimonial-content">"{{ testimonial.content }}"</p>
+            <div class="testimonial-course">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+              </svg>
+              {{ testimonial.course }}
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">
+                <img
+                  [src]="'https://placehold.co/48x48/1E8ED8/white?text=' + testimonial.name[0]"
+                  [alt]="'תמונת פרופיל של ' + testimonial.name"
+                >
+              </div>
+              <div class="author-info">
+                <span class="author-name">{{ testimonial.name }}</span>
+                <span class="author-role">{{ testimonial.role }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="cta-container">
+      <div class="cta-bg">
+        <div class="cta-bg-pattern"></div>
+      </div>
+      <div class="cta-content">
+        <span class="cta-badge">התחל היום</span>
+        <h2 class="cta-title">מוכן להצליח במבחן הבא?</h2>
+        <p class="cta-subtitle">
+          הצטרף לאלפי סטודנטים שכבר משתמשים ב-CourtSync ומצליחים במבחנים.
+          גישה מיידית לכל הקורסים והתרגולים.
+        </p>
+        <div class="cta-actions">
+          <app-button
+            variant="primary"
+            size="lg"
+            [loading]="isLoading()"
+            (clicked)="onGetStarted()"
+          >
+            <svg class="google-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span>התחברות עם Google - בחינם</span>
+          </app-button>
+        </div>
+        <p class="cta-note">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          ללא כרטיס אשראי. גישה מיידית לתוכן בחינם.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <!-- Footer Top -->
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a routerLink="/" class="footer-logo">
+            <div class="footer-logo-icon">
+              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 2L16 28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M8 28H24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M4 8L16 5L28 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 8L2 16C2 18 4 20 7 20C10 20 12 18 12 16L10 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 8L20 16C20 18 22 20 25 20C28 20 30 18 30 16L28 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="footer-logo-text">
+              <span class="footer-brand-name">CourtSync</span>
+              <span class="footer-brand-tagline">בית הספר למשפט</span>
+            </div>
+          </a>
+          <p class="footer-description">
+            פלטפורמת הלמידה המובילה לסטודנטים למשפט בישראל.
+            קורסים ממוקדי מבחנים שיעזרו לך להצליח.
+          </p>
+          <div class="footer-social">
+            <a href="#" class="social-link" aria-label="פייסבוק">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="#" class="social-link" aria-label="אינסטגרם">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
+            </a>
+            <a href="#" class="social-link" aria-label="לינקדאין">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+            <a href="#" class="social-link" aria-label="יוטיוב">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links-wrapper">
+          <div class="footer-links-group">
+            <h4 class="footer-links-title">המוצר</h4>
+            <ul class="footer-links">
+              @for (link of footerLinks.product; track link.label) {
+                <li><a [href]="link.href">{{ link.label }}</a></li>
+              }
+            </ul>
+          </div>
+          <div class="footer-links-group">
+            <h4 class="footer-links-title">תמיכה</h4>
+            <ul class="footer-links">
+              @for (link of footerLinks.support; track link.label) {
+                <li><a [href]="link.href">{{ link.label }}</a></li>
+              }
+            </ul>
+          </div>
+          <div class="footer-links-group">
+            <h4 class="footer-links-title">משפטי</h4>
+            <ul class="footer-links">
+              @for (link of footerLinks.legal; track link.label) {
+                <li><a [href]="link.href">{{ link.label }}</a></li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <p class="footer-copyright">
+          &copy; {{ currentYear }} CourtSync. כל הזכויות שמורות.
+        </p>
+        <p class="footer-made">
+          נבנה עם
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+          </svg>
+          לסטודנטים למשפט בישראל
+        </p>
+      </div>
+    </div>
+  </footer>
+</div>

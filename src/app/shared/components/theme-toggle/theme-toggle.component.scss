@@ -1,0 +1,81 @@
+.theme-toggle {
+  @apply relative inline-block;
+  font-family: 'Heebo', 'Inter', sans-serif;
+}
+
+.theme-toggle-btn {
+  @apply flex items-center gap-2 px-3 py-2 rounded-xl;
+  @apply bg-transparent text-slate-700;
+  @apply hover:bg-slate-100 active:bg-slate-200;
+  @apply transition-all duration-200 ease-out;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  min-height: 44px;
+
+  [data-theme="dark"] & {
+    @apply text-slate-200;
+    @apply hover:bg-slate-800 active:bg-slate-700;
+  }
+}
+
+.theme-icon {
+  @apply w-5 h-5 flex-shrink-0;
+}
+
+.theme-label {
+  @apply text-sm font-medium hidden sm:inline;
+}
+
+.chevron {
+  @apply w-4 h-4 transition-transform duration-200;
+
+  &.rotate {
+    @apply rotate-180;
+  }
+}
+
+.theme-dropdown {
+  @apply absolute top-full right-0 mt-2;
+  @apply bg-white rounded-xl shadow-large;
+  @apply border border-slate-200;
+  @apply py-1 min-w-[160px];
+  @apply animate-slide-down;
+  @apply z-50;
+
+  [data-theme="dark"] & {
+    @apply bg-slate-800 border-slate-700;
+  }
+}
+
+.theme-option {
+  @apply w-full flex items-center gap-3 px-4 py-2.5;
+  @apply text-sm text-slate-700;
+  @apply hover:bg-slate-50;
+  @apply transition-colors duration-150;
+  @apply focus:outline-none focus:bg-slate-100;
+
+  [data-theme="dark"] & {
+    @apply text-slate-200;
+    @apply hover:bg-slate-700;
+    @apply focus:bg-slate-700;
+  }
+
+  &.active {
+    @apply text-blue-600 font-medium;
+
+    [data-theme="dark"] & {
+      @apply text-blue-400;
+    }
+  }
+}
+
+.option-icon {
+  @apply w-4 h-4 flex-shrink-0;
+}
+
+.check-icon {
+  @apply w-4 h-4 ml-auto text-blue-600;
+
+  [data-theme="dark"] & {
+    @apply text-blue-400;
+  }
+}

@@ -1,0 +1,197 @@
+<!-- Header (for public course details page) -->
+@if (!isAuthenticated()) {
+  <app-header [showSignIn]="true" [solidBackground]="true" />
+}
+
+<div class="details-page" [class.details-page--with-header]="!isAuthenticated()">
+  @if (isLoading()) {
+    <!-- Loading State -->
+    <div class="details-loading">
+      <div class="loading-hero">
+        <div class="loading-shimmer"></div>
+      </div>
+      <div class="loading-content">
+        <div class="loading-line loading-line--title"></div>
+        <div class="loading-line loading-line--text"></div>
+        <div class="loading-line loading-line--text loading-line--short"></div>
+      </div>
+    </div>
+  } @else if (!course()) {
+    <!-- Not Found State -->
+    <div class="details-not-found">
+      <div class="not-found-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <h2 class="not-found-title">הקורס לא נמצא</h2>
+      <p class="not-found-text">הקורס שחיפשת לא קיים או הוסר</p>
+      <app-button variant="primary" (clicked)="onBack()">
+        חזרה לקטלוג
+      </app-button>
+    </div>
+  } @else {
+    <div class="details">
+    <!-- Hero Section -->
+    <section class="details__hero">
+      <div class="hero-background bg-gradient-to-br {{ subjectGradient() }}">
+        <div class="hero-pattern"></div>
+      </div>
+
+      <div class="hero-content">
+        <!-- Back Button -->
+        <button class="hero-back" (click)="onBack()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6" />
+          </svg>
+          חזרה לקטלוג
+        </button>
+
+        <!-- Course Info -->
+        <div class="hero-info">
+          <div class="hero-badges">
+            <span class="hero-badge {{ subjectColorClass() }}">
+              {{ course()!.subject }}
+            </span>
+            <span class="hero-badge {{ levelBadgeClass() }}">
+              {{ course()!.level }}
+            </span>
+          </div>
+
+          <h1 class="hero-title">{{ course()!.title }}</h1>
+
+          <p class="hero-description">{{ course()!.shortDescription }}</p>
+
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12,6 12,12 16,14" />
+              </svg>
+              <span>{{ formattedDuration() }}</span>
+            </div>
+            <div class="hero-meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+              </svg>
+              <span>{{ totalLessons() }} שיעורים</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Card -->
+        <div class="hero-action-card">
+          <div class="action-price">
+            @if (isFree()) {
+              <span class="price-free">חינם</span>
+            } @else {
+              <span class="price-amount">₪{{ course()!.priceIls }}</span>
+            }
+          </div>
+
+          @if (hasAccess()) {
+            <app-button
+              variant="primary"
+              size="lg"
+              [fullWidth]="true"
+              (clicked)="onContinueLearning()"
+            >
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5,3 19,12 5,21" fill="currentColor" />
+              </svg>
+              המשך לקורס
+            </app-button>
+            <p class="action-note">יש לך גישה מלאה לקורס זה</p>
+          } @else {
+            <app-button
+              variant="primary"
+              size="lg"
+              [fullWidth]="true"
+              [loading]="isPurchasing()"
+              (clicked)="onEnroll()"
+            >
+              @if (!isAuthenticated()) {
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                התחבר להרשמה
+              } @else if (isFree()) {
+                התחל ללמוד בחינם
+              } @else {
+                רכוש גישה לקורס
+              }
+            </app-button>
+            <p class="action-note">
+              @if (!isAuthenticated()) {
+                התחבר כדי להירשם לקורס
+              } @else {
+                גישה מלאה לכל תכני הקורס
+              }
+            </p>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="details__content">
+      <div class="content-container">
+        <!-- Description -->
+        <div class="content-section">
+          <h2 class="section-title">על הקורס</h2>
+          <div class="section-body description-text">
+            {{ course()!.longDescription }}
+          </div>
+        </div>
+
+        <!-- Course Outline -->
+        <div class="content-section">
+          <h2 class="section-title">תוכן הקורס</h2>
+          <div class="outline-list">
+            @for (group of groupedOutline(); track group.section.id) {
+              <div class="outline-section" [class.outline-section--expanded]="isSectionExpanded(group.section.id)">
+                <button
+                  class="outline-section-header"
+                  (click)="toggleSection(group.section.id)"
+                >
+                  <div class="outline-section-info">
+                    <svg class="outline-section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6,9 12,15 18,9" />
+                    </svg>
+                    <span class="outline-section-title">{{ group.section.title }}</span>
+                  </div>
+                  <span class="outline-section-count">{{ group.lessons.length }} שיעורים</span>
+                </button>
+
+                @if (isSectionExpanded(group.section.id)) {
+                  <div class="outline-lessons">
+                    @for (lesson of group.lessons; track lesson.id) {
+                      <div class="outline-lesson">
+                        @if (hasAccess()) {
+                          <svg class="lesson-icon lesson-icon--unlocked" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5,3 19,12 5,21" fill="currentColor" />
+                          </svg>
+                        } @else {
+                          <svg class="lesson-icon lesson-icon--locked" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                          </svg>
+                        }
+                        <span class="lesson-title">{{ lesson.title }}</span>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+    </div>
+  }
+</div>

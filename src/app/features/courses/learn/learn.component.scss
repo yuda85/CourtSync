@@ -1,0 +1,125 @@
+.learn {
+  @apply min-h-[calc(100vh-4rem)];
+  @apply flex items-center justify-center;
+  @apply px-4 py-8;
+  font-family: 'Heebo', 'Inter', sans-serif;
+  background: var(--color-bg-primary);
+}
+
+.learn__loading {
+  @apply flex flex-col items-center gap-4;
+  @apply text-slate-500;
+
+  [data-theme="dark"] & {
+    @apply text-slate-400;
+  }
+}
+
+.loading-spinner {
+  @apply w-12 h-12;
+  @apply border-4 border-slate-200 border-t-blue-500;
+  @apply rounded-full;
+  animation: spin 1s linear infinite;
+
+  [data-theme="dark"] & {
+    @apply border-slate-700 border-t-blue-400;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.learn__content {
+  @apply w-full max-w-2xl;
+}
+
+.learn__back {
+  @apply inline-flex items-center gap-2;
+  @apply mb-8;
+  @apply text-sm font-medium;
+  @apply text-slate-600 hover:text-slate-900;
+  @apply transition-colors duration-200;
+
+  svg {
+    @apply w-4 h-4;
+  }
+
+  [data-theme="dark"] & {
+    @apply text-slate-400 hover:text-white;
+  }
+}
+
+.learn__placeholder {
+  @apply text-center;
+  @apply p-8 sm:p-12;
+  @apply bg-white rounded-3xl;
+  @apply border;
+  border-color: var(--color-border);
+  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.08);
+
+  [data-theme="dark"] & {
+    @apply bg-slate-800/80;
+  }
+}
+
+.placeholder-icon {
+  @apply w-24 h-24 mx-auto mb-6;
+  @apply flex items-center justify-center;
+  @apply bg-gradient-to-br from-blue-100 to-purple-100;
+  @apply rounded-3xl;
+
+  svg {
+    @apply w-12 h-12 text-blue-600;
+  }
+
+  [data-theme="dark"] & {
+    @apply from-blue-900/30 to-purple-900/30;
+
+    svg {
+      @apply text-blue-400;
+    }
+  }
+}
+
+.placeholder-title {
+  @apply text-2xl sm:text-3xl font-bold;
+  @apply mb-3;
+  color: var(--color-text-primary);
+}
+
+.placeholder-course-name {
+  @apply text-lg font-medium;
+  @apply mb-4;
+  @apply text-blue-600;
+
+  [data-theme="dark"] & {
+    @apply text-blue-400;
+  }
+}
+
+.placeholder-text {
+  @apply text-base sm:text-lg;
+  @apply mb-8;
+  @apply max-w-md mx-auto;
+  color: var(--color-text-secondary);
+}
+
+.placeholder-features {
+  @apply flex flex-col sm:flex-row justify-center gap-4 sm:gap-8;
+  @apply mb-8;
+  @apply py-6;
+  @apply border-y;
+  border-color: var(--color-border);
+}
+
+.feature-item {
+  @apply flex items-center justify-center gap-2;
+  @apply text-sm;
+  color: var(--color-text-secondary);
+
+  svg {
+    @apply w-5 h-5;
+    @apply text-blue-500;
+  }
+}

@@ -1,0 +1,13 @@
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-secondary);
+}
+
+.shell-content {
+  @apply flex-1;
+  @apply max-w-7xl w-full mx-auto;
+  @apply px-4 sm:px-6 lg:px-8;
+  @apply py-6 sm:py-8;
+}

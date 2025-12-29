@@ -1,0 +1,71 @@
+// Direction Enforcement - RTL for Hebrew
+// Proper RTL support for Hebrew language UI
+
+html {
+  direction: rtl !important;
+}
+
+body {
+  direction: rtl !important;
+  text-align: right;
+}
+
+// Ensure all elements inherit RTL direction
+* {
+  direction: inherit;
+}
+
+// Helper classes for text alignment (logical properties)
+.text-start {
+  text-align: right !important; // In RTL, start is right
+}
+
+.text-end {
+  text-align: left !important; // In RTL, end is left
+}
+
+// Force LTR for specific elements (like code, numbers)
+.ltr {
+  direction: ltr !important;
+}
+
+// Flex utilities that work with RTL
+// In RTL, row is automatically reversed by the browser
+.flex-row-reverse {
+  flex-direction: row-reverse !important;
+}
+
+// Icons and specific elements that should not be mirrored
+.no-flip {
+  transform: scaleX(1) !important;
+}
+
+// Mirror icons for RTL
+.flip-rtl {
+  transform: scaleX(-1);
+}
+
+// Logical margin/padding helpers
+.ms-auto {
+  margin-inline-start: auto !important;
+}
+
+.me-auto {
+  margin-inline-end: auto !important;
+}
+
+// Fix for inputs and form elements
+input,
+textarea,
+select {
+  text-align: inherit;
+}
+
+// Ensure icons in buttons are properly positioned
+button svg,
+a svg {
+  // Don't flip common icons
+  &.no-flip {
+    transform: none;
+  }
+}

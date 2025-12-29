@@ -1,11 +1,60 @@
 <!doctype html>
-<html lang="en">
+<html lang="he-IL" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <title>CourtSync</title>
+  <title>CourtSync - פלטפורמת למידה</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CourtSync - פלטפורמת למידה מתקדמת להצלחה במבחנים">
+  <meta name="theme-color" content="#3b82f6">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Preconnect to Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Runtime direction enforcement (RTL) -->
+  <script>
+    // Ensure RTL direction is always applied
+    (function() {
+      document.documentElement.setAttribute('dir', 'rtl');
+      document.documentElement.style.direction = 'rtl';
+
+      // Observer to prevent any script from changing direction
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'dir') {
+            if (document.documentElement.getAttribute('dir') !== 'rtl') {
+              document.documentElement.setAttribute('dir', 'rtl');
+            }
+          }
+        });
+      });
+
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['dir']
+      });
+    })();
+  </script>
+
+  <!-- Theme initialization (prevent flash) -->
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('courtsync-theme');
+        var resolved = theme;
+
+        if (theme === 'system' || !theme) {
+          resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        document.documentElement.setAttribute('data-theme', resolved);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>

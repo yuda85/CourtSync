@@ -1,0 +1,186 @@
+.catalog {
+  @apply max-w-7xl mx-auto;
+  @apply px-4 sm:px-6 lg:px-8;
+  @apply py-6 sm:py-8;
+  font-family: 'Heebo', 'Inter', sans-serif;
+}
+
+// Page Header
+.catalog__header {
+  @apply mb-6 sm:mb-8;
+  @apply text-center sm:text-right;
+}
+
+.catalog__title {
+  @apply text-2xl sm:text-3xl lg:text-4xl font-bold;
+  @apply mb-2;
+  color: var(--color-text-primary);
+}
+
+.catalog__subtitle {
+  @apply text-base sm:text-lg;
+  color: var(--color-text-secondary);
+}
+
+// Filter Bar
+.catalog__filters {
+  @apply mb-6;
+  @apply sticky top-16 z-20;
+  @apply -mx-4 px-4 sm:mx-0 sm:px-0;
+  @apply py-4;
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+
+  @media (min-width: 640px) {
+    @apply rounded-xl;
+    border: 1px solid var(--color-border);
+    @apply p-4;
+  }
+}
+
+.filters-container {
+  @apply flex flex-col sm:flex-row gap-3;
+  @apply items-stretch sm:items-center;
+}
+
+// Search Input
+.filter-search {
+  @apply relative flex-1;
+  @apply min-w-0;
+}
+
+.filter-search__icon {
+  @apply absolute right-3 top-1/2 -translate-y-1/2;
+  @apply w-5 h-5;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.filter-search__input {
+  @apply w-full;
+  @apply pr-10 pl-4 py-2.5;
+  @apply rounded-lg;
+  @apply border-2 border-transparent;
+  @apply text-sm;
+  @apply transition-all duration-200;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:focus {
+    @apply outline-none;
+    @apply border-blue-500;
+    @apply ring-2 ring-blue-500/20;
+  }
+}
+
+// Select Filters
+.filter-select {
+  @apply relative;
+  @apply w-full sm:w-44;
+}
+
+.filter-select__input {
+  @apply w-full;
+  @apply appearance-none;
+  @apply pr-4 pl-10 py-2.5;
+  @apply rounded-lg;
+  @apply border-2 border-transparent;
+  @apply text-sm cursor-pointer;
+  @apply transition-all duration-200;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+
+  &:focus {
+    @apply outline-none;
+    @apply border-blue-500;
+    @apply ring-2 ring-blue-500/20;
+  }
+
+  // Style native options - must use explicit colors for browser support
+  option {
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    @apply py-2;
+  }
+}
+
+.filter-select__arrow {
+  @apply absolute left-3 top-1/2 -translate-y-1/2;
+  @apply w-4 h-4;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+// Clear Filters Button
+.filter-clear {
+  @apply flex items-center justify-center gap-2;
+  @apply px-4 py-2.5;
+  @apply text-sm font-medium;
+  @apply rounded-lg;
+  @apply transition-all duration-200;
+  @apply whitespace-nowrap;
+  color: var(--color-text-secondary);
+  background: transparent;
+
+  &:hover {
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+  }
+
+  svg {
+    @apply w-4 h-4;
+  }
+}
+
+// Results Info
+.catalog__results-info {
+  @apply mb-4;
+  @apply text-sm;
+  color: var(--color-text-secondary);
+
+  strong {
+    @apply font-semibold;
+    color: var(--color-text-primary);
+  }
+}
+
+// Grid Container
+.catalog__grid {
+  @apply min-h-[400px];
+}
+
+// Offset for header when on public page
+.catalog--with-header {
+  @apply pt-20;
+}
+
+// CTA Section
+.catalog__cta {
+  @apply mt-16 mb-8;
+  @apply py-16 px-6;
+  @apply rounded-2xl;
+  @apply text-center;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1e40af 100%);
+
+  .cta-content {
+    @apply max-w-xl mx-auto;
+  }
+
+  .cta-title {
+    @apply text-2xl sm:text-3xl font-bold mb-4;
+    @apply text-white;
+  }
+
+  .cta-description {
+    @apply text-base sm:text-lg mb-8;
+    @apply text-white/80;
+  }
+
+  .btn-icon {
+    @apply w-5 h-5 ml-2;
+  }
+}
