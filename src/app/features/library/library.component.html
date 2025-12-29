@@ -23,7 +23,7 @@
       </div>
       <h2 class="empty-title">הספרייה שלך ריקה</h2>
       <p class="empty-text">עדיין לא רכשת קורסים. גלה את מגוון הקורסים שלנו והתחל ללמוד!</p>
-      <app-button variant="primary" (buttonClick)="onBrowseCatalog()">
+      <app-button variant="primary" (clicked)="onBrowseCatalog()">
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.3-4.3" />
@@ -44,7 +44,7 @@
     <!-- Browse More -->
     <div class="library__more">
       <p class="more-text">רוצה להוסיף עוד קורסים לספרייה?</p>
-      <app-button variant="outline" (buttonClick)="onBrowseCatalog()">
+      <app-button variant="outline" (clicked)="onBrowseCatalog()">
         עיין בקטלוג הקורסים
       </app-button>
     </div>

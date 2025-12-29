@@ -1,9 +1,44 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users collection - users can only read/write their own document
+
+    // Public courses collection (read-only for all authenticated users)
+    match /courses/{courseId} {
+      // Anyone can read published courses
+      allow read: if resource.data.isPublished == true;
+      // Write access denied (admin only via backend)
+      allow write: if false;
+
+      // Public course outline subcollection
+      match /outline/{itemId} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+
+    // Private user documents and subcollections
     match /users/{userId} {
+      // User can read/write their own profile
       allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // User entitlements subcollection
+      // User can ONLY read/write their OWN entitlements
+      match /entitlements/{entId} {
+        // Read: user can read their own entitlements
+        allow read: if request.auth != null && request.auth.uid == userId;
+
+        // Create: user can create entitlements for themselves
+        // Validates required fields and allowed values
+        allow create: if request.auth != null
+                      && request.auth.uid == userId
+                      && request.resource.data.keys().hasAll(['type', 'refId', 'purchasedAt', 'source'])
+                      && request.resource.data.type in ['course', 'path', 'bundle']
+                      && request.resource.data.source in ['demo', 'payment'];
+
+        // Prevent updates and deletes to maintain audit trail
+        // (Can be relaxed in the future if needed)
+        allow update, delete: if false;
+      }
     }
 
     // Default deny all other access

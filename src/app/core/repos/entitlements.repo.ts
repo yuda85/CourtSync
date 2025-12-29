@@ -1,6 +1,6 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
-import { Observable, of, from } from 'rxjs';
-import { map, switchMap, catchError } from 'rxjs/operators';
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, catchError, shareReplay } from 'rxjs/operators';
 import { Auth, authState } from '@angular/fire/auth';
 import {
   Firestore,
@@ -8,9 +8,12 @@ import {
   doc,
   setDoc,
   collectionData,
+  query,
+  where,
+  getDocs,
   Timestamp
 } from '@angular/fire/firestore';
-import { Entitlement, CreateEntitlementData } from '@core/models/entitlement.interface';
+import { Entitlement } from '@core/models/entitlement.interface';
 
 /**
  * Entitlements Repository
@@ -80,6 +83,11 @@ export class EntitlementsRepo {
   /**
    * Purchase a course (demo mode - creates entitlement directly)
    * In production, this would call a Cloud Function for payment processing
+   *
+   * Implementation:
+   * 1. Check if entitlement already exists (idempotent)
+   * 2. If not, create new entitlement document
+   * 3. Invalidate cache to refresh UI immediately
    */
   async purchaseDemoCourse(courseId: string, priceIls: number): Promise<void> {
     const user = this.auth.currentUser;
@@ -90,6 +98,27 @@ export class EntitlementsRepo {
     this.isLoading.set(true);
 
     try {
+      // Step 1: Check if entitlement already exists (idempotent check)
+      const entitlementsRef = collection(
+        this.firestore,
+        `users/${user.uid}/entitlements`
+      );
+
+      const q = query(
+        entitlementsRef,
+        where('type', '==', 'course'),
+        where('refId', '==', courseId)
+      );
+
+      const snapshot = await getDocs(q);
+
+      if (!snapshot.empty) {
+        // Entitlement already exists - skip creation
+        console.log('Entitlement already exists for course:', courseId);
+        return;
+      }
+
+      // Step 2: Create new entitlement document
       const entitlementId = `course_${courseId}_${Date.now()}`;
       const entitlementRef = doc(
         this.firestore,
@@ -106,10 +135,14 @@ export class EntitlementsRepo {
 
       await setDoc(entitlementRef, entitlementData);
 
-      console.log('Demo purchase successful:', courseId);
+      console.log('Demo entitlement created:', entitlementId);
+
+      // Step 3: Invalidate cache to force refresh
+      this.invalidateCache();
+
     } catch (err) {
       console.error('Purchase error:', err);
-      throw err;
+      throw new Error('שגיאה ברכישת הקורס');
     } finally {
       this.isLoading.set(false);
     }
