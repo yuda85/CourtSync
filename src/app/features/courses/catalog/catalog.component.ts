@@ -148,10 +148,11 @@ export class CatalogComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Sign in with Google */
+  /** Sign in with Google - stay on catalog page after sign-in */
   async onSignIn(): Promise<void> {
     try {
-      await this.authService.signInWithGoogle();
+      // Pass null to stay on current page instead of redirecting to dashboard
+      await this.authService.signInWithGoogle(null);
     } catch {
       // Error handled in AuthService
     }

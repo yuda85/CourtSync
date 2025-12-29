@@ -1,6 +1,6 @@
 <!-- Header (for public catalog page) -->
 @if (!isAuthenticated()) {
-  <app-header [showSignIn]="true" />
+  <app-header [showSignIn]="true" [stayOnPageAfterSignIn]="true" />
 }
 
 <div class="catalog" [class.catalog--with-header]="!isAuthenticated()">

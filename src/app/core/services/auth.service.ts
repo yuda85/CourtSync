@@ -24,8 +24,13 @@ export class AuthService {
   /** Error message from auth operations */
   readonly error = signal<string | null>(null);
 
-  /** Sign in with Google using popup */
-  async signInWithGoogle(): Promise<void> {
+  /**
+   * Sign in with Google using popup
+   * @param redirectUrl - Optional URL to navigate to after sign-in.
+   *                      If not provided, navigates to dashboard.
+   *                      If null, stays on current page (no navigation).
+   */
+  async signInWithGoogle(redirectUrl?: string | null): Promise<void> {
     this.isLoading.set(true);
     this.error.set(null);
 
@@ -46,10 +51,18 @@ export class AuthService {
           .then(() => console.log('Profile updated'))
           .catch(err => console.error('Profile update failed:', err));
 
-        // Navigate to dashboard immediately after sign-in
-        console.log('Navigating to dashboard...');
-        const navResult = await this.router.navigate(['/app/dashboard']);
-        console.log('Navigation result:', navResult);
+        // Navigate based on redirectUrl parameter
+        // - undefined: go to dashboard (default behavior for landing page)
+        // - null: stay on current page (no navigation)
+        // - string: navigate to specified URL
+        if (redirectUrl === null) {
+          console.log('Staying on current page after sign-in');
+        } else {
+          const targetUrl = redirectUrl ?? '/app/dashboard';
+          console.log('Navigating to:', targetUrl);
+          const navResult = await this.router.navigate([targetUrl]);
+          console.log('Navigation result:', navResult);
+        }
       }
     } catch (err) {
       console.error('Sign in error:', err);

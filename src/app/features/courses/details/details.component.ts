@@ -182,7 +182,8 @@ export class DetailsComponent implements OnInit, OnDestroy {
     if (!this.authService.isAuthenticated()) {
       this.isPurchasing.set(true);
       try {
-        await this.authService.signInWithGoogle();
+        // Pass null to stay on current page instead of redirecting to dashboard
+        await this.authService.signInWithGoogle(null);
         // After login, just stay on the page - user can click again to purchase
         // The page will re-render showing the purchase button instead of login
       } catch {

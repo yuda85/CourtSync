@@ -24,6 +24,9 @@ export class HeaderComponent {
   /** Force solid background (for pages with colored hero sections) */
   solidBackground = input(false);
 
+  /** Stay on current page after sign-in instead of redirecting to dashboard */
+  stayOnPageAfterSignIn = input(false);
+
   /** Current user */
   readonly user = this.authService.user;
 
@@ -51,7 +54,9 @@ export class HeaderComponent {
 
   async onSignIn(): Promise<void> {
     try {
-      await this.authService.signInWithGoogle();
+      // Pass null to stay on current page, or undefined to go to dashboard
+      const redirectUrl = this.stayOnPageAfterSignIn() ? null : undefined;
+      await this.authService.signInWithGoogle(redirectUrl);
     } catch {
       // Error is handled in AuthService
     }

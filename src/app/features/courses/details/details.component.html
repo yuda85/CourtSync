@@ -1,6 +1,6 @@
 <!-- Header (for public course details page) -->
 @if (!isAuthenticated()) {
-  <app-header [showSignIn]="true" [solidBackground]="true" />
+  <app-header [showSignIn]="true" [solidBackground]="true" [stayOnPageAfterSignIn]="true" />
 }
 
 <div class="details-page" [class.details-page--with-header]="!isAuthenticated()">
