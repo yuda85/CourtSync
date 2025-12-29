@@ -1,16 +1,12 @@
+/* Theme Tokens, Direction, and Overrides */
+@use './styles/theme-tokens';
+@use './styles/direction';
+@use './styles/tailwind-overrides';
+
 /* Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Theme Tokens */
-@import './styles/theme-tokens';
-
-/* Direction Enforcement */
-@import './styles/direction';
-
-/* Tailwind Overrides */
-@import './styles/tailwind-overrides';
 
 /* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&family=Heebo:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');

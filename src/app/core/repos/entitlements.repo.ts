@@ -161,4 +161,25 @@ export class EntitlementsRepo {
   getCached(): Entitlement[] {
     return this.entitlementsCache();
   }
+
+  /**
+   * Invalidate cache to force refresh of entitlements
+   * Call this after purchase to ensure UI updates immediately
+   */
+  invalidateCache(): void {
+    this.entitlementsCache.set([]);
+  }
+
+  /**
+   * Get list of purchased course IDs
+   */
+  getMyCourseIds$(): Observable<string[]> {
+    return this.myEntitlements$().pipe(
+      map(entitlements =>
+        entitlements
+          .filter(e => e.type === 'course')
+          .map(e => e.refId)
+      )
+    );
+  }
 }
