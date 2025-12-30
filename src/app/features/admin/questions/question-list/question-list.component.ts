@@ -7,7 +7,9 @@ import {
   AdminQuestion,
 } from '@core/repos/admin-questions.repo';
 import { AdminCoursesRepo, AdminCourse } from '@core/repos/admin-courses.repo';
+import { AdminLessonsRepo } from '@core/repos/admin-lessons.repo';
 import { QuestionDifficulty } from '@core/models/question.interface';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-question-list',
@@ -33,6 +35,18 @@ import { QuestionDifficulty } from '@core/models/question.interface';
           <span class="material-icons">add</span>
           שאלה חדשה
         </a>
+        <button
+          class="btn-secondary"
+          (click)="seedQuestions()"
+          [disabled]="isSeeding()"
+        >
+          <span class="material-icons">auto_awesome</span>
+          @if (isSeeding()) {
+            יוצר שאלות...
+          } @else {
+            צור שאלות לדוגמה
+          }
+        </button>
       </div>
     </div>
 
@@ -596,10 +610,12 @@ export class QuestionListComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly adminQuestionsRepo = inject(AdminQuestionsRepo);
   private readonly adminCoursesRepo = inject(AdminCoursesRepo);
+  private readonly adminLessonsRepo = inject(AdminLessonsRepo);
 
   readonly isLoading = signal(true);
   readonly isUpdating = signal(false);
   readonly isDeleting = signal(false);
+  readonly isSeeding = signal(false);
   readonly questions = signal<AdminQuestion[]>([]);
   readonly course = signal<AdminCourse | null>(null);
   readonly questionToDelete = signal<AdminQuestion | null>(null);
@@ -751,6 +767,37 @@ export class QuestionListComponent implements OnInit {
       console.error('Error deleting question:', err);
     } finally {
       this.isDeleting.set(false);
+    }
+  }
+
+  async seedQuestions(): Promise<void> {
+    this.isSeeding.set(true);
+    try {
+      // Get all quiz-type lessons for this course
+      const lessons = await firstValueFrom(
+        this.adminLessonsRepo.getLessonsForCourse$(this.courseId)
+      );
+      const quizLessonIds = lessons
+        .filter((l) => l.type === 'quiz')
+        .map((l) => l.id);
+
+      if (quizLessonIds.length === 0) {
+        alert('לא נמצאו שיעורי בחינה בקורס זה. צור שיעורי בחינה תחילה.');
+        return;
+      }
+
+      const count = await this.adminQuestionsRepo.seedSampleQuestions(
+        this.courseId,
+        quizLessonIds
+      );
+      alert(`נוצרו ${count} שאלות לדוגמה בהצלחה!`);
+      this.loadQuestions();
+      this.loadTopics();
+    } catch (err) {
+      console.error('Error seeding questions:', err);
+      alert('שגיאה ביצירת שאלות לדוגמה');
+    } finally {
+      this.isSeeding.set(false);
     }
   }
 }

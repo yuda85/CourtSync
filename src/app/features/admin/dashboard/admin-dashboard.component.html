@@ -95,6 +95,40 @@
     </div>
   </div>
 
+  <!-- Seed Data Section (Superadmin only) -->
+  @if (isSuperAdmin()) {
+    <div class="section">
+      <h2 class="section-title">נתוני דוגמה</h2>
+      <div class="seed-card">
+        <div class="seed-info">
+          <span class="material-icons seed-icon">auto_awesome</span>
+          <div class="seed-text">
+            <strong>יצירת שאלות לכל הקורסים</strong>
+            <p>יוצר 5 שאלות לדוגמה לכל בוחן בכל הקורסים</p>
+          </div>
+        </div>
+        <button
+          class="btn-seed"
+          (click)="seedAllQuestions()"
+          [disabled]="isSeedingQuestions()"
+        >
+          @if (isSeedingQuestions()) {
+            <span class="spinner-small"></span>
+            יוצר...
+          } @else {
+            <span class="material-icons">add_circle</span>
+            צור שאלות
+          }
+        </button>
+      </div>
+      @if (seedingStatus()) {
+        <div class="seed-status">
+          {{ seedingStatus() }}
+        </div>
+      }
+    </div>
+  }
+
   <!-- Info Section -->
   <div class="section">
     <h2 class="section-title">מידע על המערכת</h2>

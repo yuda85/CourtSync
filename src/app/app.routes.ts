@@ -53,6 +53,38 @@ export const routes: Routes = [
         loadComponent: () => import('@features/courses/lesson/lesson.component').then(m => m.LessonComponent),
         canActivate: [entitlementGuard]
       },
+      // Practice routes for lesson-specific practice
+      {
+        path: 'courses/:id/learn/:lessonId/practice',
+        loadComponent: () => import('@features/practice/practice-entry/practice-entry.component').then(m => m.PracticeEntryComponent),
+        canActivate: [entitlementGuard]
+      },
+      {
+        path: 'courses/:id/learn/:lessonId/practice/session',
+        loadComponent: () => import('@features/practice/practice-session/practice-session.component').then(m => m.PracticeSessionComponent),
+        canActivate: [entitlementGuard]
+      },
+      {
+        path: 'courses/:id/learn/:lessonId/practice/summary',
+        loadComponent: () => import('@features/practice/practice-summary/practice-summary.component').then(m => m.PracticeSummaryComponent),
+        canActivate: [entitlementGuard]
+      },
+      // Practice routes for course-wide practice
+      {
+        path: 'courses/:id/practice',
+        loadComponent: () => import('@features/practice/practice-entry/practice-entry.component').then(m => m.PracticeEntryComponent),
+        canActivate: [entitlementGuard]
+      },
+      {
+        path: 'courses/:id/practice/session',
+        loadComponent: () => import('@features/practice/practice-session/practice-session.component').then(m => m.PracticeSessionComponent),
+        canActivate: [entitlementGuard]
+      },
+      {
+        path: 'courses/:id/practice/summary',
+        loadComponent: () => import('@features/practice/practice-summary/practice-summary.component').then(m => m.PracticeSummaryComponent),
+        canActivate: [entitlementGuard]
+      },
       {
         path: 'library',
         loadComponent: () => import('@features/library/library.component').then(m => m.LibraryComponent)

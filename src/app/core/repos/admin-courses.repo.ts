@@ -217,10 +217,15 @@ export class AdminCoursesRepo {
       throw new Error('You do not have permission to edit this course');
     }
 
-    await updateDoc(courseRef, {
-      ...data,
-      updatedAt: serverTimestamp(),
-    });
+    // Filter out undefined values (Firestore doesn't accept undefined)
+    const updateData: Record<string, any> = { updatedAt: serverTimestamp() };
+    for (const [key, value] of Object.entries(data)) {
+      if (value !== undefined) {
+        updateData[key] = value;
+      }
+    }
+
+    await updateDoc(courseRef, updateData);
   }
 
   /**
@@ -337,5 +342,97 @@ export class AdminCoursesRepo {
       questionCount: 0,
       enrolledCount: 0,
     });
+  }
+
+  /**
+   * Seed sample courses (temporary - remove after use)
+   */
+  async seedSampleCourses(): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) {
+      throw new Error('Must be logged in to seed courses');
+    }
+
+    const profile = this.roleService.getProfile();
+    const creatorName = profile?.displayName || user.displayName || 'Admin';
+
+    const sampleCourses = [
+      {
+        title: 'דיני חוזים למתקדמים',
+        subject: 'דיני חוזים',
+        level: 'מתקדם',
+        shortDescription: 'העמקה בסוגיות מורכבות בדיני חוזים - חוזים אחידים, פרשנות וסעדים',
+        longDescription: `קורס מתקדם בדיני חוזים המיועד לסטודנטים שסיימו את הקורס הבסיסי.
+
+נושאי הקורס:
+• חוזים אחידים וחוק החוזים האחידים
+• תניות פטור ותניות הגבלת אחריות
+• פרשנות חוזים - גישות ושיטות
+• השלמת חוזה וחוזה למראית עין
+• סעדים מיוחדים - צווי מניעה ואכיפה
+• חוזים לטובת צד שלישי
+
+כולל ניתוח מעמיק של פסקי דין מרכזיים.`,
+        priceIls: 199,
+        durationMinutes: 600,
+        isPublished: true,
+        isFeatured: true,
+        featuredOrder: 2,
+      },
+      {
+        title: 'דיני ראיות',
+        subject: 'דיני עונשין',
+        level: 'בינוני',
+        shortDescription: 'כללי הקבילות, נטל ההוכחה ואמצעי הראיה במשפט הישראלי',
+        longDescription: `קורס מקיף בדיני ראיות המכין לבחינות הלשכה והאוניברסיטה.
+
+תוכן הקורס:
+• עקרונות יסוד בדיני ראיות
+• קבילות ומשקל ראיות
+• נטל ההוכחה ונטל הבאת הראיות
+• עדות ישירה ועדות נסיבתית
+• חסיונות - עורך דין-לקוח, רופא-מטופל
+• הודאות נאשם
+
+דגש על יישום מעשי בבתי המשפט.`,
+        priceIls: 179,
+        durationMinutes: 480,
+        isPublished: true,
+        isFeatured: true,
+        featuredOrder: 3,
+      },
+      {
+        title: 'סדר דין אזרחי',
+        subject: 'משפט חוקתי',
+        level: 'בינוני',
+        shortDescription: 'הליכי המשפט האזרחי מהגשת התביעה ועד פסק הדין',
+        longDescription: `קורס מקיף בסדר דין אזרחי - חובה לכל סטודנט למשפטים.
+
+נושאים מרכזיים:
+• סמכות בתי המשפט - עניינית ומקומית
+• כתבי טענות - תביעה, הגנה, תשובה
+• הליכים מקדמיים וגילוי מסמכים
+• הוכחות והבאת ראיות
+• סיכומים ופסק דין
+• ערעור וערעור ברשות
+
+כולל תרגול מעשי של כתיבת כתבי בי-דין.`,
+        priceIls: 169,
+        durationMinutes: 540,
+        isPublished: true,
+        isFeatured: true,
+        featuredOrder: 4,
+      }
+    ];
+
+    for (const course of sampleCourses) {
+      await addDoc(this.coursesCollection, {
+        ...course,
+        creatorUid: user.uid,
+        creatorName,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    }
   }
 }

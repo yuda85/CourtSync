@@ -1,110 +1,169 @@
-<div class="lesson-page">
+<!-- Lesson Page Shell -->
+<div class="lesson-shell">
   @if (isLoading()) {
     <div class="lesson-page__loading">
       <div class="loading-spinner"></div>
       <p>טוען שיעור...</p>
     </div>
   } @else if (lesson()) {
-    <!-- Top Bar -->
-    <div class="lesson-page__topbar">
-      <button class="topbar__back" (click)="onBackToCourse()">
-        <span class="material-icons-outlined">arrow_forward</span>
-        חזרה לקורס
-      </button>
+    <!-- Content Row: Main + Sidebar -->
+    <div class="lesson-content-row">
+      <!-- Main Content Area -->
+      <main class="lesson-main">
+        <!-- Top Bar -->
+        <div class="lesson-page__topbar">
+          <div class="topbar__start">
+            <button class="topbar__back" (click)="onBackToCourse()">
+              <span class="material-icons-outlined">arrow_forward</span>
+              חזרה לקורס
+            </button>
 
-      <div class="topbar__position">
-        שיעור {{ position().current }} מתוך {{ position().total }}
-      </div>
+            <!-- Mobile sidebar toggle -->
+            <button
+              class="topbar__menu-toggle"
+              (click)="toggleSidebar()"
+              aria-label="פתח תפריט"
+            >
+              <span class="material-icons">menu</span>
+            </button>
+          </div>
 
-      <div class="topbar__status">
-        @if (isCompleted()) {
-          <span class="status-badge status-badge--completed">
-            <span class="material-icons">check</span>
-            הושלם
-          </span>
-        }
-      </div>
-    </div>
+          <div class="topbar__position">
+            שיעור {{ position().current }} מתוך {{ position().total }}
+          </div>
 
-    <!-- Main Content -->
-    <div class="lesson-page__content">
-      <h1 class="lesson-page__title">{{ lesson()!.title }}</h1>
+          <div class="topbar__end">
+            <!-- Flag button -->
+            <button
+              class="topbar__flag"
+              [class.topbar__flag--active]="isFlagged()"
+              (click)="onToggleFlag()"
+              [attr.aria-label]="isFlagged() ? 'הסר מרשימת חזרה' : 'סמן לחזרה'"
+              [title]="isFlagged() ? 'מסומן לחזרה' : 'סמן לחזרה'"
+            >
+              <span class="material-icons">{{ isFlagged() ? 'bookmark' : 'bookmark_border' }}</span>
+            </button>
 
-      @if (lesson()!.description) {
-        <p class="lesson-page__description">{{ lesson()!.description }}</p>
-      }
-
-      <!-- Video Content -->
-      @if (lesson()!.type === 'video' && videoEmbedUrl()) {
-        <div class="lesson-page__video">
-          @if (isYouTube()) {
-            <iframe
-              [src]="videoEmbedUrl()"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          } @else {
-            <video controls [src]="lesson()!.videoUrl">
-              הדפדפן שלך לא תומך בנגן וידאו
-            </video>
-          }
-        </div>
-      }
-
-      <!-- Text Content -->
-      @if (lesson()!.type === 'text' && lesson()!.content) {
-        <div class="lesson-page__text">
-          {{ lesson()!.content }}
-        </div>
-      }
-
-      <!-- Quiz / Practice Section -->
-      @if (lesson()!.type === 'quiz') {
-        <div class="lesson-page__practice-section">
-          <div class="practice-card">
-            <div class="practice-card__icon">
-              <span class="material-icons">quiz</span>
-            </div>
-            <div class="practice-card__content">
-              <h3>בדוק את הידע שלך</h3>
-              <p>תרגל את החומר שלמדת עם שאלות אמריקאיות ובדוק את ההבנה שלך לפני המבחן.</p>
-              <div class="practice-card__features">
-                <span class="feature-item">
-                  <span class="material-icons-outlined">shuffle</span>
-                  שאלות אקראיות
-                </span>
-                <span class="feature-item">
-                  <span class="material-icons-outlined">lightbulb</span>
-                  הסברים מפורטים
-                </span>
-                <span class="feature-item">
-                  <span class="material-icons-outlined">trending_up</span>
-                  מעקב התקדמות
-                </span>
-              </div>
-            </div>
-            <div class="practice-card__action">
-              <app-button variant="primary" size="lg" (buttonClick)="onStartPractice()">
-                <span class="material-icons" style="font-size: 20px; margin-left: 8px;">play_arrow</span>
-                התחל תרגול
-              </app-button>
-            </div>
+            <!-- Completion badge -->
+            @if (isCompleted()) {
+              <span class="status-badge status-badge--completed">
+                <span class="material-icons">check</span>
+                הושלם
+              </span>
+            }
           </div>
         </div>
-      }
 
-      <!-- No Content -->
-      @if (!lesson()!.videoUrl && !lesson()!.content && lesson()!.type !== 'quiz') {
-        <div class="lesson-page__no-content">
-          <span class="material-icons-outlined placeholder-icon">description</span>
-          <h3>תוכן בהכנה</h3>
-          <p>התוכן לשיעור זה יהיה זמין בקרוב</p>
+        <!-- Lesson Content -->
+        <div class="lesson-page__content">
+          <h1 class="lesson-page__title">{{ lesson()!.title }}</h1>
+
+          @if (lesson()!.description) {
+            <p class="lesson-page__description">{{ lesson()!.description }}</p>
+          }
+
+          <!-- Video Content -->
+          @if (lesson()!.type === 'video' && lesson()!.videoUrl) {
+            <app-video-player
+              [videoUrl]="lesson()!.videoUrl!"
+              [savedProgress]="videoProgress()"
+              [courseId]="getCourseId()"
+              [lessonId]="getLessonId()"
+              (timeUpdate)="onVideoTimeUpdate($event)"
+              (bookmarkRequest)="onBookmarkRequest($event)"
+            />
+
+            <!-- Bookmarks (for video lessons) -->
+            <div class="lesson-extras">
+              <app-bookmarks-list
+                [lessonId]="getLessonId()"
+                [courseId]="getCourseId()"
+                [currentTime]="currentVideoTime()"
+                (seek)="onTimestampClick($event)"
+              />
+            </div>
+          }
+
+          <!-- Text Content -->
+          @if (lesson()!.type === 'text' && lesson()!.content) {
+            <div class="lesson-page__text">
+              {{ lesson()!.content }}
+            </div>
+          }
+
+          <!-- Quiz / Practice Section -->
+          @if (lesson()!.type === 'quiz') {
+            <div class="lesson-page__practice-section">
+              <div class="practice-card">
+                <div class="practice-card__icon">
+                  <span class="material-icons">quiz</span>
+                </div>
+                <div class="practice-card__content">
+                  <h3>בדוק את הידע שלך</h3>
+                  <p>תרגל את החומר שלמדת עם שאלות אמריקאיות ובדוק את ההבנה שלך לפני המבחן.</p>
+                  <div class="practice-card__features">
+                    <span class="feature-item">
+                      <span class="material-icons-outlined">shuffle</span>
+                      שאלות אקראיות
+                    </span>
+                    <span class="feature-item">
+                      <span class="material-icons-outlined">lightbulb</span>
+                      הסברים מפורטים
+                    </span>
+                    <span class="feature-item">
+                      <span class="material-icons-outlined">trending_up</span>
+                      מעקב התקדמות
+                    </span>
+                  </div>
+                </div>
+                <div class="practice-card__action">
+                  <app-button variant="primary" size="lg" (buttonClick)="onStartPractice()">
+                    <span class="material-icons" style="font-size: 20px; margin-left: 8px;">play_arrow</span>
+                    התחל תרגול
+                  </app-button>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- No Content Placeholder -->
+          @if (!lesson()!.videoUrl && !lesson()!.content && lesson()!.type !== 'quiz') {
+            <div class="lesson-page__no-content">
+              <span class="material-icons-outlined placeholder-icon">description</span>
+              <h3>תוכן בהכנה</h3>
+              <p>התוכן לשיעור זה יהיה זמין בקרוב</p>
+            </div>
+          }
+
+          <!-- Notes Panel -->
+          <div class="lesson-extras">
+            <app-notes-panel
+              [courseId]="getCourseId()"
+              [lessonId]="getLessonId()"
+              [currentVideoTime]="currentVideoTime()"
+              [isVideoLesson]="isVideoLesson()"
+              [isExpanded]="notesExpanded()"
+              (timestampClick)="onTimestampClick($event)"
+              (expandedChange)="notesExpanded.set($event)"
+            />
+          </div>
         </div>
-      }
+      </main>
+
+      <!-- Sidebar (Desktop: always visible, Mobile: toggle) -->
+      <app-lesson-sidebar
+        [sections]="sections()"
+        [currentLessonId]="getLessonId()"
+        [completedLessons]="completedLessons()"
+        [flaggedLessons]="flaggedLessons()"
+        [isOpen]="sidebarOpen()"
+        [courseTitle]="courseTitle()"
+        (lessonSelect)="onLessonSelect($event)"
+        (close)="closeSidebar()"
+      />
     </div>
 
-    <!-- Bottom Actions -->
+    <!-- Bottom Actions (Full Width) -->
     <div class="lesson-page__actions">
       <div class="actions__nav">
         <button

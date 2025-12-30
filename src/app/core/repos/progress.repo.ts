@@ -13,7 +13,7 @@ import {
   serverTimestamp,
   Timestamp
 } from '@angular/fire/firestore';
-import { CourseProgress } from '@core/models/progress.interface';
+import { CourseProgress, VideoProgress } from '@core/models/progress.interface';
 
 /**
  * Progress Repository
@@ -184,6 +184,71 @@ export class ProgressRepo {
   isLessonCompleted$(courseId: string, lessonId: string): Observable<boolean> {
     return this.getCourseProgress$(courseId).pipe(
       map(progress => progress?.completedLessons?.includes(lessonId) ?? false)
+    );
+  }
+
+  /**
+   * Save video playback progress for a lesson
+   */
+  async saveVideoProgress(
+    courseId: string,
+    lessonId: string,
+    progress: Omit<VideoProgress, 'lastUpdated'>
+  ): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) return;
+
+    const progressRef = this.getProgressRef(user.uid, courseId);
+    await setDoc(progressRef, {
+      [`videoProgress.${lessonId}`]: {
+        ...progress,
+        lastUpdated: serverTimestamp()
+      },
+      lastAccessedAt: serverTimestamp()
+    }, { merge: true });
+  }
+
+  /**
+   * Get video progress for a specific lesson
+   */
+  getVideoProgress$(courseId: string, lessonId: string): Observable<VideoProgress | null> {
+    return this.getCourseProgress$(courseId).pipe(
+      map(progress => progress?.videoProgress?.[lessonId] ?? null)
+    );
+  }
+
+  /**
+   * Toggle lesson flag (mark for review)
+   */
+  async toggleLessonFlag(courseId: string, lessonId: string): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) return;
+
+    const progressRef = this.getProgressRef(user.uid, courseId);
+    const snap = await getDoc(progressRef);
+    const data = snap.data() as CourseProgress | undefined;
+
+    const flaggedLessons = data?.flaggedLessons || [];
+    const index = flaggedLessons.indexOf(lessonId);
+
+    if (index === -1) {
+      flaggedLessons.push(lessonId);
+    } else {
+      flaggedLessons.splice(index, 1);
+    }
+
+    await setDoc(progressRef, {
+      flaggedLessons,
+      lastAccessedAt: serverTimestamp()
+    }, { merge: true });
+  }
+
+  /**
+   * Check if a lesson is flagged
+   */
+  isLessonFlagged$(courseId: string, lessonId: string): Observable<boolean> {
+    return this.getCourseProgress$(courseId).pipe(
+      map(progress => progress?.flaggedLessons?.includes(lessonId) ?? false)
     );
   }
 }

@@ -1,0 +1,445 @@
+// Enhanced Video Player Styles
+// Clean, minimal controls with focus on content
+
+$controls-height: 48px;
+$transition-speed: 200ms;
+
+.video-player {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+
+  // Focus outline for accessibility
+  &:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+}
+
+// YouTube iframe container
+.video-player__youtube {
+  position: absolute;
+  inset: 0;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// HTML5 video element
+.video-player__video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+// Controls overlay
+.video-player__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.3) 30%,
+    transparent 60%
+  );
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity $transition-speed ease,
+    visibility $transition-speed ease;
+  pointer-events: none;
+
+  &--visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+// Big play button
+.video-player__big-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all $transition-speed ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+  .material-icons {
+    font-size: 36px;
+    color: #1a1a1a;
+    margin-right: -2px; // Optical centering for play icon
+  }
+
+  &:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.35);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  &:active {
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+}
+
+// Controls container
+.video-player__controls {
+  padding: 0 16px 12px;
+}
+
+// Progress bar
+.progress-bar {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 4px;
+
+  &:hover {
+    .progress-bar__track {
+      height: 6px;
+    }
+
+    .progress-bar__handle {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+.progress-bar__track {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  transition: height 150ms ease;
+}
+
+.progress-bar__fill {
+  position: absolute;
+  top: 0;
+  right: 0; // RTL
+  height: 100%;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: width 100ms linear;
+}
+
+.progress-bar__handle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) scale(0);
+  width: 14px;
+  height: 14px;
+  background: var(--primary);
+  border: 2px solid white;
+  border-radius: 50%;
+  opacity: 0;
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+// Controls row
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  &__start,
+  &__end {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+// Control button
+.control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+
+  .material-icons,
+  .material-icons-outlined {
+    font-size: 22px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+
+  &--active {
+    color: var(--primary);
+  }
+}
+
+// Time display
+.time-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: white;
+  font-variant-numeric: tabular-nums;
+  margin-inline-start: 8px;
+
+  &__separator {
+    opacity: 0.6;
+  }
+
+  &__duration {
+    opacity: 0.8;
+  }
+}
+
+// Speed control
+.speed-control {
+  position: relative;
+
+  &__trigger {
+    width: auto;
+    padding: 0 10px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  &__label {
+    min-width: 28px;
+    text-align: center;
+  }
+
+  &__menu {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    background: rgba(28, 28, 28, 0.95);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    animation: fadeIn 150ms ease;
+  }
+
+  &__option {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 150ms ease;
+    white-space: nowrap;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &--active {
+      color: var(--primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+}
+
+// Keyboard shortcuts hints
+.video-player__hints {
+  position: absolute;
+  bottom: $controls-height + 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 200ms ease,
+    visibility 200ms ease;
+  pointer-events: none;
+
+  .video-player:focus-within & {
+    opacity: 1;
+    visibility: visible;
+    animation: fadeInUp 300ms ease;
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  kbd {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 0.625rem;
+    font-family: inherit;
+    font-weight: 600;
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+// Fullscreen adjustments
+:fullscreen {
+  .video-player {
+    border-radius: 0;
+  }
+
+  .video-player__big-play {
+    width: 96px;
+    height: 96px;
+
+    .material-icons {
+      font-size: 48px;
+    }
+  }
+
+  .control-btn {
+    width: 44px;
+    height: 44px;
+
+    .material-icons,
+    .material-icons-outlined {
+      font-size: 26px;
+    }
+  }
+
+  .time-display {
+    font-size: 0.9375rem;
+  }
+}
+
+// Mobile adjustments
+@media (max-width: 640px) {
+  .video-player__big-play {
+    width: 56px;
+    height: 56px;
+
+    .material-icons {
+      font-size: 28px;
+    }
+  }
+
+  .video-player__controls {
+    padding: 0 12px 8px;
+  }
+
+  .control-btn {
+    width: 32px;
+    height: 32px;
+
+    .material-icons,
+    .material-icons-outlined {
+      font-size: 20px;
+    }
+  }
+
+  .time-display {
+    font-size: 0.75rem;
+    margin-inline-start: 4px;
+  }
+
+  .video-player__hints {
+    display: none;
+  }
+
+  // Hide some controls on mobile
+  .controls-row__end {
+    .control-btn:has(.material-icons-outlined[class*="picture"]) {
+      display: none;
+    }
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .video-player__overlay,
+  .video-player__big-play,
+  .progress-bar__track,
+  .progress-bar__handle,
+  .speed-control__menu,
+  .video-player__hints {
+    transition: none;
+    animation: none;
+  }
+}

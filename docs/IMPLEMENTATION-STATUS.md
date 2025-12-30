@@ -295,7 +295,7 @@ CourtSync is an exam-focused online learning platform for law students. It helps
 1. Exam Simulation Engine
 
 ### 📋 Planned Admin Phases
-1. Phase 6: Firestore Catalog Integration
+1. ~~Phase 6: Firestore Catalog Integration~~ ✅ Complete
 2. Phase 7: Cleanup
 
 ---
@@ -388,13 +388,19 @@ The admin system provides content management capabilities for authorized users (
 - `src/app/core/repos/users.repo.ts`
 - `src/app/core/repos/invites.repo.ts`
 
-### Phase 6: Firestore Catalog Integration (Planned)
+### Phase 6: Firestore Catalog Integration ✅
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Update courses.repo.ts | ❌ | Fetch from Firestore instead of mock data |
-| Catalog shows Firestore courses | ❌ | Published courses appear in catalog |
-| Maintain sample data fallback | ❌ | For development |
+| Update courses.repo.ts | ✅ | Fetches from Firestore with fallback to sample data |
+| Catalog shows Firestore courses | ✅ | Published courses appear in catalog |
+| Featured courses on landing | ✅ | isFeatured + featuredOrder support |
+| Toggle featured from admin | ✅ | Superadmin can feature/unfeature courses |
+| Sample data fallback | ✅ | Falls back to SAMPLE_COURSES on errors |
+| Seed sample courses | ✅ | Button in admin course list |
+| Seed sample lessons | ✅ | Button in admin lesson list (5 videos, 4 quizzes, 1 final exam) |
+| Seed sample questions | ✅ | Button in admin question list (5 questions per quiz) |
+| Practice routes | ✅ | All 6 practice routes added to app.routes.ts |
 
 ### Phase 7: Cleanup (Planned)
 
@@ -418,7 +424,7 @@ These features are documented but not planned for current development:
 
 ## Next Steps (Recommended Priority)
 
-1. **Phase 6: Firestore Catalog Integration** - Update `courses.repo.ts` to fetch published courses from Firestore instead of mock data
+1. ~~**Phase 6: Firestore Catalog Integration**~~ ✅ Complete
 2. **Phase 7: Cleanup** - Remove hardcoded superadmin email, use Firestore roles only
 3. **Complete Learning Experience** - Video playback, lesson completion
 4. **Complete Progress Tracking** - Resume functionality, completion detection
@@ -432,11 +438,15 @@ These features are documented but not planned for current development:
 
 ### What Was Completed Today
 
-**Phase 4: Lesson & Question Management** - All components fully functional:
-- `lesson-list.component.ts` - Shows lessons for a course with stats, duplicate/delete
-- `lesson-editor.component.ts` - Create/edit with video/text/quiz type support
-- `question-list.component.ts` - Filter by difficulty/topic/status, publish/unpublish
-- `question-editor.component.ts` - Full editor with live preview, Hebrew letters (א,ב,ג,ד)
+**Phase 6: Firestore Catalog Integration** - Complete:
+- `courses.repo.ts` - Now fetches from Firestore with fallback to sample data
+- `admin-courses.repo.ts` - Fixed undefined values bug in updateCourse
+- Featured courses toggle - Superadmins can star/unstar courses from admin list
+- Practice routes - Added all 6 missing practice routes to app.routes.ts
+- Seed functionality:
+  - `seedSampleCourses()` - Creates 3 sample law courses
+  - `seedSampleLessons()` - Creates 10 lessons per course (5 videos, 4 quizzes, 1 final exam)
+  - `seedSampleQuestions()` - Creates 5 questions per quiz lesson (Hebrew law questions)
 
 ### Current State
 
@@ -444,22 +454,33 @@ These features are documented but not planned for current development:
 - All builds passing (no errors)
 - Superadmin access: Login with `yuda8855@gmail.com` to access `/admin`
 - Firestore collections in use: `users`, `courses`, `lessons`, `questions`, `invites`
+- Courses now load from Firestore and appear in catalog/landing page
 
 ### To Continue Development
 
 1. **Start dev server:** `npm start` (runs on port 4300)
 2. **Access admin:** Sign in with superadmin email, click "ניהול" in header
-3. **Next task:** Phase 6 - Update `src/app/core/repos/courses.repo.ts` to fetch from Firestore
+3. **To seed data:**
+   - Go to Admin > Courses > Click "צור קורסים לדוגמה"
+   - Then for each course: Lessons > Click "צור שיעורים לדוגמה"
+   - Then for each course: Questions > Click "צור שאלות לדוגמה"
+4. **Next task:** Phase 7 - Cleanup (remove hardcoded superadmin, polish UI)
 
-### Key Files for Phase 6
+### Key Files Modified in Phase 6
 
 ```
-src/app/core/repos/courses.repo.ts          # Currently uses mock data from sample-courses
-src/app/core/data/sample-courses.ts         # Mock data (keep as fallback)
-src/app/features/courses/catalog/           # Catalog page that needs Firestore courses
+src/app/core/repos/courses.repo.ts          # Firestore integration with fallback
+src/app/core/repos/admin-courses.repo.ts    # Fixed undefined bug + seed courses
+src/app/core/repos/admin-lessons.repo.ts    # Seed lessons functionality
+src/app/core/repos/admin-questions.repo.ts  # Seed questions functionality
+src/app/app.routes.ts                       # Added 6 practice routes
+src/app/features/admin/courses/course-list/ # Featured toggle + seed button
+src/app/features/admin/lessons/lesson-list/ # Seed lessons button
+src/app/features/admin/questions/question-list/ # Seed questions button
 ```
 
-### Known Issues
+### Resolved Issues
 
-- New courses created in admin don't appear in catalog (because catalog reads mock data)
-- This is exactly what Phase 6 will fix
+- Courses created in admin now appear in catalog (Firestore integration)
+- Practice/exam routes now work (were missing, redirected to profile)
+- Course update no longer fails with undefined values

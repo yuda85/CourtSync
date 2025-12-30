@@ -423,4 +423,211 @@ export class AdminQuestionsRepo {
       })
     );
   }
+
+  /**
+   * Seed sample questions for a course (for testing purposes)
+   * Creates 5 questions per quiz lesson
+   */
+  async seedSampleQuestions(courseId: string, quizLessonIds: string[]): Promise<number> {
+    const sampleQuestions: Array<{
+      subject: string;
+      topic: string;
+      difficulty: QuestionDifficulty;
+      questionText: string;
+      options: { text: string }[];
+      correctOptionIndex: number;
+      explanation: string;
+    }> = [
+      // Easy questions
+      {
+        subject: 'דיני חוזים',
+        topic: 'יסודות החוזה',
+        difficulty: 'קל',
+        questionText: 'מהם היסודות הבסיסיים להיווצרות חוזה מחייב?',
+        options: [
+          { text: 'הצעה, קיבול וגמירות דעת' },
+          { text: 'חתימה ועדים בלבד' },
+          { text: 'תשלום מקדמה' },
+          { text: 'אישור בית משפט' },
+        ],
+        correctOptionIndex: 0,
+        explanation: 'לפי סעיף 1 לחוק החוזים, חוזה נכרת בהצעה וקיבול, כאשר נדרשת גמירות דעת של שני הצדדים.',
+      },
+      {
+        subject: 'דיני חוזים',
+        topic: 'יסודות החוזה',
+        difficulty: 'קל',
+        questionText: 'מהי "הצעה" במשפט החוזים?',
+        options: [
+          { text: 'פנייה לניהול משא ומתן' },
+          { text: 'הבעת רצון להתקשר בחוזה המופנית לצד מסוים' },
+          { text: 'שאלה לגבי תנאי העסקה' },
+          { text: 'בקשה לקבלת מידע' },
+        ],
+        correctOptionIndex: 1,
+        explanation: 'הצעה היא פנייה לאדם או לציבור, שיש בה הבעת רצון להתקשר בחוזה עם הניצע.',
+      },
+      {
+        subject: 'דיני חוזים',
+        topic: 'הפרת חוזה',
+        difficulty: 'קל',
+        questionText: 'מהו הסעד העיקרי בגין הפרת חוזה?',
+        options: [
+          { text: 'מאסר' },
+          { text: 'פיצויים' },
+          { text: 'התנצלות פומבית' },
+          { text: 'קנס מנהלי' },
+        ],
+        correctOptionIndex: 1,
+        explanation: 'הסעד העיקרי בגין הפרת חוזה הוא פיצויים, שנועדו להעמיד את הנפגע במצב בו היה אלמלא ההפרה.',
+      },
+      // Medium questions
+      {
+        subject: 'דיני חוזים',
+        topic: 'פגמים בכריתה',
+        difficulty: 'בינוני',
+        questionText: 'מה ההבדל בין טעות לבין הטעיה בדיני חוזים?',
+        options: [
+          { text: 'אין הבדל, שני המונחים זהים' },
+          { text: 'טעות היא פנימית, הטעיה נגרמת על ידי הצד השני' },
+          { text: 'הטעיה היא חמורה יותר ומחייבת פיצוי כפול' },
+          { text: 'טעות מבטלת חוזה אוטומטית, הטעיה לא' },
+        ],
+        correctOptionIndex: 1,
+        explanation: 'טעות היא מצג שווא שהצד יצר לעצמו, בעוד הטעיה נגרמת על ידי מעשה או מחדל של הצד השני.',
+      },
+      {
+        subject: 'דיני חוזים',
+        topic: 'פגמים בכריתה',
+        difficulty: 'בינוני',
+        questionText: 'מהי עושק לפי חוק החוזים?',
+        options: [
+          { text: 'כל עסקה שאינה הוגנת' },
+          { text: 'ניצול מצוקה, חולשה או חוסר ניסיון לקבלת תנאים בלתי סבירים' },
+          { text: 'גביית ריבית גבוהה' },
+          { text: 'אי מתן הנחה' },
+        ],
+        correctOptionIndex: 1,
+        explanation: 'עושק מוגדר בסעיף 18 לחוק החוזים כניצול מצוקה, חולשה שכלית או גופנית, או חוסר ניסיון של הצד השני.',
+      },
+      {
+        subject: 'דיני חוזים',
+        topic: 'סעדים',
+        difficulty: 'בינוני',
+        questionText: 'מהו פיצוי מוסכם בחוזה?',
+        options: [
+          { text: 'פיצוי שקבע בית המשפט' },
+          { text: 'סכום שהצדדים קבעו מראש לתשלום במקרה של הפרה' },
+          { text: 'פיצוי על נזק נפשי בלבד' },
+          { text: 'פיצוי שניתן רק בחוזי עבודה' },
+        ],
+        correctOptionIndex: 1,
+        explanation: 'פיצוי מוסכם הוא סכום שהצדדים קובעים מראש בחוזה כפיצוי במקרה של הפרה, ללא צורך בהוכחת נזק.',
+      },
+      // Hard questions
+      {
+        subject: 'דיני חוזים',
+        topic: 'חוזים אחידים',
+        difficulty: 'קשה',
+        questionText: 'מהי סמכות בית הדין לחוזים אחידים?',
+        options: [
+          { text: 'לבטל כל חוזה אחיד' },
+          { text: 'לבטל או לשנות תנאים מקפחים בחוזים אחידים' },
+          { text: 'לקבוע מחירים בחוזים' },
+          { text: 'לחייב צדדים לחתום על חוזים' },
+        ],
+        correctOptionIndex: 1,
+        explanation: 'בית הדין לחוזים אחידים מוסמך לבטל או לשנות תנאים מקפחים בחוזים אחידים לפי חוק החוזים האחידים.',
+      },
+      {
+        subject: 'דיני חוזים',
+        topic: 'פרשנות חוזה',
+        difficulty: 'קשה',
+        questionText: 'לפי הלכת אפרופים, כיצד יש לפרש חוזה?',
+        options: [
+          { text: 'לפי לשון החוזה בלבד' },
+          { text: 'לפי כוונת הצדדים בלבד' },
+          { text: 'לפי אומד דעת הצדדים כפי שהיא משתקפת מלשון החוזה ומנסיבות חיצוניות' },
+          { text: 'לפי פרשנות בית המשפט בלבד' },
+        ],
+        correctOptionIndex: 2,
+        explanation: 'הלכת אפרופים קובעת שיש לפרש חוזה לפי אומד דעת הצדדים, תוך שילוב הלשון עם הנסיבות החיצוניות.',
+      },
+      {
+        subject: 'דיני חוזים',
+        topic: 'סיכול',
+        difficulty: 'קשה',
+        questionText: 'מהם התנאים לטענת סיכול לפי סעיף 18 לחוק התרופות?',
+        options: [
+          { text: 'קושי בביצוע החוזה' },
+          { text: 'נסיבות שלא ניתן היה לצפותן מראש ושאינן בשליטת המפר' },
+          { text: 'שינוי במחירי השוק' },
+          { text: 'חוסר רצון לקיים את החוזה' },
+        ],
+        correctOptionIndex: 1,
+        explanation: 'סיכול דורש נסיבות בלתי צפויות שאינן בשליטת המפר ושלא ניתן היה לצפותן בעת כריתת החוזה.',
+      },
+      {
+        subject: 'דיני חוזים',
+        topic: 'תום לב',
+        difficulty: 'קשה',
+        questionText: 'מהו היקף חובת תום הלב במשא ומתן לכריתת חוזה?',
+        options: [
+          { text: 'חלה רק על המוכר' },
+          { text: 'חלה על שני הצדדים לאורך כל שלבי המשא ומתן' },
+          { text: 'חלה רק לאחר חתימת החוזה' },
+          { text: 'אינה מחייבת במשא ומתן' },
+        ],
+        correctOptionIndex: 1,
+        explanation: 'חובת תום הלב לפי סעיף 12 לחוק החוזים חלה על שני הצדדים בכל שלבי המשא ומתן לכריתת חוזה.',
+      },
+    ];
+
+    let createdCount = 0;
+
+    for (const lessonId of quizLessonIds) {
+      // Create 5 questions for each quiz lesson
+      const questionsForLesson = sampleQuestions.slice(0, 5);
+
+      for (let i = 0; i < questionsForLesson.length; i++) {
+        const q = questionsForLesson[i];
+        try {
+          const options: AnswerOption[] = q.options.map((opt) => ({
+            id: this.generateOptionId(),
+            text: opt.text,
+          }));
+
+          const correctOptionId = options[q.correctOptionIndex]?.id;
+
+          const questionData = {
+            courseId,
+            subject: q.subject,
+            topic: q.topic,
+            difficulty: q.difficulty,
+            questionText: q.questionText,
+            options,
+            correctOptionId,
+            explanation: q.explanation,
+            relatedLessonId: lessonId,
+            isPublished: true,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          };
+
+          await addDoc(this.questionsCollection, questionData);
+          createdCount++;
+        } catch (err) {
+          console.error('Error creating sample question:', err);
+        }
+      }
+
+      // Rotate questions for variety
+      const firstQ = sampleQuestions.shift();
+      if (firstQ) {
+        sampleQuestions.push(firstQ);
+      }
+    }
+
+    return createdCount;
+  }
 }

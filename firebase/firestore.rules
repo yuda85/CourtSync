@@ -159,6 +159,31 @@ service cloud.firestore {
 
         allow update, delete: if false;
       }
+
+      // Notes subcollection
+      match /notes/{noteId} {
+        allow read: if isOwner(userId);
+
+        allow create: if isOwner(userId)
+          && request.resource.data.keys().hasAll(['courseId', 'content', 'userId', 'createdAt', 'updatedAt']);
+
+        allow update: if isOwner(userId)
+          && request.resource.data.userId == userId;
+
+        allow delete: if isOwner(userId);
+      }
+
+      // Bookmarks subcollection
+      match /bookmarks/{bookmarkId} {
+        allow read: if isOwner(userId);
+
+        allow create: if isOwner(userId)
+          && request.resource.data.keys().hasAll(['lessonId', 'courseId', 'timestamp', 'createdAt']);
+
+        allow update: if isOwner(userId);
+
+        allow delete: if isOwner(userId);
+      }
     }
 
     // ============ ADMIN INVITES ============

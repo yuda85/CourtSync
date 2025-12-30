@@ -1,319 +1,480 @@
-.lesson-page {
-  @apply min-h-[calc(100vh-4rem)];
-  @apply flex flex-col;
-  font-family: 'Heebo', 'Inter', sans-serif;
+// Lesson Page Styles
+// Shell layout with sidebar + main content
+
+// Shell - column container for content row + actions
+.lesson-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 4rem);
   background: var(--color-bg-primary);
-  // Prevent scroll issues with embedded videos
+  font-family: 'Heebo', 'Inter', sans-serif;
+}
+
+// Content row - flexbox for main + sidebar
+.lesson-content-row {
+  display: flex;
+  align-items: flex-start; // Required for sticky positioning
+  flex: 1;
+}
+
+// Main content area - takes remaining space
+.lesson-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; // Prevent flex overflow
   overflow-x: hidden;
 }
 
 // Loading
 .lesson-page__loading {
   @apply flex flex-col items-center justify-center gap-4;
-  @apply flex-1;
-  @apply text-slate-500;
-}
-
-:host-context([data-theme="dark"]) .lesson-page__loading {
-  @apply text-slate-400;
+  flex: 1;
+  width: 100%;
+  color: var(--color-text-secondary);
 }
 
 .loading-spinner {
-  @apply w-10 h-10;
-  @apply border-4 border-slate-200 border-t-blue-500;
-  @apply rounded-full;
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--color-border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
   animation: spin 1s linear infinite;
-}
-
-:host-context([data-theme="dark"]) .loading-spinner {
-  @apply border-slate-700 border-t-blue-400;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-// Top Bar - Sticky for better UX
+// Top Bar - Sticky
 .lesson-page__topbar {
-  @apply flex items-center justify-between;
-  @apply px-4 sm:px-6 py-3;
-  @apply border-b;
-  @apply bg-white;
-  border-color: var(--color-border);
-  // Make topbar sticky so it stays visible while scrolling
-  @apply sticky top-0 z-20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  @media (min-width: 640px) {
+    padding: 0.75rem 1.5rem;
+  }
 }
 
-:host-context([data-theme="dark"]) .lesson-page__topbar {
-  @apply bg-slate-800;
+.topbar__start {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .topbar__back {
-  @apply flex items-center gap-2;
-  @apply text-sm font-medium;
-  @apply text-slate-600 hover:text-slate-900;
-  @apply transition-colors;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 180ms ease;
 
-  svg {
-    @apply flex-shrink-0;
+  .material-icons-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
   }
 }
 
-:host-context([data-theme="dark"]) .topbar__back {
-  @apply text-slate-400 hover:text-white;
+.topbar__menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 180ms ease;
+
+  .material-icons {
+    font-size: 22px;
+  }
+
+  &:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  // Hide on desktop (sidebar always visible)
+  @media (min-width: 1024px) {
+    display: none;
+  }
 }
 
 .topbar__position {
-  @apply text-sm;
+  font-size: 0.875rem;
   color: var(--color-text-secondary);
 }
 
-.topbar__status {
-  @apply min-w-[80px] text-left;
+.topbar__end {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.status-badge {
-  @apply inline-flex items-center gap-1;
-  @apply px-2 py-1 rounded-full;
-  @apply text-xs font-medium;
+.topbar__flag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-tertiary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 180ms ease;
 
-  &--completed {
-    @apply bg-green-100 text-green-700;
+  .material-icons {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-warning);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  &--active {
+    color: var(--color-warning);
   }
 }
 
-:host-context([data-theme="dark"]) .status-badge--completed {
-  @apply bg-green-900/30 text-green-400;
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 20px;
+
+  .material-icons {
+    font-size: 14px;
+  }
+
+  &--completed {
+    color: var(--color-success);
+    background: color-mix(in srgb, var(--color-success) 12%, transparent);
+  }
 }
 
 // Content
 .lesson-page__content {
-  @apply flex-1;
-  @apply px-4 sm:px-6 py-6;
-  @apply max-w-4xl mx-auto w-full;
-}
+  flex: 1;
+  padding: 1.5rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
 
-.lesson-page__title {
-  @apply text-2xl sm:text-3xl font-bold;
-  @apply mb-4;
-  color: var(--color-text-primary);
-}
-
-.lesson-page__description {
-  @apply text-lg mb-6;
-  color: var(--color-text-secondary);
-}
-
-// Video
-.lesson-page__video {
-  @apply relative w-full;
-  @apply rounded-2xl overflow-hidden;
-  @apply bg-black;
-  aspect-ratio: 16 / 9;
-  // Prevent video from capturing scroll events unintentionally
-  touch-action: manipulation;
-  // Contain layout to prevent scroll jumps
-  contain: layout;
-
-  iframe, video {
-    @apply absolute inset-0 w-full h-full;
-    // Prevent iframe from causing scroll issues
-    pointer-events: auto;
+  @media (min-width: 640px) {
+    padding: 2rem 1.5rem;
   }
 }
 
-// Text
-.lesson-page__text {
-  @apply p-6 rounded-2xl;
-  @apply bg-white;
-  @apply border;
-  border-color: var(--color-border);
-  @apply text-lg leading-relaxed;
-  @apply whitespace-pre-wrap;
+.lesson-page__title {
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  line-height: 1.3;
+
+  @media (min-width: 640px) {
+    font-size: 1.875rem;
+  }
 }
 
-:host-context([data-theme="dark"]) .lesson-page__text {
-  @apply bg-slate-800;
+.lesson-page__description {
+  font-size: 1.0625rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+// Lesson extras (notes, bookmarks)
+.lesson-extras {
+  margin-top: 1.5rem;
+}
+
+// Video container is handled by video-player component
+
+// Text
+.lesson-page__text {
+  padding: 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
 }
 
 // Practice Section
 .lesson-page__practice-section {
-  @apply w-full;
+  width: 100%;
 }
 
 .practice-card {
-  @apply flex flex-col items-center;
-  @apply p-8 sm:p-10 rounded-2xl;
-  @apply text-center;
-  background: var(--surface);
-  border: 2px solid var(--border);
-  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+
+  @media (min-width: 640px) {
+    padding: 2.5rem;
+  }
 }
 
 .practice-card__icon {
-  @apply w-20 h-20;
-  @apply flex items-center justify-center;
-  @apply rounded-2xl mb-6;
-  background: var(--color-primary-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
 
   .material-icons {
-    @apply text-4xl;
+    font-size: 32px;
     color: var(--primary);
   }
 }
 
-:host-context([data-theme="dark"]) .practice-card__icon {
-  background: rgba(48, 184, 240, 0.15);
-}
-
 .practice-card__content {
-  @apply mb-8;
+  margin-bottom: 2rem;
 
   h3 {
-    @apply text-2xl font-bold mb-3;
-    color: var(--text);
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 0.75rem;
   }
 
   p {
-    @apply text-base max-w-md mx-auto;
-    color: var(--muted);
-    line-height: 1.7;
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
   }
 }
 
 .practice-card__features {
-  @apply flex flex-wrap justify-center gap-4 mt-6;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
 }
 
 .feature-item {
-  @apply inline-flex items-center gap-2;
-  @apply px-4 py-2 rounded-full;
-  @apply text-sm font-medium;
-  background: var(--surface-2);
-  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+  border-radius: 20px;
 
   .material-icons-outlined {
-    @apply text-lg;
+    font-size: 16px;
     color: var(--primary);
   }
 }
 
 .practice-card__action {
-  @apply w-full sm:w-auto;
+  width: 100%;
+
+  @media (min-width: 640px) {
+    width: auto;
+  }
 }
 
 // No content placeholder
 .lesson-page__no-content {
-  @apply flex flex-col items-center justify-center;
-  @apply py-16 px-6 rounded-2xl;
-  @apply bg-white;
-  @apply border;
-  border-color: var(--color-border);
-  @apply text-center;
-  color: var(--color-text-secondary);
-
-  svg {
-    @apply mb-4 opacity-50;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  text-align: center;
 
   h3 {
-    @apply text-lg font-bold mb-2;
+    font-size: 1.125rem;
+    font-weight: 600;
     color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
   }
-}
 
-:host-context([data-theme="dark"]) .lesson-page__no-content {
-  @apply bg-slate-800;
+  p {
+    color: var(--color-text-secondary);
+  }
 }
 
 .placeholder-icon {
-  @apply text-5xl mb-4;
-  color: var(--muted);
+  font-size: 48px;
+  color: var(--color-text-tertiary);
   opacity: 0.5;
+  margin-bottom: 1rem;
 }
 
-// Actions - Sticky at bottom for easy navigation
+// Actions - Full width at bottom
 .lesson-page__actions {
-  @apply flex flex-col sm:flex-row items-center justify-between gap-4;
-  @apply px-4 sm:px-6 py-4;
-  @apply border-t;
-  @apply bg-white;
-  border-color: var(--color-border);
-  // Make actions sticky at the bottom
-  @apply sticky bottom-0 z-20;
-}
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
 
-:host-context([data-theme="dark"]) .lesson-page__actions {
-  @apply bg-slate-800;
+  @media (min-width: 640px) {
+    flex-direction: row;
+    padding: 1rem 1.5rem;
+  }
 }
 
 .actions__nav {
-  @apply flex items-center gap-4;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .nav-button {
-  @apply flex items-center gap-2;
-  @apply px-4 py-2 rounded-lg;
-  @apply text-sm font-medium;
-  @apply transition-all duration-200;
-  @apply border;
-  border-color: var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
   color: var(--color-text-primary);
   background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 180ms ease;
+
+  .material-icons-outlined {
+    font-size: 18px;
+  }
 
   &:hover:not(:disabled) {
-    @apply border-blue-400;
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
   }
 
   &:disabled {
-    @apply opacity-40 cursor-not-allowed;
+    opacity: 0.4;
+    cursor: not-allowed;
   }
-
-  &--prev svg {
-    transform: scaleX(-1);
-  }
-}
-
-:host-context([data-theme="dark"]) .nav-button:hover:not(:disabled) {
-  @apply border-blue-500;
 }
 
 .actions__complete {
-  @apply flex items-center;
+  display: flex;
+  align-items: center;
 }
 
 .complete-message {
-  @apply flex items-center gap-2;
-  @apply px-4 py-2;
-  @apply text-green-600 font-medium;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  color: var(--color-success);
 
-  svg {
-    @apply flex-shrink-0;
+  .material-icons {
+    font-size: 20px;
   }
-}
-
-:host-context([data-theme="dark"]) .complete-message {
-  @apply text-green-400;
 }
 
 // Not found
 .lesson-page__not-found {
-  @apply flex flex-col items-center justify-center;
-  @apply flex-1;
-  @apply text-center;
-  color: var(--color-text-secondary);
-
-  svg {
-    @apply mb-4 opacity-50;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 2rem;
+  text-align: center;
 
   h2 {
-    @apply text-xl font-bold mb-2;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
   }
 
   p {
-    @apply mb-6;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+  }
+}
+
+.not-found-icon {
+  font-size: 48px;
+  color: var(--color-text-tertiary);
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation: none;
   }
 }

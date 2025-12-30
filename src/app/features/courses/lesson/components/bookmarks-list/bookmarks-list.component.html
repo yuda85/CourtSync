@@ -1,0 +1,155 @@
+<!-- Bookmarks Container -->
+<div class="bookmarks" [class.bookmarks--expanded]="isExpanded()">
+  <!-- Header -->
+  <button
+    class="bookmarks__header"
+    (click)="toggleExpanded()"
+    [attr.aria-expanded]="isExpanded()"
+    aria-controls="bookmarks-content"
+  >
+    <div class="bookmarks__header-content">
+      <span class="material-icons-outlined bookmarks__icon">bookmarks</span>
+      <span class="bookmarks__title">סימניות</span>
+      @if (bookmarks().length > 0) {
+        <span class="bookmarks__count">{{ bookmarks().length }}</span>
+      }
+    </div>
+    <span class="material-icons bookmarks__chevron">expand_more</span>
+  </button>
+
+  <!-- Content -->
+  <div
+    class="bookmarks__content"
+    id="bookmarks-content"
+    [attr.aria-hidden]="!isExpanded()"
+  >
+    <!-- Add Bookmark Button -->
+    <div class="bookmarks__add-section">
+      @if (pendingTimestamp() !== null) {
+        <!-- Quick add form -->
+        <div class="bookmark-add-form">
+          <div class="bookmark-add-form__preview">
+            <span class="material-icons">schedule</span>
+            {{ formatTimestamp(pendingTimestamp()!) }}
+          </div>
+          <input
+            type="text"
+            class="bookmark-add-form__input"
+            [(ngModel)]="newBookmarkTitle"
+            (keydown)="onInputKeydown($event, 'create')"
+            placeholder="תיאור (אופציונלי)..."
+            autofocus
+          />
+          <div class="bookmark-add-form__actions">
+            <button
+              class="bookmark-add-form__btn bookmark-add-form__btn--confirm"
+              (click)="confirmQuickAdd()"
+              [disabled]="isCreating()"
+            >
+              @if (isCreating()) {
+                <span class="material-icons spinning">sync</span>
+              } @else {
+                <span class="material-icons">check</span>
+              }
+            </button>
+            <button
+              class="bookmark-add-form__btn bookmark-add-form__btn--cancel"
+              (click)="cancelQuickAdd()"
+            >
+              <span class="material-icons">close</span>
+            </button>
+          </div>
+        </div>
+      } @else {
+        <!-- Add button -->
+        <button
+          class="bookmarks__add-btn"
+          (click)="quickAddBookmark()"
+          [disabled]="isCreating()"
+        >
+          <span class="material-icons-outlined">bookmark_add</span>
+          <span>הוסף סימניה ב-{{ formatTimestamp(currentTime()) }}</span>
+        </button>
+      }
+    </div>
+
+    <!-- Bookmarks List -->
+    @if (bookmarks().length > 0) {
+      <ul class="bookmarks-list" role="list">
+        @for (bookmark of bookmarks(); track bookmark.id) {
+          <li class="bookmark-item">
+            @if (editingId() === bookmark.id) {
+              <!-- Editing mode -->
+              <div class="bookmark-edit">
+                <input
+                  type="text"
+                  class="bookmark-edit__input"
+                  [(ngModel)]="editingTitle"
+                  (keydown)="onInputKeydown($event, 'edit', bookmark)"
+                  placeholder="הוסף תיאור..."
+                  autofocus
+                />
+                <div class="bookmark-edit__actions">
+                  <button
+                    class="bookmark-edit__btn bookmark-edit__btn--save"
+                    (click)="saveTitle(bookmark)"
+                  >
+                    <span class="material-icons">check</span>
+                  </button>
+                  <button
+                    class="bookmark-edit__btn bookmark-edit__btn--cancel"
+                    (click)="cancelEditing()"
+                  >
+                    <span class="material-icons">close</span>
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <!-- View mode -->
+              <button
+                class="bookmark-btn"
+                (click)="onSeek(bookmark.timestamp)"
+                title="קפוץ ל-{{ formatTimestamp(bookmark.timestamp) }}"
+              >
+                <span class="bookmark-btn__time">
+                  <span class="material-icons">play_circle</span>
+                  {{ formatTimestamp(bookmark.timestamp) }}
+                </span>
+                @if (bookmark.title) {
+                  <span class="bookmark-btn__title">{{ bookmark.title }}</span>
+                }
+              </button>
+
+              <!-- Actions -->
+              <div class="bookmark-item__actions">
+                <button
+                  class="bookmark-item__action"
+                  (click)="startEditing(bookmark)"
+                  title="ערוך"
+                  aria-label="ערוך סימניה"
+                >
+                  <span class="material-icons-outlined">edit</span>
+                </button>
+                <button
+                  class="bookmark-item__action bookmark-item__action--delete"
+                  (click)="deleteBookmark(bookmark)"
+                  title="מחק"
+                  aria-label="מחק סימניה"
+                >
+                  <span class="material-icons-outlined">delete</span>
+                </button>
+              </div>
+            }
+          </li>
+        }
+      </ul>
+    } @else if (pendingTimestamp() === null) {
+      <!-- Empty state -->
+      <div class="bookmarks-empty">
+        <span class="material-icons-outlined bookmarks-empty__icon">bookmark_border</span>
+        <p class="bookmarks-empty__text">אין סימניות עדיין</p>
+        <p class="bookmarks-empty__hint">לחץ על כפתור הסימניה כדי לשמור רגעים חשובים</p>
+      </div>
+    }
+  </div>
+</div>

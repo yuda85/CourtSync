@@ -1,0 +1,211 @@
+<!-- Notes Panel Container -->
+<div class="notes-panel" [class.notes-panel--expanded]="isExpanded()">
+  <!-- Panel Header -->
+  <button
+    class="notes-panel__header"
+    (click)="toggleExpanded()"
+    [attr.aria-expanded]="isExpanded()"
+    aria-controls="notes-panel-content"
+  >
+    <div class="notes-panel__header-content">
+      <span class="material-icons-outlined notes-panel__icon">edit_note</span>
+      <span class="notes-panel__title">הערות</span>
+      @if (lessonNotesCount() + courseNotesCount() > 0) {
+        <span class="notes-panel__count">{{ lessonNotesCount() + courseNotesCount() }}</span>
+      }
+    </div>
+    <span class="material-icons notes-panel__chevron">expand_more</span>
+  </button>
+
+  <!-- Panel Content -->
+  <div
+    class="notes-panel__content"
+    id="notes-panel-content"
+    [attr.aria-hidden]="!isExpanded()"
+  >
+    <div class="notes-panel__inner">
+    <!-- Tabs -->
+    <div class="notes-tabs" role="tablist">
+      <button
+        class="notes-tab"
+        [class.notes-tab--active]="activeTab() === 'lesson'"
+        (click)="setActiveTab('lesson')"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'lesson'"
+        id="tab-lesson"
+        aria-controls="tabpanel-lesson"
+      >
+        שיעור זה
+        @if (lessonNotesCount() > 0) {
+          <span class="notes-tab__badge">{{ lessonNotesCount() }}</span>
+        }
+      </button>
+      <button
+        class="notes-tab"
+        [class.notes-tab--active]="activeTab() === 'course'"
+        (click)="setActiveTab('course')"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'course'"
+        id="tab-course"
+        aria-controls="tabpanel-course"
+      >
+        כללי
+        @if (courseNotesCount() > 0) {
+          <span class="notes-tab__badge">{{ courseNotesCount() }}</span>
+        }
+      </button>
+    </div>
+
+    <!-- Notes List -->
+    <div
+      class="notes-list-container"
+      role="tabpanel"
+      [id]="'tabpanel-' + activeTab()"
+      [attr.aria-labelledby]="'tab-' + activeTab()"
+    >
+      @if (hasNotes()) {
+        <ul class="notes-list" role="list">
+          @for (note of currentNotes(); track note.id) {
+            <li class="note-item">
+              @if (editingNoteId() === note.id) {
+                <!-- Editing Mode -->
+                <div class="note-editor">
+                  <textarea
+                    class="note-editor__input"
+                    [(ngModel)]="editingContent"
+                    (keydown)="onTextareaKeydown($event)"
+                    placeholder="ערוך את ההערה..."
+                    rows="3"
+                    autofocus
+                  ></textarea>
+                  <div class="note-editor__actions">
+                    <button
+                      class="note-editor__btn note-editor__btn--save"
+                      (click)="saveEdit(note)"
+                      [disabled]="isSaving() || !editingContent().trim()"
+                    >
+                      @if (isSaving()) {
+                        <span class="material-icons spinning">sync</span>
+                      } @else {
+                        <span class="material-icons">check</span>
+                      }
+                      שמור
+                    </button>
+                    <button
+                      class="note-editor__btn note-editor__btn--cancel"
+                      (click)="cancelEditing()"
+                    >
+                      ביטול
+                    </button>
+                  </div>
+                </div>
+              } @else {
+                <!-- View Mode -->
+                <div class="note-card">
+                  @if (note.videoTimestamp !== undefined && note.videoTimestamp !== null) {
+                    <button
+                      class="note-card__timestamp"
+                      (click)="onTimestampClick(note.videoTimestamp)"
+                      title="קפוץ לזמן זה"
+                    >
+                      <span class="material-icons">play_circle</span>
+                      {{ formatTimestamp(note.videoTimestamp) }}
+                    </button>
+                  }
+                  <p class="note-card__content">{{ note.content }}</p>
+                  <div class="note-card__footer">
+                    <span class="note-card__date">{{ formatDate(note.updatedAt) }}</span>
+                    <div class="note-card__actions">
+                      <button
+                        class="note-card__action"
+                        (click)="startEditing(note)"
+                        title="ערוך"
+                        aria-label="ערוך הערה"
+                      >
+                        <span class="material-icons-outlined">edit</span>
+                      </button>
+                      <button
+                        class="note-card__action note-card__action--delete"
+                        (click)="deleteNote(note)"
+                        title="מחק"
+                        aria-label="מחק הערה"
+                      >
+                        <span class="material-icons-outlined">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      } @else {
+        <!-- Empty State -->
+        <div class="notes-empty">
+          <span class="material-icons-outlined notes-empty__icon">note_add</span>
+          <p class="notes-empty__text">
+            @if (activeTab() === 'lesson') {
+              אין הערות לשיעור זה
+            } @else {
+              אין הערות כלליות לקורס
+            }
+          </p>
+        </div>
+      }
+    </div>
+
+    <!-- New Note Input -->
+    <div class="notes-input">
+      <div class="notes-input__wrapper">
+        <textarea
+          #noteInput
+          class="notes-input__field"
+          [(ngModel)]="newNoteContent"
+          (keydown)="onTextareaKeydown($event)"
+          [placeholder]="activeTab() === 'lesson' ? 'הוסף הערה לשיעור...' : 'הוסף הערה כללית...'"
+          rows="2"
+        ></textarea>
+
+        <!-- Timestamp toggle (only for video lessons) -->
+        @if (isVideoLesson() && activeTab() === 'lesson') {
+          <div class="notes-input__options">
+            <label class="notes-input__timestamp-toggle">
+              <input
+                type="checkbox"
+                [checked]="includeTimestamp()"
+                (change)="includeTimestamp.set(!includeTimestamp())"
+              />
+              <span class="notes-input__timestamp-label">
+                <span class="material-icons">schedule</span>
+                @if (includeTimestamp()) {
+                  {{ formatTimestamp(currentVideoTime()) }}
+                } @else {
+                  הוסף זמן
+                }
+              </span>
+            </label>
+          </div>
+        }
+      </div>
+
+      <button
+        class="notes-input__submit"
+        (click)="createNote()"
+        [disabled]="isCreating() || !newNoteContent().trim()"
+        aria-label="הוסף הערה"
+      >
+        @if (isCreating()) {
+          <span class="material-icons spinning">sync</span>
+        } @else {
+          <span class="material-icons">add</span>
+        }
+      </button>
+    </div>
+
+    <!-- Keyboard hint -->
+    <div class="notes-hint">
+      <kbd>Ctrl</kbd> + <kbd>Enter</kbd> לשמירה
+    </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,449 @@
+// Bookmarks List Styles
+// Compact, clean design for video bookmarks
+
+$transition-speed: 200ms;
+
+.bookmarks {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+// Header
+.bookmarks__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background 180ms ease;
+
+  &:hover {
+    background: var(--color-bg-secondary);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--focus);
+  }
+}
+
+.bookmarks__header-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bookmarks__icon {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+}
+
+.bookmarks__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.bookmarks__count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  border-radius: 9px;
+}
+
+.bookmarks__chevron {
+  font-size: 18px;
+  color: var(--color-text-tertiary);
+  transition: transform 200ms ease;
+
+  .bookmarks--expanded & {
+    transform: rotate(180deg);
+  }
+}
+
+// Content
+.bookmarks__content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows $transition-speed ease;
+  overflow: hidden;
+
+  .bookmarks--expanded & {
+    grid-template-rows: 1fr;
+  }
+
+  > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+// Add Section
+.bookmarks__add-section {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.bookmarks__add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--primary) 30%, transparent);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 180ms ease;
+
+  .material-icons-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 50%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Add Form
+.bookmark-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--color-bg-secondary);
+  border-radius: 8px;
+
+  &__preview {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--primary);
+
+    .material-icons {
+      font-size: 16px;
+    }
+  }
+
+  &__input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    &::placeholder {
+      color: var(--color-text-tertiary);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.375rem;
+    justify-content: flex-end;
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 180ms ease;
+
+    .material-icons {
+      font-size: 18px;
+    }
+
+    &--confirm {
+      color: white;
+      background: var(--color-success);
+
+      &:hover {
+        filter: brightness(1.1);
+      }
+    }
+
+    &--cancel {
+      color: var(--color-text-secondary);
+      background: var(--color-surface);
+
+      &:hover {
+        background: var(--color-bg-tertiary);
+      }
+    }
+  }
+}
+
+// Bookmarks List
+.bookmarks-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.375rem;
+  max-height: 200px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 2px;
+  }
+}
+
+.bookmark-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 6px;
+  transition: background 180ms ease;
+
+  &:hover {
+    background: var(--color-bg-secondary);
+
+    .bookmark-item__actions {
+      opacity: 1;
+    }
+  }
+}
+
+// Bookmark Button
+.bookmark-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+  text-align: start;
+  transition: all 180ms ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+
+  &__time {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--primary);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+
+    .material-icons {
+      font-size: 16px;
+    }
+  }
+
+  &__title {
+    font-size: 0.8125rem;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// Item Actions
+.bookmark-item__actions {
+  display: flex;
+  gap: 0.125rem;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.bookmark-item__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-tertiary);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 180ms ease;
+
+  .material-icons-outlined {
+    font-size: 16px;
+  }
+
+  &:hover {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus);
+  }
+
+  &--delete:hover {
+    color: var(--color-error);
+    background: color-mix(in srgb, var(--color-error) 10%, transparent);
+  }
+}
+
+// Edit Mode
+.bookmark-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex: 1;
+  padding: 0.25rem;
+
+  &__input {
+    flex: 1;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 180ms ease;
+
+    .material-icons {
+      font-size: 16px;
+    }
+
+    &--save {
+      color: white;
+      background: var(--color-success);
+    }
+
+    &--cancel {
+      color: var(--color-text-secondary);
+      background: var(--color-bg-secondary);
+
+      &:hover {
+        background: var(--color-bg-tertiary);
+      }
+    }
+  }
+}
+
+// Empty State
+.bookmarks-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  text-align: center;
+
+  &__icon {
+    font-size: 28px;
+    color: var(--color-text-tertiary);
+    opacity: 0.5;
+    margin-bottom: 0.5rem;
+  }
+
+  &__text {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 0.25rem;
+  }
+
+  &__hint {
+    font-size: 0.6875rem;
+    color: var(--color-text-tertiary);
+    margin: 0;
+  }
+}
+
+// Spinning animation
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .bookmarks__content,
+  .bookmarks__chevron,
+  .bookmark-item,
+  .spinning {
+    transition: none;
+    animation: none;
+  }
+}

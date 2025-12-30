@@ -1,0 +1,176 @@
+<!-- Video Player Container -->
+<div
+  #playerContainer
+  class="video-player"
+  [class.video-player--playing]="playerService.isPlaying()"
+  [class.video-player--controls-visible]="showControls()"
+  (mousemove)="onMouseMove()"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+>
+  <!-- Video Element / YouTube Embed -->
+  @if (isYouTube()) {
+    <!-- YouTube Iframe -->
+    <div class="video-player__youtube">
+      <iframe
+        [src]="embedUrl()"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  } @else {
+    <!-- HTML5 Video -->
+    <video
+      #videoElement
+      class="video-player__video"
+      [src]="videoUrl()"
+      (click)="togglePlay()"
+      playsinline
+    >
+      הדפדפן שלך לא תומך בנגן וידאו
+    </video>
+
+    <!-- Custom Controls Overlay -->
+    <div class="video-player__overlay" [class.video-player__overlay--visible]="showControls()">
+      <!-- Big Play Button (when paused) -->
+      @if (!playerService.isPlaying()) {
+        <button
+          class="video-player__big-play"
+          (click)="togglePlay()"
+          aria-label="נגן"
+        >
+          <span class="material-icons">play_arrow</span>
+        </button>
+      }
+
+      <!-- Controls Bar -->
+      <div class="video-player__controls">
+        <!-- Progress Bar -->
+        <div class="progress-bar" (click)="onSeekBarClick($event)">
+          <div class="progress-bar__track">
+            <div
+              class="progress-bar__fill"
+              [style.width.%]="playerService.progressPercent()"
+            ></div>
+            <div
+              class="progress-bar__handle"
+              [style.right.%]="playerService.progressPercent()"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Controls Row -->
+        <div class="controls-row">
+          <!-- Left Controls (RTL: right side visually) -->
+          <div class="controls-row__start">
+            <!-- Play/Pause -->
+            <button
+              class="control-btn"
+              (click)="togglePlay()"
+              [attr.aria-label]="playerService.isPlaying() ? 'השהה' : 'נגן'"
+            >
+              <span class="material-icons">
+                {{ playerService.isPlaying() ? 'pause' : 'play_arrow' }}
+              </span>
+            </button>
+
+            <!-- Volume -->
+            <button
+              class="control-btn"
+              (click)="toggleMute()"
+              [attr.aria-label]="playerService.isMuted() ? 'הפעל קול' : 'השתק'"
+            >
+              <span class="material-icons">
+                @if (playerService.isMuted() || playerService.volume() === 0) {
+                  volume_off
+                } @else if (playerService.volume() < 0.5) {
+                  volume_down
+                } @else {
+                  volume_up
+                }
+              </span>
+            </button>
+
+            <!-- Time Display -->
+            <div class="time-display">
+              <span class="time-display__current">{{ formatTime(playerService.currentTime()) }}</span>
+              <span class="time-display__separator">/</span>
+              <span class="time-display__duration">{{ formatTime(playerService.duration()) }}</span>
+            </div>
+          </div>
+
+          <!-- Right Controls (RTL: left side visually) -->
+          <div class="controls-row__end">
+            <!-- Add Bookmark -->
+            <button
+              class="control-btn"
+              (click)="addBookmark()"
+              aria-label="הוסף סימניה"
+              title="הוסף סימניה ({{ formatTime(playerService.currentTime()) }})"
+            >
+              <span class="material-icons-outlined">bookmark_add</span>
+            </button>
+
+            <!-- Speed Control -->
+            <div class="speed-control">
+              <button
+                class="control-btn speed-control__trigger"
+                (click)="toggleSpeedMenu()"
+                [attr.aria-expanded]="showSpeedMenu()"
+                aria-haspopup="menu"
+              >
+                <span class="speed-control__label">{{ playerService.playbackSpeed() }}x</span>
+              </button>
+
+              @if (showSpeedMenu()) {
+                <div class="speed-control__menu" role="menu">
+                  @for (speed of playbackSpeeds; track speed) {
+                    <button
+                      class="speed-control__option"
+                      [class.speed-control__option--active]="playerService.playbackSpeed() === speed"
+                      (click)="setSpeed(speed)"
+                      role="menuitem"
+                    >
+                      {{ speed }}x
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Picture-in-Picture -->
+            <button
+              class="control-btn"
+              (click)="togglePiP()"
+              [class.control-btn--active]="playerService.isPictureInPicture()"
+              aria-label="תמונה בתוך תמונה"
+              title="תמונה בתוך תמונה"
+            >
+              <span class="material-icons-outlined">picture_in_picture_alt</span>
+            </button>
+
+            <!-- Fullscreen -->
+            <button
+              class="control-btn"
+              (click)="toggleFullscreen()"
+              [attr.aria-label]="playerService.isFullscreen() ? 'צא ממסך מלא' : 'מסך מלא'"
+            >
+              <span class="material-icons">
+                {{ playerService.isFullscreen() ? 'fullscreen_exit' : 'fullscreen' }}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Keyboard Shortcuts Hint (shown briefly on focus) -->
+  <div class="video-player__hints" aria-hidden="true">
+    <span><kbd>Space</kbd> נגן/השהה</span>
+    <span><kbd>←→</kbd> דלג</span>
+    <span><kbd>M</kbd> השתקה</span>
+    <span><kbd>F</kbd> מסך מלא</span>
+  </div>
+</div>

@@ -13,10 +13,23 @@ import { COURSE_SUBJECTS, COURSE_LEVELS } from '@core/models/course.interface';
   template: `
     <div class="page-header">
       <h1>ניהול קורסים</h1>
-      <a routerLink="/admin/courses/new" class="btn-primary">
-        <span class="material-icons">add</span>
-        קורס חדש
-      </a>
+      <div class="header-actions">
+        <!-- Seed button - uncomment if needed
+        @if (isSuperAdmin()) {
+          <button class="btn-secondary" (click)="seedCourses()" [disabled]="isSeeding()">
+            @if (isSeeding()) {
+              יוצר...
+            } @else {
+              הוסף 3 קורסים לדוגמה
+            }
+          </button>
+        }
+        -->
+        <a routerLink="/admin/courses/new" class="btn-primary">
+          <span class="material-icons">add</span>
+          קורס חדש
+        </a>
+      </div>
     </div>
 
     <!-- Filters -->
@@ -188,6 +201,18 @@ import { COURSE_SUBJECTS, COURSE_LEVELS } from '@core/models/course.interface';
                         {{ course.isPublished ? 'visibility_off' : 'visibility' }}
                       </span>
                     </button>
+                    @if (isSuperAdmin()) {
+                      <button
+                        class="action-btn"
+                        [class.action-featured]="course.isFeatured"
+                        (click)="toggleFeatured(course)"
+                        [title]="course.isFeatured ? 'הסר מהמומלצים' : 'הוסף למומלצים'"
+                      >
+                        <span class="material-icons">
+                          {{ course.isFeatured ? 'star' : 'star_border' }}
+                        </span>
+                      </button>
+                    }
                     @if (!course.isPublished) {
                       <button
                         class="action-btn action-delete"
@@ -235,6 +260,10 @@ import { COURSE_SUBJECTS, COURSE_LEVELS } from '@core/models/course.interface';
         h1 {
           @apply text-xl font-bold text-[var(--color-text-primary)];
         }
+      }
+
+      .header-actions {
+        @apply flex items-center gap-3;
       }
 
       .btn-primary {
@@ -483,6 +512,14 @@ import { COURSE_SUBJECTS, COURSE_LEVELS } from '@core/models/course.interface';
         &.action-delete:hover {
           @apply text-red-600;
         }
+
+        &.action-featured {
+          @apply text-amber-500;
+        }
+
+        &:not(.action-featured):hover .material-icons {
+          @apply text-amber-500;
+        }
       }
 
       .modal-overlay {
@@ -528,6 +565,7 @@ export class CourseListComponent implements OnInit {
   readonly courses = signal<AdminCourse[]>([]);
   readonly courseToDelete = signal<AdminCourse | null>(null);
   readonly isDeleting = signal(false);
+  readonly isSeeding = signal(false);
 
   searchTerm = '';
   statusFilter = 'all';
@@ -614,6 +652,27 @@ export class CourseListComponent implements OnInit {
       this.loadCourses();
     } catch (err) {
       console.error('Error toggling publish:', err);
+    }
+  }
+
+  async toggleFeatured(course: AdminCourse): Promise<void> {
+    try {
+      await this.adminCoursesRepo.toggleFeatured(course.id, !course.isFeatured);
+      this.loadCourses();
+    } catch (err) {
+      console.error('Error toggling featured:', err);
+    }
+  }
+
+  async seedCourses(): Promise<void> {
+    this.isSeeding.set(true);
+    try {
+      await this.adminCoursesRepo.seedSampleCourses();
+      this.loadCourses();
+    } catch (err) {
+      console.error('Error seeding courses:', err);
+    } finally {
+      this.isSeeding.set(false);
     }
   }
 

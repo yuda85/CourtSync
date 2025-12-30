@@ -322,4 +322,110 @@ export class AdminLessonsRepo {
       )
     );
   }
+
+  /**
+   * Seed sample lessons for a course (temporary - remove after use)
+   * Creates 10 lessons: 5 videos, 4 quizzes, 1 final exam
+   */
+  async seedSampleLessons(courseId: string): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) {
+      throw new Error('Must be logged in to seed lessons');
+    }
+
+    const canEdit = await this.canEditLessonsInCourse(courseId);
+    if (!canEdit) {
+      throw new Error('You do not have permission to add lessons to this course');
+    }
+
+    const sampleLessons = [
+      // Video lessons (5)
+      {
+        title: 'מבוא לקורס',
+        description: 'סקירה כללית של נושאי הקורס ומטרותיו',
+        type: 'video' as const,
+        order: 1,
+        durationMinutes: 15,
+        videoUrl: 'https://example.com/video1',
+      },
+      {
+        title: 'עקרונות יסוד',
+        description: 'הכרת העקרונות הבסיסיים והמושגים המרכזיים',
+        type: 'video' as const,
+        order: 2,
+        durationMinutes: 25,
+        videoUrl: 'https://example.com/video2',
+      },
+      {
+        title: 'ניתוח מקרה ראשון',
+        description: 'בחינת פסק דין מרכזי והשלכותיו',
+        type: 'video' as const,
+        order: 3,
+        durationMinutes: 30,
+        videoUrl: 'https://example.com/video3',
+      },
+      {
+        title: 'יישום מעשי',
+        description: 'דוגמאות ליישום החומר בפרקטיקה',
+        type: 'video' as const,
+        order: 4,
+        durationMinutes: 35,
+        videoUrl: 'https://example.com/video4',
+      },
+      {
+        title: 'סוגיות מתקדמות',
+        description: 'העמקה בנושאים מורכבים יותר',
+        type: 'video' as const,
+        order: 5,
+        durationMinutes: 40,
+        videoUrl: 'https://example.com/video5',
+      },
+      // Quiz lessons (4)
+      {
+        title: 'בוחן 1 - מושגי יסוד',
+        description: 'בדיקת הבנה של מושגי היסוד שנלמדו',
+        type: 'quiz' as const,
+        order: 6,
+        durationMinutes: 15,
+      },
+      {
+        title: 'בוחן 2 - ניתוח מקרים',
+        description: 'יכולת ניתוח והבנת מקרים',
+        type: 'quiz' as const,
+        order: 7,
+        durationMinutes: 20,
+      },
+      {
+        title: 'בוחן 3 - יישום',
+        description: 'יכולת יישום החומר על מצבים חדשים',
+        type: 'quiz' as const,
+        order: 8,
+        durationMinutes: 20,
+      },
+      {
+        title: 'בוחן 4 - סיכום ביניים',
+        description: 'בחינה של כל החומר עד כה',
+        type: 'quiz' as const,
+        order: 9,
+        durationMinutes: 25,
+      },
+      // Final exam (1)
+      {
+        title: 'מבחן מסכם',
+        description: 'מבחן סופי מקיף על כל חומר הקורס',
+        type: 'quiz' as const,
+        order: 10,
+        durationMinutes: 60,
+      },
+    ];
+
+    for (const lesson of sampleLessons) {
+      await addDoc(this.lessonsCollection, {
+        ...lesson,
+        courseId,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    }
+  }
 }

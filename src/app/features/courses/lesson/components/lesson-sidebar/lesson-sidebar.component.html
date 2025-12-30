@@ -1,0 +1,164 @@
+<!-- Mobile Backdrop -->
+<div
+  class="sidebar-backdrop"
+  [class.sidebar-backdrop--visible]="isOpen()"
+  (click)="onBackdropClick()"
+  aria-hidden="true"
+></div>
+
+<!-- Sidebar Container -->
+<aside
+  class="lesson-sidebar"
+  [class.lesson-sidebar--open]="isOpen()"
+  role="navigation"
+  aria-label="תוכן הקורס"
+>
+  <!-- Header -->
+  <header class="sidebar-header">
+    <div class="sidebar-header__content">
+      <h2 class="sidebar-header__title">תוכן הקורס</h2>
+      @if (courseTitle()) {
+        <span class="sidebar-header__course">{{ courseTitle() }}</span>
+      }
+    </div>
+
+    <!-- Close button (mobile only) -->
+    <button
+      class="sidebar-header__close"
+      (click)="close.emit()"
+      aria-label="סגור תפריט"
+    >
+      <span class="material-icons">close</span>
+    </button>
+  </header>
+
+  <!-- Progress Summary -->
+  <div class="sidebar-progress">
+    <div class="sidebar-progress__info">
+      <span class="sidebar-progress__label">התקדמות כוללת</span>
+      <span class="sidebar-progress__count">
+        {{ totalProgress().completed }} / {{ totalProgress().total }} שיעורים
+      </span>
+    </div>
+    <div class="sidebar-progress__bar">
+      <div
+        class="sidebar-progress__fill"
+        [style.width.%]="totalProgress().percent"
+        role="progressbar"
+        [attr.aria-valuenow]="totalProgress().percent"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        [attr.aria-label]="totalProgress().percent + '% הושלם'"
+      ></div>
+    </div>
+  </div>
+
+  <!-- Sections List -->
+  <nav class="sidebar-sections" aria-label="רשימת מודולים">
+    @for (sectionData of sections(); track sectionData.section.id) {
+      <div class="section" [class.section--expanded]="isSectionExpanded(sectionData.section.id)">
+        <!-- Section Header -->
+        <button
+          class="section__header"
+          (click)="toggleSection(sectionData.section.id)"
+          [attr.aria-expanded]="isSectionExpanded(sectionData.section.id)"
+          [attr.aria-controls]="'section-content-' + sectionData.section.id"
+        >
+          <div class="section__toggle">
+            <span class="material-icons section__chevron">chevron_left</span>
+          </div>
+
+          <div class="section__info">
+            <h3 class="section__title">{{ sectionData.section.title }}</h3>
+            <div class="section__meta">
+              <span class="section__progress">
+                {{ sectionData.completedCount }} / {{ sectionData.totalCount }}
+              </span>
+              @if (sectionData.completedCount === sectionData.totalCount && sectionData.totalCount > 0) {
+                <span class="section__complete-badge">
+                  <span class="material-icons">check_circle</span>
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Section progress ring -->
+          <div class="section__ring">
+            <svg viewBox="0 0 36 36" class="section__ring-svg">
+              <path
+                class="section__ring-bg"
+                d="M18 2.0845
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+              <path
+                class="section__ring-fill"
+                [style.stroke-dasharray]="(sectionData.totalCount > 0 ? (sectionData.completedCount / sectionData.totalCount) * 100 : 0) + ', 100'"
+                d="M18 2.0845
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+            </svg>
+          </div>
+        </button>
+
+        <!-- Section Content (Lessons) -->
+        <div
+          class="section__content"
+          [id]="'section-content-' + sectionData.section.id"
+          [attr.aria-hidden]="!isSectionExpanded(sectionData.section.id)"
+        >
+          <ul class="lessons-list" role="list">
+            @for (lesson of sectionData.lessons; track lesson.id; let i = $index) {
+              <li class="lesson-item">
+                <button
+                  class="lesson-button"
+                  [class.lesson-button--current]="isCurrentLesson(lesson.id)"
+                  [class.lesson-button--completed]="isLessonCompleted(lesson.id)"
+                  (click)="onLessonClick(lesson)"
+                  [attr.aria-current]="isCurrentLesson(lesson.id) ? 'true' : null"
+                >
+                  <!-- Lesson Status Indicator -->
+                  <div class="lesson-button__status">
+                    @if (isLessonCompleted(lesson.id)) {
+                      <span class="lesson-button__check">
+                        <span class="material-icons">check</span>
+                      </span>
+                    } @else if (isCurrentLesson(lesson.id)) {
+                      <span class="lesson-button__current-dot"></span>
+                    } @else {
+                      <span class="lesson-button__number">{{ i + 1 }}</span>
+                    }
+                  </div>
+
+                  <!-- Lesson Info -->
+                  <div class="lesson-button__info">
+                    <span class="lesson-button__title">{{ lesson.title }}</span>
+                    <div class="lesson-button__meta">
+                      <span class="lesson-button__type">
+                        <span class="material-icons-outlined">{{ getLessonTypeIcon(lesson.type) }}</span>
+                        {{ getLessonTypeLabel(lesson.type) }}
+                      </span>
+                      @if (lesson.durationMinutes) {
+                        <span class="lesson-button__duration">
+                          {{ formatDuration(lesson.durationMinutes) }}
+                        </span>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Flagged indicator -->
+                  @if (isLessonFlagged(lesson.id)) {
+                    <span class="lesson-button__flag" title="מסומן לחזרה">
+                      <span class="material-icons">bookmark</span>
+                    </span>
+                  }
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    }
+  </nav>
+</aside>

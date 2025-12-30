@@ -22,10 +22,19 @@ import { LESSON_TYPE_ICONS } from '@core/models/lesson.interface';
             <span class="course-name">{{ course()?.title }}</span>
           }
         </div>
-        <a [routerLink]="['/admin/courses', courseId, 'lessons', 'new']" class="btn-primary">
-          <span class="material-icons">add</span>
-          שיעור חדש
-        </a>
+        <div class="header-actions">
+          <button class="btn-secondary" (click)="seedLessons()" [disabled]="isSeeding()">
+            @if (isSeeding()) {
+              יוצר...
+            } @else {
+              הוסף 10 שיעורים לדוגמה
+            }
+          </button>
+          <a [routerLink]="['/admin/courses', courseId, 'lessons', 'new']" class="btn-primary">
+            <span class="material-icons">add</span>
+            שיעור חדש
+          </a>
+        </div>
       </div>
     </div>
 
@@ -168,6 +177,10 @@ import { LESSON_TYPE_ICONS } from '@core/models/lesson.interface';
         @apply flex items-center justify-between mt-2;
       }
 
+      .header-actions {
+        @apply flex items-center gap-3;
+      }
+
       .header-info {
         h1 {
           @apply text-xl font-bold text-[var(--color-text-primary)];
@@ -186,6 +199,17 @@ import { LESSON_TYPE_ICONS } from '@core/models/lesson.interface';
 
         .material-icons {
           @apply text-lg;
+        }
+      }
+
+      .btn-secondary {
+        @apply px-4 py-2 rounded-lg;
+        @apply bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)];
+        @apply hover:bg-[var(--color-bg-tertiary)];
+        @apply transition-colors duration-200 border-none cursor-pointer;
+
+        &:disabled {
+          @apply opacity-50 cursor-not-allowed;
         }
       }
 
@@ -426,6 +450,7 @@ export class LessonListComponent implements OnInit {
   readonly isLoading = signal(true);
   readonly isUpdating = signal(false);
   readonly isDeleting = signal(false);
+  readonly isSeeding = signal(false);
   readonly lessons = signal<AdminLesson[]>([]);
   readonly course = signal<AdminCourse | null>(null);
   readonly lessonToDelete = signal<AdminLesson | null>(null);
@@ -527,6 +552,18 @@ export class LessonListComponent implements OnInit {
       console.error('Error deleting lesson:', err);
     } finally {
       this.isDeleting.set(false);
+    }
+  }
+
+  async seedLessons(): Promise<void> {
+    this.isSeeding.set(true);
+    try {
+      await this.adminLessonsRepo.seedSampleLessons(this.courseId);
+      this.loadLessons();
+    } catch (err) {
+      console.error('Error seeding lessons:', err);
+    } finally {
+      this.isSeeding.set(false);
     }
   }
 }
