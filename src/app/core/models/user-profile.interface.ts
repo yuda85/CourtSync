@@ -8,6 +8,7 @@ export interface UserProfile {
   roles: string[];
   createdAt: Timestamp;
   lastLoginAt: Timestamp;
+  lastPurchaseAt?: Timestamp;
 }
 
 export type UserRole = 'student' | 'instructor' | 'admin';

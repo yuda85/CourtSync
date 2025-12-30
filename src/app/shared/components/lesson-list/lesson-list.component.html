@@ -1,0 +1,45 @@
+<ul class="lesson-list">
+  @for (lesson of lessons; track lesson.id; let i = $index) {
+    <li
+      class="lesson-item"
+      [class.lesson-item--completed]="isCompleted(lesson.id)"
+      [class.lesson-item--current]="isCurrent(lesson.id)"
+      (click)="onLessonClick(lesson)"
+    >
+      <div class="lesson-item__number">{{ i + 1 }}</div>
+
+      <div class="lesson-item__icon" [innerHTML]="getTypeIcon(lesson.type)"></div>
+
+      <div class="lesson-item__content">
+        <div class="lesson-item__title">{{ lesson.title }}</div>
+        @if (lesson.description) {
+          <div class="lesson-item__description">{{ lesson.description }}</div>
+        }
+      </div>
+
+      <div class="lesson-item__meta">
+        @if (lesson.durationMinutes) {
+          <span class="lesson-item__duration">{{ formatDuration(lesson.durationMinutes) }}</span>
+        }
+
+        @if (isCompleted(lesson.id)) {
+          <div class="lesson-item__check">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        }
+      </div>
+    </li>
+  }
+</ul>
+
+@if (lessons.length === 0) {
+  <div class="lesson-list__empty">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+    </svg>
+    <p>אין שיעורים בקורס זה</p>
+  </div>
+}

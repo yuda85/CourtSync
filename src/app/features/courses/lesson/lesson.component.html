@@ -1,0 +1,157 @@
+<div class="lesson-page">
+  @if (isLoading()) {
+    <div class="lesson-page__loading">
+      <div class="loading-spinner"></div>
+      <p>טוען שיעור...</p>
+    </div>
+  } @else if (lesson()) {
+    <!-- Top Bar -->
+    <div class="lesson-page__topbar">
+      <button class="topbar__back" (click)="onBackToCourse()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+        חזרה לקורס
+      </button>
+
+      <div class="topbar__position">
+        שיעור {{ position().current }} מתוך {{ position().total }}
+      </div>
+
+      <div class="topbar__status">
+        @if (isCompleted()) {
+          <span class="status-badge status-badge--completed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            הושלם
+          </span>
+        }
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lesson-page__content">
+      <h1 class="lesson-page__title">{{ lesson()!.title }}</h1>
+
+      @if (lesson()!.description) {
+        <p class="lesson-page__description">{{ lesson()!.description }}</p>
+      }
+
+      <!-- Video Content -->
+      @if (lesson()!.type === 'video' && lesson()!.videoUrl) {
+        <div class="lesson-page__video">
+          @if (isYouTubeUrl(lesson()!.videoUrl!)) {
+            <iframe
+              [src]="getVideoEmbedUrl(lesson()!.videoUrl!)"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          } @else {
+            <video controls [src]="lesson()!.videoUrl">
+              הדפדפן שלך לא תומך בנגן וידאו
+            </video>
+          }
+        </div>
+      }
+
+      <!-- Text Content -->
+      @if (lesson()!.type === 'text' && lesson()!.content) {
+        <div class="lesson-page__text">
+          {{ lesson()!.content }}
+        </div>
+      }
+
+      <!-- Quiz Placeholder -->
+      @if (lesson()!.type === 'quiz') {
+        <div class="lesson-page__quiz-placeholder">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <h3>בוחן - בקרוב</h3>
+          <p>בוחנים אינטראקטיביים יהיו זמינים בקרוב</p>
+        </div>
+      }
+
+      <!-- No Content -->
+      @if (!lesson()!.videoUrl && !lesson()!.content && lesson()!.type !== 'quiz') {
+        <div class="lesson-page__no-content">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <h3>תוכן בהכנה</h3>
+          <p>התוכן לשיעור זה יהיה זמין בקרוב</p>
+        </div>
+      }
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="lesson-page__actions">
+      <div class="actions__nav">
+        <button
+          class="nav-button nav-button--prev"
+          [disabled]="!prevLesson()"
+          (click)="onPrevious()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+          הקודם
+        </button>
+
+        <button
+          class="nav-button nav-button--next"
+          [disabled]="!nextLesson()"
+          (click)="onNext()"
+        >
+          הבא
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="actions__complete">
+        @if (!isCompleted()) {
+          <app-button
+            variant="primary"
+            [disabled]="isMarkingComplete()"
+            (buttonClick)="onMarkComplete()"
+          >
+            @if (isMarkingComplete()) {
+              מסמן...
+            } @else {
+              סיימתי שיעור זה
+            }
+          </app-button>
+        } @else {
+          <div class="complete-message">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <span>שיעור זה הושלם!</span>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- Lesson not found -->
+    <div class="lesson-page__not-found">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <h2>השיעור לא נמצא</h2>
+      <p>לא הצלחנו למצוא את השיעור המבוקש</p>
+      <app-button variant="secondary" (buttonClick)="onBackToCourse()">
+        חזרה לקורס
+      </app-button>
+    </div>
+  }
+</div>

@@ -47,8 +47,17 @@ export const routes: Routes = [
         canActivate: [entitlementGuard]
       },
       {
+        path: 'courses/:id/learn/:lessonId',
+        loadComponent: () => import('@features/courses/lesson/lesson.component').then(m => m.LessonComponent),
+        canActivate: [entitlementGuard]
+      },
+      {
         path: 'library',
         loadComponent: () => import('@features/library/library.component').then(m => m.LibraryComponent)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('@features/profile/profile.component').then(m => m.ProfileComponent)
       },
       {
         path: '',

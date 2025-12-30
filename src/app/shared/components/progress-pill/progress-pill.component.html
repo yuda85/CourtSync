@@ -1,0 +1,16 @@
+<div
+  class="progress-pill"
+  [class]="colorClass()"
+  [class.progress-pill--sm]="size === 'sm'"
+  [class.progress-pill--lg]="size === 'lg'"
+>
+  <div class="progress-pill__bar">
+    <div
+      class="progress-pill__fill"
+      [style.width.%]="displayPercent()"
+    ></div>
+  </div>
+  @if (showLabel) {
+    <span class="progress-pill__label">{{ displayPercent() }}%</span>
+  }
+</div>

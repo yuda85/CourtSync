@@ -73,7 +73,7 @@
 
       <!-- User Info (Authenticated) -->
       @if (showUserInfo() && user()) {
-        <div class="user-info">
+        <a routerLink="/app/profile" class="user-info">
           @if (user()?.photoURL) {
             <img
               [src]="user()?.photoURL"
@@ -86,7 +86,7 @@
             </div>
           }
           <span class="user-name hidden sm:inline">{{ user()?.displayName || user()?.email }}</span>
-        </div>
+        </a>
 
         <app-button
           variant="ghost"

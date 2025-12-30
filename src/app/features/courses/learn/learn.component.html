@@ -14,52 +14,94 @@
         חזרה לפרטי הקורס
       </button>
 
-      <!-- Placeholder Content -->
-      <div class="learn__placeholder">
-        <div class="placeholder-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+      @if (course()) {
+        <!-- Course Header -->
+        <div class="learn__header">
+          <div class="learn__header-content">
+            <h1 class="learn__title">{{ course()!.title }}</h1>
+
+            <div class="learn__meta">
+              <span class="learn__meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+                {{ lessons().length }} שיעורים
+              </span>
+
+              @if (totalDuration() > 0) {
+                <span class="learn__meta-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  {{ formatDuration(totalDuration()) }}
+                </span>
+              }
+
+              <span class="learn__meta-item learn__meta-item--progress">
+                <app-progress-pill [percent]="progressPercent()" size="md" />
+              </span>
+            </div>
+          </div>
+
+          <div class="learn__header-actions">
+            @if (lessons().length > 0) {
+              <app-button variant="primary" (buttonClick)="onContinue()">
+                @if (progressPercent() === 0) {
+                  התחל ללמוד
+                } @else if (progressPercent() === 100) {
+                  צפה שוב
+                } @else {
+                  המשך ללמוד
+                }
+              </app-button>
+            }
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="learn__stats">
+          <div class="stat-card">
+            <div class="stat-card__value">{{ completedCount() }}</div>
+            <div class="stat-card__label">שיעורים הושלמו</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__value">{{ lessons().length - completedCount() }}</div>
+            <div class="stat-card__label">שיעורים נותרו</div>
+          </div>
+          <div class="stat-card stat-card--highlight">
+            <div class="stat-card__value">{{ progressPercent() }}%</div>
+            <div class="stat-card__label">התקדמות</div>
+          </div>
+        </div>
+
+        <!-- Lessons Section -->
+        <div class="learn__lessons">
+          <h2 class="learn__section-title">שיעורי הקורס</h2>
+
+          <app-lesson-list
+            [lessons]="lessons()"
+            [completedLessons]="completedLessons()"
+            [currentLessonId]="currentLessonId()"
+            (lessonClick)="onLessonClick($event)"
+          />
+        </div>
+      } @else {
+        <!-- Course not found -->
+        <div class="learn__not-found">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
+          <h2>הקורס לא נמצא</h2>
+          <p>לא הצלחנו למצוא את הקורס המבוקש</p>
+          <app-button variant="secondary" (buttonClick)="onBack()">
+            חזרה לקטלוג
+          </app-button>
         </div>
-
-        <h1 class="placeholder-title">דף הלמידה בבנייה</h1>
-
-        @if (course()) {
-          <p class="placeholder-course-name">{{ course()!.title }}</p>
-        }
-
-        <p class="placeholder-text">
-          אנחנו עובדים על חוויית למידה מדהימה. בקרוב תוכל להתחיל ללמוד!
-        </p>
-
-        <div class="placeholder-features">
-          <div class="feature-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="5,3 19,12 5,21" />
-            </svg>
-            <span>שיעורי וידאו</span>
-          </div>
-          <div class="feature-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 12l2 2 4-4" />
-              <circle cx="12" cy="12" r="10" />
-            </svg>
-            <span>תרגולים אינטראקטיביים</span>
-          </div>
-          <div class="feature-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 20V10" />
-              <path d="M18 20V4" />
-              <path d="M6 20v-4" />
-            </svg>
-            <span>מעקב התקדמות</span>
-          </div>
-        </div>
-
-        <app-button variant="secondary" (buttonClick)="onBack()">
-          חזרה לפרטי הקורס
-        </app-button>
-      </div>
+      }
     </div>
   }
 </div>

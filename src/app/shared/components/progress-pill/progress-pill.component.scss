@@ -1,0 +1,68 @@
+.progress-pill {
+  @apply inline-flex items-center gap-2;
+}
+
+.progress-pill__bar {
+  @apply w-24 h-2 rounded-full overflow-hidden;
+  @apply bg-slate-200;
+}
+
+:host-context([data-theme="dark"]) .progress-pill__bar {
+  @apply bg-slate-700;
+}
+
+.progress-pill--sm .progress-pill__bar {
+  @apply w-16 h-1.5;
+}
+
+.progress-pill--lg .progress-pill__bar {
+  @apply w-32 h-3;
+}
+
+.progress-pill__fill {
+  @apply h-full rounded-full;
+  @apply transition-all duration-500 ease-out;
+}
+
+// Color variants
+.progress-pill--start .progress-pill__fill {
+  @apply bg-slate-400;
+}
+
+.progress-pill--low .progress-pill__fill {
+  @apply bg-blue-400;
+}
+
+.progress-pill--medium .progress-pill__fill {
+  @apply bg-blue-500;
+}
+
+.progress-pill--high .progress-pill__fill {
+  @apply bg-blue-600;
+}
+
+.progress-pill--complete .progress-pill__fill {
+  @apply bg-green-500;
+}
+
+// Label
+.progress-pill__label {
+  @apply text-sm font-medium;
+  color: var(--color-text-secondary);
+}
+
+.progress-pill--sm .progress-pill__label {
+  @apply text-xs;
+}
+
+.progress-pill--lg .progress-pill__label {
+  @apply text-base;
+}
+
+.progress-pill--complete .progress-pill__label {
+  @apply text-green-600;
+}
+
+:host-context([data-theme="dark"]) .progress-pill--complete .progress-pill__label {
+  @apply text-green-400;
+}

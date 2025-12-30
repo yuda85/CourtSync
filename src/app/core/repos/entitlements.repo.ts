@@ -137,7 +137,13 @@ export class EntitlementsRepo {
 
       console.log('Demo entitlement created:', entitlementId);
 
-      // Step 3: Invalidate cache to force refresh
+      // Step 3: Update user profile with lastPurchaseAt
+      const userRef = doc(this.firestore, 'users', user.uid);
+      await setDoc(userRef, {
+        lastPurchaseAt: Timestamp.now()
+      }, { merge: true });
+
+      // Step 4: Invalidate cache to force refresh
       this.invalidateCache();
 
     } catch (err) {
