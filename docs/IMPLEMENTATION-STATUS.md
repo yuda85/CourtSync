@@ -418,8 +418,48 @@ These features are documented but not planned for current development:
 
 ## Next Steps (Recommended Priority)
 
-1. **Complete Learning Experience** - Video playback, lesson completion
-2. **Complete Progress Tracking** - Resume functionality, completion detection
-3. **Complete Smart Practice Engine** - All practice modes, feedback system
-4. **Build Exam Simulation Engine** - Full exam experience
-5. **Polish Dashboard** - Full progress aggregation, recent activity
+1. **Phase 6: Firestore Catalog Integration** - Update `courses.repo.ts` to fetch published courses from Firestore instead of mock data
+2. **Phase 7: Cleanup** - Remove hardcoded superadmin email, use Firestore roles only
+3. **Complete Learning Experience** - Video playback, lesson completion
+4. **Complete Progress Tracking** - Resume functionality, completion detection
+5. **Complete Smart Practice Engine** - All practice modes, feedback system
+6. **Build Exam Simulation Engine** - Full exam experience
+7. **Polish Dashboard** - Full progress aggregation, recent activity
+
+---
+
+## Session Handoff Notes (December 30, 2024)
+
+### What Was Completed Today
+
+**Phase 4: Lesson & Question Management** - All components fully functional:
+- `lesson-list.component.ts` - Shows lessons for a course with stats, duplicate/delete
+- `lesson-editor.component.ts` - Create/edit with video/text/quiz type support
+- `question-list.component.ts` - Filter by difficulty/topic/status, publish/unpublish
+- `question-editor.component.ts` - Full editor with live preview, Hebrew letters (א,ב,ג,ד)
+
+### Current State
+
+- Dev server runs on `http://localhost:4300/`
+- All builds passing (no errors)
+- Superadmin access: Login with `yuda8855@gmail.com` to access `/admin`
+- Firestore collections in use: `users`, `courses`, `lessons`, `questions`, `invites`
+
+### To Continue Development
+
+1. **Start dev server:** `npm start` (runs on port 4300)
+2. **Access admin:** Sign in with superadmin email, click "ניהול" in header
+3. **Next task:** Phase 6 - Update `src/app/core/repos/courses.repo.ts` to fetch from Firestore
+
+### Key Files for Phase 6
+
+```
+src/app/core/repos/courses.repo.ts          # Currently uses mock data from sample-courses
+src/app/core/data/sample-courses.ts         # Mock data (keep as fallback)
+src/app/features/courses/catalog/           # Catalog page that needs Firestore courses
+```
+
+### Known Issues
+
+- New courses created in admin don't appear in catalog (because catalog reads mock data)
+- This is exactly what Phase 6 will fix
