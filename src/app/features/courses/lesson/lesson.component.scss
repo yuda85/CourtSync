@@ -137,8 +137,73 @@
   @apply bg-slate-800;
 }
 
-// Quiz placeholder
-.lesson-page__quiz-placeholder,
+// Practice Section
+.lesson-page__practice-section {
+  @apply w-full;
+}
+
+.practice-card {
+  @apply flex flex-col items-center;
+  @apply p-8 sm:p-10 rounded-2xl;
+  @apply text-center;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.practice-card__icon {
+  @apply w-20 h-20;
+  @apply flex items-center justify-center;
+  @apply rounded-2xl mb-6;
+  background: var(--color-primary-50);
+
+  .material-icons {
+    @apply text-4xl;
+    color: var(--primary);
+  }
+}
+
+:host-context([data-theme="dark"]) .practice-card__icon {
+  background: rgba(48, 184, 240, 0.15);
+}
+
+.practice-card__content {
+  @apply mb-8;
+
+  h3 {
+    @apply text-2xl font-bold mb-3;
+    color: var(--text);
+  }
+
+  p {
+    @apply text-base max-w-md mx-auto;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+}
+
+.practice-card__features {
+  @apply flex flex-wrap justify-center gap-4 mt-6;
+}
+
+.feature-item {
+  @apply inline-flex items-center gap-2;
+  @apply px-4 py-2 rounded-full;
+  @apply text-sm font-medium;
+  background: var(--surface-2);
+  color: var(--muted);
+
+  .material-icons-outlined {
+    @apply text-lg;
+    color: var(--primary);
+  }
+}
+
+.practice-card__action {
+  @apply w-full sm:w-auto;
+}
+
+// No content placeholder
 .lesson-page__no-content {
   @apply flex flex-col items-center justify-center;
   @apply py-16 px-6 rounded-2xl;
@@ -158,9 +223,14 @@
   }
 }
 
-:host-context([data-theme="dark"]) .lesson-page__quiz-placeholder,
 :host-context([data-theme="dark"]) .lesson-page__no-content {
   @apply bg-slate-800;
+}
+
+.placeholder-icon {
+  @apply text-5xl mb-4;
+  color: var(--muted);
+  opacity: 0.5;
 }
 
 // Actions - Sticky at bottom for easy navigation

@@ -1,0 +1,388 @@
+.practice-entry {
+  @apply w-full max-w-2xl mx-auto;
+  @apply px-4 sm:px-6 py-6;
+  min-height: 100dvh;
+}
+
+// =====================
+// BACK BUTTON
+// =====================
+.back-button {
+  @apply inline-flex items-center gap-2;
+  @apply px-4 py-2 mb-6;
+  @apply rounded-lg;
+  @apply text-sm font-medium;
+  @apply transition-all duration-200;
+  @apply cursor-pointer;
+
+  background: transparent;
+  color: var(--muted);
+  border: none;
+
+  &:hover {
+    color: var(--primary);
+    background: var(--surface-2);
+  }
+
+  &:focus-visible {
+    @apply outline-none ring-2;
+    ring-color: var(--primary);
+  }
+
+  .material-icons-outlined {
+    @apply text-lg;
+  }
+}
+
+// =====================
+// HEADER
+// =====================
+.practice-entry__header {
+  @apply flex items-center gap-4 mb-8;
+}
+
+.header-icon {
+  @apply w-14 h-14;
+  @apply flex items-center justify-center;
+  @apply rounded-2xl;
+  background: var(--color-primary-50);
+
+  [data-theme="dark"] & {
+    background: rgba(48, 184, 240, 0.15);
+  }
+
+  .material-icons {
+    @apply text-3xl;
+    color: var(--primary);
+  }
+}
+
+.header-content {
+  @apply flex-1;
+}
+
+.header-title {
+  @apply text-2xl sm:text-3xl font-bold mb-1;
+  color: var(--text);
+}
+
+.header-subtitle {
+  @apply text-base;
+  color: var(--muted);
+}
+
+// =====================
+// FILTERS CARD
+// =====================
+.practice-entry__filters {
+  @apply p-6;
+  @apply rounded-2xl;
+  @apply mb-6;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.filters-title {
+  @apply text-lg font-semibold mb-6;
+  color: var(--text);
+}
+
+.filter-group {
+  @apply mb-5;
+
+  &:last-child {
+    @apply mb-0;
+  }
+}
+
+.filter-label {
+  @apply flex items-center gap-2;
+  @apply text-sm font-medium mb-2;
+  color: var(--muted);
+
+  .material-icons-outlined {
+    @apply text-lg;
+  }
+}
+
+.filter-select {
+  @apply w-full;
+  @apply px-4 py-3;
+  @apply rounded-xl;
+  @apply text-base;
+  @apply cursor-pointer;
+  @apply transition-all duration-200;
+
+  background: var(--surface-2);
+  color: var(--text);
+  border: 2px solid transparent;
+
+  // Custom dropdown arrow
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234A6078'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 12px center;
+  background-size: 20px;
+  padding-left: 40px;
+
+  [data-theme="dark"] & {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23B7C4D6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  }
+
+  &:hover {
+    border-color: var(--border);
+  }
+
+  &:focus {
+    @apply outline-none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(48, 184, 240, 0.15);
+  }
+
+  option {
+    background: var(--surface);
+    color: var(--text);
+  }
+}
+
+// =====================
+// TOGGLE SWITCH
+// =====================
+.filter-group--toggle {
+  @apply pt-4;
+  @apply border-t;
+  border-color: var(--border);
+}
+
+.toggle-label {
+  @apply flex items-center justify-between;
+  @apply cursor-pointer;
+}
+
+.toggle-text {
+  @apply flex items-center gap-2;
+  @apply text-base font-medium;
+  color: var(--text);
+
+  .material-icons-outlined {
+    @apply text-xl;
+    color: var(--muted);
+  }
+}
+
+.toggle-switch {
+  @apply relative;
+  @apply w-14 h-8;
+  @apply rounded-full;
+  @apply cursor-pointer;
+  @apply transition-all duration-200;
+
+  background: var(--border);
+  border: none;
+
+  &:hover {
+    background: var(--muted);
+  }
+
+  &:focus-visible {
+    @apply outline-none ring-2 ring-offset-2;
+    ring-color: var(--primary);
+    ring-offset-color: var(--surface);
+  }
+}
+
+.toggle-switch--active {
+  background: var(--primary);
+
+  .toggle-knob {
+    transform: translateX(-24px);
+  }
+}
+
+.toggle-knob {
+  @apply absolute;
+  @apply w-6 h-6;
+  @apply rounded-full;
+  @apply transition-transform duration-200;
+
+  top: 4px;
+  right: 4px;
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
+
+// =====================
+// PREVIEW CARD
+// =====================
+.practice-entry__preview {
+  @apply mb-6;
+}
+
+.preview-card {
+  @apply flex flex-col items-center justify-center;
+  @apply p-6;
+  @apply rounded-2xl;
+  @apply text-center;
+
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.preview-count {
+  @apply text-4xl font-bold mb-1;
+  color: var(--primary);
+}
+
+.preview-label {
+  @apply text-base;
+  color: var(--muted);
+}
+
+.preview-loading {
+  @apply inline-flex items-center gap-2;
+  @apply text-base;
+  color: var(--muted);
+
+  .material-icons {
+    @apply text-xl;
+  }
+}
+
+.preview-empty {
+  @apply text-sm text-center mt-3;
+  color: var(--muted);
+}
+
+// =====================
+// SPINNING ANIMATION
+// =====================
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// =====================
+// ACTION BUTTON
+// =====================
+.practice-entry__action {
+  @apply mb-6;
+
+  .btn-icon {
+    @apply mr-2;
+  }
+}
+
+// =====================
+// INFO TEXT
+// =====================
+.practice-entry__info {
+  @apply text-center;
+}
+
+.info-text {
+  @apply inline-flex items-center gap-2;
+  @apply text-sm;
+  color: var(--muted);
+
+  .material-icons-outlined {
+    @apply text-lg;
+  }
+}
+
+// =====================
+// LOADING STATE
+// =====================
+.loading-state {
+  @apply py-8;
+}
+
+.loading-card {
+  @apply h-64;
+  @apply rounded-2xl;
+  @apply overflow-hidden;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.loading-shimmer {
+  @apply w-full h-full;
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--surface) 50%,
+    var(--surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// =====================
+// ERROR STATE
+// =====================
+.error-state {
+  @apply flex flex-col items-center justify-center;
+  @apply py-16 px-6;
+  @apply text-center;
+
+  .material-icons-outlined {
+    @apply text-5xl mb-4;
+    color: var(--color-error);
+  }
+
+  p {
+    @apply text-base;
+    color: var(--muted);
+  }
+}
+
+// =====================
+// RESPONSIVE
+// =====================
+@media (max-width: 640px) {
+  .practice-entry {
+    @apply px-4 py-4;
+  }
+
+  .header-icon {
+    @apply w-12 h-12;
+
+    .material-icons {
+      @apply text-2xl;
+    }
+  }
+
+  .header-title {
+    @apply text-xl;
+  }
+
+  .practice-entry__filters {
+    @apply p-5;
+  }
+
+  .filters-title {
+    @apply text-base mb-5;
+  }
+
+  .preview-count {
+    @apply text-3xl;
+  }
+}

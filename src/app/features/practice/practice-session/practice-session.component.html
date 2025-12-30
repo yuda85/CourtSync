@@ -1,0 +1,101 @@
+<div class="practice-session">
+  @if (hasSession() && currentQuestion()) {
+    <!-- Header with progress -->
+    <header class="session-header">
+      <button
+        type="button"
+        class="exit-button"
+        aria-label="צא מהתרגול"
+        (click)="onExitSession()"
+      >
+        <span class="material-icons">close</span>
+      </button>
+
+      <div class="progress-container">
+        <app-progress-bar
+          [percent]="practiceService.progressPercent()"
+          [showLabel]="false"
+          color="primary"
+          size="sm"
+        />
+        <span class="progress-text">
+          {{ practiceService.currentQuestionNumber() }} / {{ practiceService.totalQuestions() }}
+        </span>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="session-content">
+      <!-- Question Card -->
+      <app-question-card
+        [question]="currentQuestion()!"
+        [questionNumber]="practiceService.currentQuestionNumber()"
+        [totalQuestions]="practiceService.totalQuestions()"
+      />
+
+      <!-- Answer Options -->
+      <div class="options-container">
+        @for (option of currentQuestion()!.options; track option.id; let i = $index) {
+          <app-answer-option
+            [option]="option"
+            [optionLetter]="optionLetters[i]"
+            [isSelected]="isOptionSelected(option.id)"
+            [isCorrect]="getOptionCorrectness(option.id)"
+            [isTheCorrectAnswer]="isCorrectOption(option.id)"
+            [isDisabled]="hasChecked()"
+            (optionClick)="onOptionSelect($event)"
+          />
+        }
+      </div>
+
+      <!-- Check Answer Button (before checking) -->
+      @if (!hasChecked()) {
+        <div class="action-container">
+          <app-button
+            variant="primary"
+            size="lg"
+            [fullWidth]="true"
+            [disabled]="!canSubmit()"
+            [loading]="isChecking()"
+            (buttonClick)="onCheckAnswer()"
+          >
+            <span class="material-icons btn-icon">fact_check</span>
+            בדוק תשובה
+          </app-button>
+        </div>
+      }
+
+      <!-- Explanation Box (after checking) -->
+      @if (hasChecked() && answerResult()) {
+        <div class="explanation-container">
+          <app-explanation-box
+            [explanation]="currentQuestion()!.explanation"
+            [isCorrect]="answerResult()!.isCorrect"
+            [relatedLesson]="relatedLesson()"
+            [courseId]="courseId()"
+            (navigateToLesson)="onNavigateToLesson($event)"
+          />
+        </div>
+
+        <!-- Next/Finish Button -->
+        <div class="action-container">
+          <app-button
+            variant="primary"
+            size="lg"
+            [fullWidth]="true"
+            (buttonClick)="onNextQuestion()"
+          >
+            <span class="material-icons btn-icon">{{ nextButtonIcon() }}</span>
+            {{ nextButtonText() }}
+          </app-button>
+        </div>
+      }
+    </main>
+  } @else {
+    <!-- No session / Loading state -->
+    <div class="empty-state">
+      <span class="material-icons-outlined">hourglass_empty</span>
+      <p>טוען שאלות...</p>
+    </div>
+  }
+</div>

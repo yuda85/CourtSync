@@ -1,0 +1,197 @@
+.answer-option {
+  @apply relative w-full;
+  @apply flex items-start gap-4;
+  @apply p-5 sm:p-6;
+  @apply text-right;
+  @apply rounded-2xl;
+  @apply border-2;
+  @apply transition-all duration-200;
+  @apply cursor-pointer;
+
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+
+  &:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: var(--surface-2);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:focus-visible {
+    @apply outline-none ring-2 ring-offset-2;
+    ring-color: var(--primary);
+    ring-offset-color: var(--bg);
+  }
+
+  // =====================
+  // SELECTED STATE (before check)
+  // =====================
+  &--selected {
+    border-color: var(--primary);
+    background: var(--color-primary-50);
+
+    [data-theme="dark"] & {
+      background: rgba(48, 184, 240, 0.1);
+    }
+
+    .answer-option__letter {
+      background: var(--primary);
+      color: var(--primary-contrast);
+    }
+  }
+
+  // =====================
+  // CORRECT STATE (after check, user selected correctly)
+  // =====================
+  &--correct {
+    border-color: var(--color-success);
+    background: rgba(34, 197, 94, 0.08);
+
+    [data-theme="dark"] & {
+      background: rgba(34, 197, 94, 0.12);
+    }
+
+    .answer-option__letter {
+      background: var(--color-success);
+      color: white;
+    }
+  }
+
+  // =====================
+  // INCORRECT STATE (after check, user selected incorrectly)
+  // =====================
+  &--incorrect {
+    border-color: var(--color-error);
+    background: rgba(239, 68, 68, 0.08);
+
+    [data-theme="dark"] & {
+      background: rgba(239, 68, 68, 0.12);
+    }
+
+    .answer-option__letter {
+      background: var(--color-error);
+      color: white;
+    }
+  }
+
+  // =====================
+  // CORRECT REVEAL (after check, show the correct answer)
+  // =====================
+  &--correct-reveal {
+    border-color: var(--color-success);
+    background: rgba(34, 197, 94, 0.08);
+
+    [data-theme="dark"] & {
+      background: rgba(34, 197, 94, 0.12);
+    }
+
+    .answer-option__letter {
+      background: var(--color-success);
+      color: white;
+    }
+  }
+
+  // =====================
+  // DIMMED STATE (other options after reveal)
+  // =====================
+  &--dimmed {
+    opacity: 0.5;
+    border-color: var(--border);
+    background: var(--surface);
+  }
+
+  // =====================
+  // DISABLED STATE
+  // =====================
+  &--disabled,
+  &:disabled {
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+// =====================
+// LETTER BADGE
+// =====================
+.answer-option__letter {
+  @apply flex-shrink-0;
+  @apply w-10 h-10;
+  @apply flex items-center justify-center;
+  @apply rounded-xl;
+  @apply text-lg font-bold;
+  @apply transition-colors duration-200;
+
+  background: var(--surface-2);
+  color: var(--muted);
+
+  [data-theme="dark"] & {
+    background: var(--surface-2);
+  }
+}
+
+// =====================
+// TEXT
+// =====================
+.answer-option__text {
+  @apply flex-1;
+  @apply text-base sm:text-lg;
+  @apply leading-relaxed;
+  @apply pt-2;
+
+  font-family: 'Heebo', 'Rubik', sans-serif;
+}
+
+// =====================
+// STATUS ICON
+// =====================
+.answer-option__icon {
+  @apply flex-shrink-0;
+  @apply w-8 h-8;
+  @apply flex items-center justify-center;
+  @apply pt-2;
+
+  .material-icons {
+    @apply text-2xl;
+  }
+
+  .icon-correct {
+    color: var(--color-success);
+  }
+
+  .icon-incorrect {
+    color: var(--color-error);
+  }
+
+  .icon-selected {
+    color: var(--primary);
+  }
+}
+
+// =====================
+// ANIMATIONS
+// =====================
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+@keyframes pulse-success {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.answer-option--incorrect {
+  animation: shake 0.4s ease-in-out;
+}
+
+.answer-option--correct {
+  animation: pulse-success 0.6s ease-out;
+}

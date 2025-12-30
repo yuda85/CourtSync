@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, catchError, shareReplay } from 'rxjs/operators';
-import { Auth, authState } from '@angular/fire/auth';
+import { Auth, authState, User } from '@angular/fire/auth';
 import {
   Firestore,
   collection,
@@ -27,18 +27,28 @@ export class EntitlementsRepo {
   private readonly auth = inject(Auth);
   private readonly firestore = inject(Firestore);
 
+  /** Cached auth state observable to avoid injection context issues */
+  private readonly authState$: Observable<User | null>;
+
   /** Local cache of entitlements for quick access */
   private readonly entitlementsCache = signal<Entitlement[]>([]);
 
   /** Loading state */
   readonly isLoading = signal(false);
 
+  constructor() {
+    // Cache the auth state observable in the constructor (within injection context)
+    this.authState$ = authState(this.auth).pipe(
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+  }
+
   /**
    * Get current user's entitlements
    * Returns Observable that updates in real-time
    */
   myEntitlements$(): Observable<Entitlement[]> {
-    return authState(this.auth).pipe(
+    return this.authState$.pipe(
       switchMap(user => {
         if (!user) {
           return of([]);

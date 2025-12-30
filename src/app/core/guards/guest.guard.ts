@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 
 /**
  * Guard to protect guest-only routes (like landing page)
- * Redirects authenticated users to the dashboard
+ * Redirects authenticated users to the profile page
  */
 export const guestGuard: CanActivateFn = () => {
   const auth = inject(Auth);
@@ -21,9 +21,9 @@ export const guestGuard: CanActivateFn = () => {
       if (!currentUser) {
         return true;
       }
-      // Redirect to dashboard if already authenticated
-      console.log('Guest guard - redirecting to dashboard');
-      return router.createUrlTree(['/app/dashboard']);
+      // Redirect to profile if already authenticated
+      console.log('Guest guard - redirecting to profile');
+      return router.createUrlTree(['/app/profile']);
     }),
     catchError(err => {
       console.error('Guest guard error:', err);

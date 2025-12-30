@@ -1,0 +1,135 @@
+<div class="practice-summary">
+  @if (summary()) {
+    <!-- Completion Header -->
+    <header class="summary-header" [class]="gradeClass()">
+      <div class="header-icon">
+        <span class="material-icons">{{ gradeIcon() }}</span>
+      </div>
+      <h1 class="header-title">התרגול הסתיים!</h1>
+      <p class="header-message">{{ gradeMessage() }}</p>
+    </header>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-main">
+        <span class="score-value">{{ summary()!.percentage }}%</span>
+        <span class="score-label">הציון שלך</span>
+      </div>
+
+      <div class="score-stats">
+        <div class="stat-item">
+          <span class="stat-value">{{ summary()!.totalQuestions }}</span>
+          <span class="stat-label">שאלות</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item stat-item--correct">
+          <span class="stat-value">{{ summary()!.correctCount }}</span>
+          <span class="stat-label">נכונות</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item stat-item--incorrect">
+          <span class="stat-value">{{ summary()!.totalQuestions - summary()!.correctCount }}</span>
+          <span class="stat-label">שגיאות</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Topic Performance -->
+    @if (summary()!.topicPerformance.length > 0) {
+      <div class="performance-section">
+        <h2 class="section-title">
+          <span class="material-icons-outlined">analytics</span>
+          ביצועים לפי נושא
+        </h2>
+
+        <div class="performance-list">
+          @for (topic of summary()!.topicPerformance; track topic.topic) {
+            <div class="performance-item">
+              <div class="performance-header">
+                <span class="performance-topic">{{ topic.topic }}</span>
+                <span class="performance-score">
+                  {{ topic.correct }}/{{ topic.total }}
+                  ({{ formatPercentage(topic.percentage) }})
+                </span>
+              </div>
+              <div class="performance-bar-container">
+                <div
+                  class="performance-bar"
+                  [class]="getPerformanceClass(topic)"
+                  [style.width]="getPerformanceWidth(topic)"
+                ></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Weak Topics Section -->
+    @if (hasWeakTopics()) {
+      <div class="weak-topics-section">
+        <h2 class="section-title section-title--weak">
+          <span class="material-icons-outlined">lightbulb</span>
+          נושאים לשיפור
+        </h2>
+
+        <div class="weak-topics-list">
+          @for (topic of summary()!.weakestTopics; track topic.topic) {
+            <div class="weak-topic-item">
+              <span class="material-icons-outlined">arrow_back</span>
+              <span class="topic-name">{{ topic.topic }}</span>
+              <span class="topic-score">{{ formatPercentage(topic.percentage) }}</span>
+            </div>
+          }
+        </div>
+
+        <p class="weak-topics-hint">
+          מומלץ לחזור על הנושאים האלו לפני המבחן
+        </p>
+      </div>
+    }
+
+    <!-- Actions -->
+    <div class="actions-section">
+      <app-button
+        variant="primary"
+        size="lg"
+        [fullWidth]="true"
+        (buttonClick)="onPracticeAgain()"
+      >
+        <span class="material-icons btn-icon">replay</span>
+        תרגול נוסף
+      </app-button>
+
+      <div class="secondary-actions">
+        <app-button
+          variant="secondary"
+          size="md"
+          (buttonClick)="onBack()"
+        >
+          <span class="material-icons btn-icon">menu_book</span>
+          @if (lessonId()) {
+            חזרה לשיעור
+          } @else {
+            חזרה לקורס
+          }
+        </app-button>
+
+        <app-button
+          variant="ghost"
+          size="md"
+          (buttonClick)="onBackToProfile()"
+        >
+          <span class="material-icons btn-icon">home</span>
+          דף הבית
+        </app-button>
+      </div>
+    </div>
+  } @else {
+    <!-- Loading/Empty State -->
+    <div class="empty-state">
+      <span class="material-icons-outlined">hourglass_empty</span>
+      <p>טוען סיכום...</p>
+    </div>
+  }
+</div>

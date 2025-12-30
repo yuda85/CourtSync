@@ -1,0 +1,144 @@
+<div class="practice-entry">
+  <!-- Back Button -->
+  <button class="back-button" (click)="onBack()">
+    <span class="material-icons-outlined">arrow_forward</span>
+    @if (lessonId()) {
+      חזרה לשיעור
+    } @else {
+      חזרה לקורס
+    }
+  </button>
+
+  @if (isLoading()) {
+    <!-- Loading State -->
+    <div class="loading-state">
+      <div class="loading-card">
+        <div class="loading-shimmer"></div>
+      </div>
+    </div>
+  } @else if (course()) {
+    <!-- Header -->
+    <header class="practice-entry__header">
+      <div class="header-icon">
+        <span class="material-icons">quiz</span>
+      </div>
+      <div class="header-content">
+        <h1 class="header-title">תרגול</h1>
+        <p class="header-subtitle">{{ course()!.title }}</p>
+      </div>
+    </header>
+
+    <!-- Filters Card -->
+    <div class="practice-entry__filters">
+      <h2 class="filters-title">הגדרות תרגול</h2>
+
+      <!-- Topic Filter -->
+      <div class="filter-group">
+        <label class="filter-label" for="topic-select">
+          <span class="material-icons-outlined">topic</span>
+          נושא
+        </label>
+        <select
+          id="topic-select"
+          class="filter-select"
+          [value]="selectedTopic() ?? ''"
+          (change)="onTopicChange($event)"
+        >
+          <option value="">כל הנושאים</option>
+          @for (topic of topics(); track topic) {
+            <option [value]="topic">{{ topic }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Difficulty Filter -->
+      <div class="filter-group">
+        <label class="filter-label" for="difficulty-select">
+          <span class="material-icons-outlined">speed</span>
+          רמת קושי
+        </label>
+        <select
+          id="difficulty-select"
+          class="filter-select"
+          [value]="selectedDifficulty() ?? ''"
+          (change)="onDifficultyChange($event)"
+        >
+          <option value="">כל הרמות</option>
+          @for (diff of difficulties; track diff) {
+            <option [value]="diff">{{ diff }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Mistakes Only Toggle -->
+      <div class="filter-group filter-group--toggle">
+        <label class="toggle-label">
+          <span class="toggle-text">
+            <span class="material-icons-outlined">replay</span>
+            רק שאלות שטעיתי בהן
+          </span>
+          <button
+            type="button"
+            role="switch"
+            class="toggle-switch"
+            [class.toggle-switch--active]="onlyMistakes()"
+            [attr.aria-checked]="onlyMistakes()"
+            (click)="onMistakesToggle()"
+          >
+            <span class="toggle-knob"></span>
+          </button>
+        </label>
+      </div>
+    </div>
+
+    <!-- Question Count Preview -->
+    <div class="practice-entry__preview">
+      <div class="preview-card">
+        @if (isCountLoading()) {
+          <span class="preview-loading">
+            <span class="material-icons spinning">refresh</span>
+            מחשב...
+          </span>
+        } @else {
+          <span class="preview-count">{{ questionCount() }}</span>
+          <span class="preview-label">שאלות נמצאו</span>
+        }
+      </div>
+
+      @if (questionCount() === 0 && !isCountLoading()) {
+        <p class="preview-empty">
+          לא נמצאו שאלות התואמות את הסינון. נסה לשנות את ההגדרות.
+        </p>
+      }
+    </div>
+
+    <!-- Start Button -->
+    <div class="practice-entry__action">
+      <app-button
+        variant="primary"
+        size="lg"
+        [fullWidth]="true"
+        [disabled]="!canStart()"
+        [loading]="isStarting()"
+        (buttonClick)="onStartPractice()"
+      >
+        <span class="material-icons btn-icon">play_arrow</span>
+        התחל תרגול
+      </app-button>
+    </div>
+
+    <!-- Info -->
+    <div class="practice-entry__info">
+      <p class="info-text">
+        <span class="material-icons-outlined">info</span>
+        השאלות ישובצו באקראי. קח את הזמן, אין הגבלת זמן.
+      </p>
+    </div>
+  } @else {
+    <!-- Error State -->
+    <div class="error-state">
+      <span class="material-icons-outlined">error_outline</span>
+      <p>לא הצלחנו לטעון את הנתונים. נסה לרענן את הדף.</p>
+    </div>
+  }
+</div>

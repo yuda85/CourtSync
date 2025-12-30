@@ -1,0 +1,125 @@
+.explanation-box {
+  @apply w-full;
+  @apply p-6;
+  @apply rounded-2xl;
+  @apply border-2;
+  animation: slideIn 0.3s ease-out;
+}
+
+// =====================
+// CORRECT STATE
+// =====================
+.explanation-box--correct {
+  background: rgba(34, 197, 94, 0.06);
+  border-color: var(--color-success);
+
+  [data-theme="dark"] & {
+    background: rgba(34, 197, 94, 0.1);
+  }
+
+  .explanation-box__header {
+    color: var(--color-success);
+  }
+}
+
+// =====================
+// INCORRECT STATE
+// =====================
+.explanation-box--incorrect {
+  background: rgba(239, 68, 68, 0.06);
+  border-color: var(--color-error);
+
+  [data-theme="dark"] & {
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  .explanation-box__header {
+    color: var(--color-error);
+  }
+}
+
+// =====================
+// HEADER
+// =====================
+.explanation-box__header {
+  @apply flex items-center gap-2;
+  @apply mb-4;
+
+  .header-icon {
+    @apply text-2xl;
+  }
+
+  .header-text {
+    @apply text-lg font-bold;
+  }
+}
+
+// =====================
+// CONTENT
+// =====================
+.explanation-box__content {
+  @apply mb-4;
+}
+
+.explanation-box__title {
+  @apply text-sm font-semibold mb-2;
+  color: var(--muted);
+}
+
+.explanation-box__text {
+  @apply text-base leading-relaxed;
+  color: var(--text);
+  font-family: 'Heebo', 'Rubik', sans-serif;
+  text-align: right;
+  direction: rtl;
+}
+
+// =====================
+// LESSON LINK
+// =====================
+.explanation-box__lesson {
+  @apply pt-4;
+  @apply border-t;
+  border-color: var(--border);
+}
+
+.lesson-link {
+  @apply inline-flex items-center gap-2;
+  @apply px-4 py-2;
+  @apply rounded-lg;
+  @apply text-sm font-medium;
+  @apply transition-all duration-200;
+  @apply cursor-pointer;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--primary);
+
+  &:hover {
+    background: var(--surface-2);
+    border-color: var(--primary);
+  }
+
+  &:focus-visible {
+    @apply outline-none ring-2;
+    ring-color: var(--primary);
+  }
+
+  .material-icons-outlined {
+    @apply text-lg;
+  }
+}
+
+// =====================
+// ANIMATIONS
+// =====================
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

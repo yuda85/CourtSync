@@ -71,6 +71,14 @@
         </button>
       }
 
+      <!-- Admin Link (for admin/superadmin users) -->
+      @if (showUserInfo() && user() && isAdmin()) {
+        <a routerLink="/admin" class="admin-link" title="ניהול">
+          <span class="material-icons">admin_panel_settings</span>
+          <span class="admin-text">ניהול</span>
+        </a>
+      }
+
       <!-- User Info (Authenticated) -->
       @if (showUserInfo() && user()) {
         <a routerLink="/app/profile" class="user-info">

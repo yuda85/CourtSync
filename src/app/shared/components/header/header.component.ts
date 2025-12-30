@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 import { ButtonComponent } from '../button/button.component';
 import { AuthService } from '@core/services/auth.service';
+import { RoleService } from '@core/services/role.service';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +15,7 @@ import { AuthService } from '@core/services/auth.service';
 })
 export class HeaderComponent {
   private readonly authService = inject(AuthService);
+  private readonly roleService = inject(RoleService);
 
   /** Whether to show the sign-in button (for landing page) */
   showSignIn = input(true);
@@ -32,6 +34,9 @@ export class HeaderComponent {
 
   /** Loading state */
   readonly isLoading = this.authService.isLoading;
+
+  /** Whether user is admin or superadmin */
+  readonly isAdmin = this.roleService.isAdmin;
 
   /** Scroll state for header styling */
   readonly isScrolled = signal(false);

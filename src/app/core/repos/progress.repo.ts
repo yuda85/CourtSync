@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, catchError } from 'rxjs/operators';
-import { Auth, authState } from '@angular/fire/auth';
+import { map, switchMap, catchError, shareReplay } from 'rxjs/operators';
+import { Auth, authState, User } from '@angular/fire/auth';
 import {
   Firestore,
   collection,
@@ -27,6 +27,16 @@ export class ProgressRepo {
   private readonly auth = inject(Auth);
   private readonly firestore = inject(Firestore);
 
+  /** Cached auth state observable to avoid injection context issues */
+  private readonly authState$: Observable<User | null>;
+
+  constructor() {
+    // Cache the auth state observable in the constructor (within injection context)
+    this.authState$ = authState(this.auth).pipe(
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+  }
+
   /**
    * Get progress reference for a specific course
    */
@@ -38,7 +48,7 @@ export class ProgressRepo {
    * Get progress for a specific course
    */
   getCourseProgress$(courseId: string): Observable<CourseProgress | null> {
-    return authState(this.auth).pipe(
+    return this.authState$.pipe(
       switchMap(user => {
         if (!user) {
           return of(null);
@@ -60,7 +70,7 @@ export class ProgressRepo {
    * Get all course progress for the current user
    */
   getAllProgress$(): Observable<CourseProgress[]> {
-    return authState(this.auth).pipe(
+    return this.authState$.pipe(
       switchMap(user => {
         if (!user) {
           return of([]);

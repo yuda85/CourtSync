@@ -1,0 +1,49 @@
+<aside class="sidebar" [class.collapsed]="collapsed()">
+  <!-- Toggle Button -->
+  <button
+    class="toggle-btn"
+    (click)="onToggle()"
+    [attr.aria-label]="collapsed() ? 'הרחב תפריט' : 'צמצם תפריט'"
+  >
+    <span class="material-icons">
+      {{ collapsed() ? 'chevron_left' : 'chevron_right' }}
+    </span>
+  </button>
+
+  <!-- Logo Section -->
+  <div class="sidebar-header">
+    <a routerLink="/admin/dashboard" class="logo-link">
+      <span class="material-icons logo-icon">admin_panel_settings</span>
+      @if (!collapsed()) {
+        <span class="logo-text">ניהול</span>
+      }
+    </a>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="sidebar-nav">
+    @for (item of visibleNavItems(); track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        class="nav-item"
+        [title]="collapsed() ? item.label : ''"
+      >
+        <span class="material-icons nav-icon">{{ item.icon }}</span>
+        @if (!collapsed()) {
+          <span class="nav-label">{{ item.label }}</span>
+        }
+      </a>
+    }
+  </nav>
+
+  <!-- Bottom Section -->
+  <div class="sidebar-footer">
+    <a routerLink="/app/dashboard" class="nav-item back-link" title="חזרה לאתר">
+      <span class="material-icons nav-icon">arrow_forward</span>
+      @if (!collapsed()) {
+        <span class="nav-label">חזרה לאתר</span>
+      }
+    </a>
+  </div>
+</aside>

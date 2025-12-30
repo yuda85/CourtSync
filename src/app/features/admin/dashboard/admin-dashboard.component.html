@@ -1,0 +1,114 @@
+<div class="admin-dashboard">
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <div class="welcome-content">
+      <h1 class="welcome-title">
+        שלום, {{ userProfile()?.displayName || 'מנהל' }}
+      </h1>
+      <p class="welcome-subtitle">
+        @if (isSuperAdmin()) {
+          ברוך הבא לממשק הניהול הראשי. יש לך גישה מלאה לכל המערכת.
+        } @else {
+          ברוך הבא לממשק הניהול. כאן תוכל לנהל את הקורסים שלך.
+        }
+      </p>
+    </div>
+    @if (userProfile()?.photoURL) {
+      <img
+        [src]="userProfile()?.photoURL"
+        [alt]="userProfile()?.displayName"
+        class="welcome-avatar"
+      />
+    }
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon courses">
+        <span class="material-icons">school</span>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats().totalCourses }}</span>
+        <span class="stat-label">קורסים</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon published">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats().publishedCourses }}</span>
+        <span class="stat-label">קורסים מפורסמים</span>
+      </div>
+    </div>
+
+    @if (isSuperAdmin()) {
+      <div class="stat-card">
+        <div class="stat-icon users">
+          <span class="material-icons">people</span>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ stats().totalUsers }}</span>
+          <span class="stat-label">משתמשים</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon invites">
+          <span class="material-icons">mail</span>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ stats().pendingInvites }}</span>
+          <span class="stat-label">הזמנות ממתינות</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="section">
+    <h2 class="section-title">פעולות מהירות</h2>
+    <div class="actions-grid">
+      <a routerLink="/admin/courses/new" class="action-card">
+        <span class="material-icons action-icon">add_circle</span>
+        <span class="action-label">קורס חדש</span>
+      </a>
+
+      <a routerLink="/admin/courses" class="action-card">
+        <span class="material-icons action-icon">list</span>
+        <span class="action-label">כל הקורסים</span>
+      </a>
+
+      @if (isSuperAdmin()) {
+        <a routerLink="/admin/users" class="action-card">
+          <span class="material-icons action-icon">group</span>
+          <span class="action-label">ניהול משתמשים</span>
+        </a>
+
+        <a routerLink="/admin/invites" class="action-card">
+          <span class="material-icons action-icon">person_add</span>
+          <span class="action-label">הזמנת מנהל</span>
+        </a>
+      }
+    </div>
+  </div>
+
+  <!-- Info Section -->
+  <div class="section">
+    <h2 class="section-title">מידע על המערכת</h2>
+    <div class="info-card">
+      <div class="info-item">
+        <span class="info-label">תפקיד:</span>
+        <span class="info-value role-badge" [class.superadmin]="isSuperAdmin()">
+          {{ isSuperAdmin() ? 'מנהל ראשי' : 'מנהל תוכן' }}
+        </span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">אימייל:</span>
+        <span class="info-value">{{ userProfile()?.email }}</span>
+      </div>
+    </div>
+  </div>
+</div>

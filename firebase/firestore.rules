@@ -2,69 +2,184 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Public courses collection (read-only for all authenticated users)
+    // ============ HELPER FUNCTIONS ============
+
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user is the owner of the resource
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Get user profile data
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    // Check if user has a specific role
+    function hasRole(role) {
+      let userData = getUserData();
+      return userData != null && role in userData.roles;
+    }
+
+    // Check if user is admin or superadmin
+    function isAdmin() {
+      return hasRole('admin') || hasRole('superadmin');
+    }
+
+    // Check if user is superadmin
+    function isSuperAdmin() {
+      return hasRole('superadmin');
+    }
+
+    // Check if user is the creator of a course
+    function isCourseCreator(courseId) {
+      let course = get(/databases/$(database)/documents/courses/$(courseId)).data;
+      return course != null && course.creatorUid == request.auth.uid;
+    }
+
+    // Check if user can manage a course (creator or superadmin)
+    function canManageCourse(courseId) {
+      return isSuperAdmin() || (isAdmin() && isCourseCreator(courseId));
+    }
+
+    // ============ COURSES COLLECTION ============
     match /courses/{courseId} {
       // Anyone can read published courses
       allow read: if resource.data.isPublished == true;
-      // Write access denied (admin only via backend)
-      allow write: if false;
 
-      // Public course outline subcollection
+      // Admins can read their own courses (even unpublished)
+      allow read: if isAdmin() && resource.data.creatorUid == request.auth.uid;
+
+      // Superadmin can read all courses
+      allow read: if isSuperAdmin();
+
+      // Admins can create courses (must set themselves as creator)
+      allow create: if isAdmin()
+        && request.resource.data.creatorUid == request.auth.uid
+        && request.resource.data.keys().hasAll(['title', 'subject', 'level', 'creatorUid', 'creatorName', 'isPublished']);
+
+      // Course creator or superadmin can update
+      allow update: if canManageCourse(courseId);
+
+      // Course creator or superadmin can delete (only drafts)
+      allow delete: if canManageCourse(courseId)
+        && resource.data.isPublished == false;
+
+      // Course outline subcollection
       match /outline/{itemId} {
+        // Anyone can read outline
         allow read: if true;
-        allow write: if false;
+        // Only course managers can write
+        allow write: if canManageCourse(courseId);
       }
     }
 
-    // Lessons collection (NEW for Feature #3)
-    // Readable by any authenticated user (entitlement check done in app)
-    // DEV: Temporarily allow authenticated users to write for seeding
+    // ============ LESSONS COLLECTION ============
     match /lessons/{lessonId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;  // TODO: Change to 'if false' for production
+      // Any authenticated user can read (entitlement check in app)
+      allow read: if isAuthenticated();
+
+      // Admins can create lessons
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasAll(['courseId', 'title', 'type', 'order']);
+
+      // Course creator or superadmin can update/delete
+      allow update, delete: if isAuthenticated()
+        && canManageCourse(resource.data.courseId);
     }
 
-    // Private user documents and subcollections
+    // ============ QUESTIONS COLLECTION ============
+    match /questions/{questionId} {
+      // Authenticated users can read published questions
+      allow read: if isAuthenticated() && resource.data.isPublished == true;
+
+      // Admins can read unpublished questions for their courses
+      allow read: if isAdmin() && canManageCourse(resource.data.courseId);
+
+      // Admins can create questions
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasAll(['courseId', 'questionText', 'options', 'correctOptionId', 'isPublished']);
+
+      // Course creator or superadmin can update/delete
+      allow update, delete: if isAuthenticated()
+        && canManageCourse(resource.data.courseId);
+    }
+
+    // ============ USER PROFILES ============
     match /users/{userId} {
-      // User can read/write their own profile
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // User can read their own profile
+      allow read: if isOwner(userId);
 
-      // User entitlements subcollection
-      // User can ONLY read/write their OWN entitlements
+      // Superadmin can read all profiles
+      allow read: if isSuperAdmin();
+
+      // User can update their own profile (except roles)
+      allow update: if isOwner(userId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['roles']);
+
+      // User can create their own profile
+      allow create: if isOwner(userId);
+
+      // Superadmin can update any profile (including roles)
+      allow update: if isSuperAdmin();
+
+      // Entitlements subcollection
       match /entitlements/{entId} {
-        // Read: user can read their own entitlements
-        allow read: if request.auth != null && request.auth.uid == userId;
+        allow read: if isOwner(userId);
 
-        // Create: user can create entitlements for themselves
-        // Validates required fields and allowed values
-        allow create: if request.auth != null
-                      && request.auth.uid == userId
-                      && request.resource.data.keys().hasAll(['type', 'refId', 'purchasedAt', 'source'])
-                      && request.resource.data.type in ['course', 'path', 'bundle']
-                      && request.resource.data.source in ['demo', 'payment'];
+        allow create: if isOwner(userId)
+          && request.resource.data.keys().hasAll(['type', 'refId', 'purchasedAt', 'source'])
+          && request.resource.data.type in ['course', 'path', 'bundle']
+          && request.resource.data.source in ['demo', 'payment'];
 
         // Prevent updates and deletes to maintain audit trail
-        // (Can be relaxed in the future if needed)
         allow update, delete: if false;
       }
 
-      // Course Progress subcollection (NEW for Feature #3)
+      // Course Progress subcollection
       match /courseProgress/{courseId} {
-        // Read: user can read their own progress
-        allow read: if request.auth != null && request.auth.uid == userId;
+        allow read: if isOwner(userId);
 
-        // Create/Update: user can track their own progress
-        // Validates required fields
-        allow create, update: if request.auth != null
-          && request.auth.uid == userId
+        allow create, update: if isOwner(userId)
           && request.resource.data.keys().hasAll(['courseId', 'startedAt', 'lastAccessedAt', 'completedLessons', 'progressPercent']);
 
-        // Prevent deletes to maintain learning history
         allow delete: if false;
+      }
+
+      // Question Attempts subcollection
+      match /questionAttempts/{attemptId} {
+        allow read: if isOwner(userId);
+
+        allow create: if isOwner(userId)
+          && request.resource.data.keys().hasAll(['questionId', 'courseId', 'selectedOptionId', 'isCorrect', 'attemptedAt']);
+
+        allow update, delete: if false;
       }
     }
 
-    // Default deny all other access
+    // ============ ADMIN INVITES ============
+    match /invites/{inviteId} {
+      // Only superadmin can read all invites
+      allow read: if isSuperAdmin();
+
+      // Superadmin can create invites
+      allow create: if isSuperAdmin()
+        && request.resource.data.keys().hasAll(['email', 'role', 'status', 'createdAt', 'createdBy', 'createdByName', 'expiresAt'])
+        && request.resource.data.role == 'admin'
+        && request.resource.data.status == 'pending';
+
+      // Superadmin can update invites (revoke, mark as accepted)
+      allow update: if isSuperAdmin();
+
+      // Prevent deletes to maintain audit trail
+      allow delete: if false;
+    }
+
+    // ============ DEFAULT DENY ============
     match /{document=**} {
       allow read, write: if false;
     }

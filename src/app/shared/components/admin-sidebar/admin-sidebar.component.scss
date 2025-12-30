@@ -1,0 +1,130 @@
+.sidebar {
+  @apply fixed top-0 right-0 h-full z-40;
+  @apply flex flex-col;
+  @apply bg-[var(--color-bg-primary)] border-l border-[var(--color-border)];
+  @apply transition-all duration-300 ease-in-out;
+  width: 240px;
+
+  &.collapsed {
+    width: 64px;
+
+    .sidebar-header {
+      @apply justify-center;
+    }
+
+    .nav-item {
+      @apply justify-center px-0;
+    }
+
+    .back-link {
+      @apply justify-center px-0;
+    }
+  }
+}
+
+.toggle-btn {
+  @apply absolute -left-3 top-20;
+  @apply w-6 h-6 rounded-full;
+  @apply bg-[var(--color-bg-primary)] border border-[var(--color-border)];
+  @apply flex items-center justify-center;
+  @apply cursor-pointer;
+  @apply hover:bg-[var(--color-bg-secondary)];
+  @apply transition-colors duration-200;
+  @apply shadow-sm;
+
+  .material-icons {
+    @apply text-sm text-[var(--color-text-secondary)];
+  }
+}
+
+.sidebar-header {
+  @apply h-20 px-4;
+  @apply flex items-center;
+  @apply border-b border-[var(--color-border)];
+}
+
+.logo-link {
+  @apply flex items-center gap-2;
+  @apply text-[var(--color-text-primary)] no-underline;
+  @apply hover:text-[var(--color-primary)];
+  @apply transition-colors duration-200;
+}
+
+.logo-icon {
+  @apply text-2xl text-[var(--color-primary)];
+}
+
+.logo-text {
+  @apply font-bold text-lg;
+}
+
+.sidebar-nav {
+  @apply flex-1 py-4;
+  @apply flex flex-col gap-1;
+  @apply overflow-y-auto;
+}
+
+.nav-item {
+  @apply mx-2 px-3 py-3;
+  @apply flex items-center gap-3;
+  @apply rounded-lg;
+  @apply text-[var(--color-text-secondary)] no-underline;
+  @apply hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)];
+  @apply transition-all duration-200;
+
+  &.active {
+    @apply bg-[var(--color-primary-light)] text-[var(--color-primary)];
+    @apply font-medium;
+
+    .nav-icon {
+      @apply text-[var(--color-primary)];
+    }
+  }
+}
+
+.nav-icon {
+  @apply text-xl;
+  @apply flex-shrink-0;
+}
+
+.nav-label {
+  @apply text-sm;
+  @apply whitespace-nowrap;
+}
+
+.sidebar-footer {
+  @apply p-2;
+  @apply border-t border-[var(--color-border)];
+}
+
+.back-link {
+  @apply mx-2 px-3 py-3;
+  @apply flex items-center gap-3;
+  @apply rounded-lg;
+  @apply text-[var(--color-text-secondary)] no-underline;
+  @apply hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)];
+  @apply transition-all duration-200;
+}
+
+// Dark theme adjustments
+[data-theme='dark'] {
+  .toggle-btn {
+    @apply shadow-md;
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .sidebar {
+    @apply fixed inset-0 w-full;
+    transform: translateX(100%);
+
+    &:not(.collapsed) {
+      transform: translateX(0);
+    }
+  }
+
+  .toggle-btn {
+    @apply hidden;
+  }
+}

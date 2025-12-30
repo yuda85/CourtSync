@@ -1,0 +1,36 @@
+<button
+  type="button"
+  class="answer-option"
+  [class]="stateClass()"
+  [class.answer-option--disabled]="isDisabled()"
+  [disabled]="isDisabled()"
+  [attr.aria-pressed]="isSelected()"
+  [attr.aria-label]="'תשובה ' + optionLetter() + ': ' + option().text"
+  (click)="onClick()"
+  (keydown)="onKeydown($event)"
+>
+  <!-- Letter Badge -->
+  <span class="answer-option__letter">
+    {{ optionLetter() }}
+  </span>
+
+  <!-- Text -->
+  <span class="answer-option__text">
+    {{ option().text }}
+  </span>
+
+  <!-- Status Icon -->
+  <span class="answer-option__icon">
+    @if (isCorrect() !== null) {
+      @if (isSelected() && isCorrect()) {
+        <span class="material-icons icon-correct">check_circle</span>
+      } @else if (isSelected() && !isCorrect()) {
+        <span class="material-icons icon-incorrect">cancel</span>
+      } @else if (isTheCorrectAnswer()) {
+        <span class="material-icons icon-correct">check_circle</span>
+      }
+    } @else if (isSelected()) {
+      <span class="material-icons icon-selected">radio_button_checked</span>
+    }
+  </span>
+</button>

@@ -1,0 +1,29 @@
+<div class="question-card">
+  <!-- Header with badges -->
+  <div class="question-card__header">
+    <!-- Question number -->
+    <span class="question-card__number">
+      {{ progressText() }}
+    </span>
+
+    <!-- Topic badge -->
+    <span class="question-card__topic">
+      {{ question().topic }}
+    </span>
+
+    <!-- Difficulty badge -->
+    <span
+      class="question-card__difficulty"
+      [class]="difficultyColors().bg + ' ' + difficultyColors().text"
+    >
+      {{ question().difficulty }}
+    </span>
+  </div>
+
+  <!-- Question text -->
+  <div class="question-card__content">
+    <h2 class="question-card__text">
+      {{ question().questionText }}
+    </h2>
+  </div>
+</div>

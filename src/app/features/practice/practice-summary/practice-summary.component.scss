@@ -1,0 +1,404 @@
+.practice-summary {
+  @apply w-full max-w-2xl mx-auto;
+  @apply px-4 sm:px-6 py-6;
+  min-height: 100dvh;
+}
+
+// =====================
+// HEADER
+// =====================
+.summary-header {
+  @apply flex flex-col items-center;
+  @apply text-center;
+  @apply py-8 mb-6;
+  @apply rounded-2xl;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.header-icon {
+  @apply w-20 h-20;
+  @apply flex items-center justify-center;
+  @apply rounded-full mb-4;
+
+  .material-icons {
+    @apply text-4xl;
+  }
+}
+
+.header-title {
+  @apply text-2xl sm:text-3xl font-bold mb-2;
+  color: var(--text);
+}
+
+.header-message {
+  @apply text-base sm:text-lg;
+  color: var(--muted);
+}
+
+// Grade variants
+.grade--excellent {
+  .header-icon {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--color-success);
+  }
+}
+
+.grade--good {
+  .header-icon {
+    background: var(--color-primary-50);
+    color: var(--primary);
+
+    [data-theme="dark"] & {
+      background: rgba(48, 184, 240, 0.15);
+    }
+  }
+}
+
+.grade--needs-work {
+  .header-icon {
+    background: rgba(251, 191, 36, 0.15);
+    color: var(--color-warning);
+  }
+}
+
+// =====================
+// SCORE CARD
+// =====================
+.score-card {
+  @apply p-6;
+  @apply rounded-2xl;
+  @apply mb-6;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.score-main {
+  @apply flex flex-col items-center;
+  @apply pb-6 mb-6;
+  @apply border-b;
+  border-color: var(--border);
+}
+
+.score-value {
+  @apply text-5xl sm:text-6xl font-bold;
+  color: var(--primary);
+}
+
+.score-label {
+  @apply text-base mt-1;
+  color: var(--muted);
+}
+
+.score-stats {
+  @apply flex items-center justify-center;
+  @apply gap-4 sm:gap-8;
+}
+
+.stat-item {
+  @apply flex flex-col items-center;
+  @apply min-w-[60px];
+}
+
+.stat-value {
+  @apply text-2xl sm:text-3xl font-bold;
+  color: var(--text);
+}
+
+.stat-label {
+  @apply text-sm;
+  color: var(--muted);
+}
+
+.stat-item--correct {
+  .stat-value {
+    color: var(--color-success);
+  }
+}
+
+.stat-item--incorrect {
+  .stat-value {
+    color: var(--color-error);
+  }
+}
+
+.stat-divider {
+  @apply w-px h-10;
+  background: var(--border);
+}
+
+// =====================
+// PERFORMANCE SECTION
+// =====================
+.performance-section {
+  @apply p-6;
+  @apply rounded-2xl;
+  @apply mb-6;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.section-title {
+  @apply flex items-center gap-2;
+  @apply text-lg font-semibold mb-5;
+  color: var(--text);
+
+  .material-icons-outlined {
+    @apply text-xl;
+    color: var(--muted);
+  }
+}
+
+.section-title--weak {
+  .material-icons-outlined {
+    color: var(--color-warning);
+  }
+}
+
+.performance-list {
+  @apply flex flex-col gap-4;
+}
+
+.performance-item {
+  @apply flex flex-col gap-2;
+}
+
+.performance-header {
+  @apply flex items-center justify-between;
+}
+
+.performance-topic {
+  @apply text-base font-medium;
+  color: var(--text);
+}
+
+.performance-score {
+  @apply text-sm;
+  color: var(--muted);
+}
+
+.performance-bar-container {
+  @apply h-2;
+  @apply rounded-full;
+  @apply overflow-hidden;
+
+  background: var(--surface-2);
+}
+
+.performance-bar {
+  @apply h-full;
+  @apply rounded-full;
+  @apply transition-all duration-500;
+
+  min-width: 4px;
+}
+
+.performance--excellent {
+  background: var(--color-success);
+}
+
+.performance--good {
+  background: var(--primary);
+}
+
+.performance--weak {
+  background: var(--color-warning);
+}
+
+// =====================
+// WEAK TOPICS SECTION
+// =====================
+.weak-topics-section {
+  @apply p-6;
+  @apply rounded-2xl;
+  @apply mb-6;
+
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+
+  [data-theme="dark"] & {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: rgba(251, 191, 36, 0.2);
+  }
+}
+
+.weak-topics-list {
+  @apply flex flex-col gap-3;
+  @apply mb-4;
+}
+
+.weak-topic-item {
+  @apply flex items-center gap-3;
+  @apply p-3;
+  @apply rounded-lg;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+
+  .material-icons-outlined {
+    @apply text-lg;
+    color: var(--color-warning);
+  }
+}
+
+.topic-name {
+  @apply flex-1;
+  @apply text-base font-medium;
+  color: var(--text);
+}
+
+.topic-score {
+  @apply text-sm font-semibold;
+  color: var(--color-warning);
+}
+
+.weak-topics-hint {
+  @apply text-sm text-center;
+  color: var(--muted);
+}
+
+// =====================
+// ACTIONS SECTION
+// =====================
+.actions-section {
+  @apply mb-8;
+
+  .btn-icon {
+    @apply mr-2;
+  }
+}
+
+.secondary-actions {
+  @apply flex flex-wrap gap-3;
+  @apply mt-4;
+  @apply justify-center;
+}
+
+// =====================
+// EMPTY STATE
+// =====================
+.empty-state {
+  @apply flex flex-col items-center justify-center;
+  @apply min-h-[60vh];
+  @apply text-center;
+
+  .material-icons-outlined {
+    @apply text-6xl mb-4;
+    color: var(--muted);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  p {
+    @apply text-lg;
+    color: var(--muted);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+// =====================
+// ANIMATIONS
+// =====================
+.summary-header {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.score-card {
+  animation: fadeInUp 0.5s ease-out 0.1s both;
+}
+
+.performance-section {
+  animation: fadeInUp 0.5s ease-out 0.2s both;
+}
+
+.weak-topics-section {
+  animation: fadeInUp 0.5s ease-out 0.3s both;
+}
+
+.actions-section {
+  animation: fadeInUp 0.5s ease-out 0.4s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =====================
+// RESPONSIVE
+// =====================
+@media (max-width: 640px) {
+  .practice-summary {
+    @apply px-4 py-4;
+  }
+
+  .summary-header {
+    @apply py-6;
+  }
+
+  .header-icon {
+    @apply w-16 h-16;
+
+    .material-icons {
+      @apply text-3xl;
+    }
+  }
+
+  .header-title {
+    @apply text-xl;
+  }
+
+  .score-card,
+  .performance-section,
+  .weak-topics-section {
+    @apply p-5;
+  }
+
+  .score-value {
+    @apply text-4xl;
+  }
+
+  .score-stats {
+    @apply gap-3;
+  }
+
+  .stat-value {
+    @apply text-xl;
+  }
+
+  .secondary-actions {
+    @apply flex-col;
+
+    app-button {
+      @apply w-full;
+    }
+  }
+}
+
+// =====================
+// RTL SUPPORT
+// =====================
+[dir="rtl"] {
+  .btn-icon {
+    @apply ml-2 mr-0;
+  }
+}

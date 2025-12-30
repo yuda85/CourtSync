@@ -1,0 +1,42 @@
+<div class="admin-shell" [class.sidebar-collapsed]="sidebarCollapsed()">
+  <!-- Sidebar -->
+  <app-admin-sidebar
+    [collapsed]="sidebarCollapsed()"
+    (toggle)="toggleSidebar()"
+  />
+
+  <!-- Main Content Area -->
+  <div class="admin-main">
+    <!-- Top Bar -->
+    <header class="admin-topbar">
+      <div class="topbar-content">
+        <!-- Mobile Menu Button -->
+        <button
+          class="mobile-menu-btn"
+          (click)="toggleSidebar()"
+          aria-label="פתח תפריט"
+        >
+          <span class="material-icons">menu</span>
+        </button>
+
+        <!-- Page Title (will be filled by child routes) -->
+        <div class="topbar-title">
+          <h1>ניהול מערכת</h1>
+        </div>
+
+        <!-- User Info -->
+        <div class="topbar-actions">
+          <a routerLink="/app/dashboard" class="back-to-site">
+            <span class="material-icons">exit_to_app</span>
+            <span class="btn-text">יציאה מניהול</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="admin-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

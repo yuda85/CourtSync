@@ -1,0 +1,96 @@
+.question-card {
+  @apply w-full;
+  @apply p-6 sm:p-8;
+  @apply rounded-2xl;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+// =====================
+// HEADER
+// =====================
+.question-card__header {
+  @apply flex flex-wrap items-center gap-3 mb-6;
+}
+
+.question-card__number {
+  @apply px-3 py-1.5;
+  @apply rounded-lg;
+  @apply text-sm font-medium;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.question-card__topic {
+  @apply px-3 py-1.5;
+  @apply rounded-lg;
+  @apply text-sm font-medium;
+  background: var(--color-primary-50);
+  color: var(--primary);
+
+  [data-theme="dark"] & {
+    background: rgba(48, 184, 240, 0.15);
+    color: var(--primary);
+  }
+}
+
+.question-card__difficulty {
+  @apply px-3 py-1.5;
+  @apply rounded-lg;
+  @apply text-sm font-bold;
+}
+
+// =====================
+// CONTENT
+// =====================
+.question-card__content {
+  @apply py-2;
+}
+
+.question-card__text {
+  @apply text-xl sm:text-2xl;
+  @apply font-medium;
+  @apply leading-relaxed;
+  color: var(--text);
+  font-family: 'Heebo', 'Rubik', sans-serif;
+
+  // Ensure proper Hebrew text rendering
+  text-align: right;
+  direction: rtl;
+}
+
+// =====================
+// RESPONSIVE
+// =====================
+@media (max-width: 640px) {
+  .question-card {
+    @apply p-5;
+  }
+
+  .question-card__header {
+    @apply mb-4;
+  }
+
+  .question-card__text {
+    @apply text-lg;
+  }
+}
+
+// =====================
+// ANIMATIONS
+// =====================
+.question-card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

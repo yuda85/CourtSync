@@ -161,6 +161,11 @@ export class LessonComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** Navigate to lesson-specific practice */
+  onStartPractice(): void {
+    this.router.navigate(['/app/courses', this.courseId, 'learn', this.lessonId, 'practice']);
+  }
+
   /** Create video embed URL (supports YouTube) - returns sanitized URL */
   private createVideoEmbedUrl(url: string): SafeResourceUrl {
     // YouTube URL patterns

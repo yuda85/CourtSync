@@ -59,12 +59,38 @@
         </div>
       }
 
-      <!-- Quiz Placeholder -->
+      <!-- Quiz / Practice Section -->
       @if (lesson()!.type === 'quiz') {
-        <div class="lesson-page__quiz-placeholder">
-          <span class="material-icons-outlined placeholder-icon">quiz</span>
-          <h3>בוחן - בקרוב</h3>
-          <p>בוחנים אינטראקטיביים יהיו זמינים בקרוב</p>
+        <div class="lesson-page__practice-section">
+          <div class="practice-card">
+            <div class="practice-card__icon">
+              <span class="material-icons">quiz</span>
+            </div>
+            <div class="practice-card__content">
+              <h3>בדוק את הידע שלך</h3>
+              <p>תרגל את החומר שלמדת עם שאלות אמריקאיות ובדוק את ההבנה שלך לפני המבחן.</p>
+              <div class="practice-card__features">
+                <span class="feature-item">
+                  <span class="material-icons-outlined">shuffle</span>
+                  שאלות אקראיות
+                </span>
+                <span class="feature-item">
+                  <span class="material-icons-outlined">lightbulb</span>
+                  הסברים מפורטים
+                </span>
+                <span class="feature-item">
+                  <span class="material-icons-outlined">trending_up</span>
+                  מעקב התקדמות
+                </span>
+              </div>
+            </div>
+            <div class="practice-card__action">
+              <app-button variant="primary" size="lg" (buttonClick)="onStartPractice()">
+                <span class="material-icons" style="font-size: 20px; margin-left: 8px;">play_arrow</span>
+                התחל תרגול
+              </app-button>
+            </div>
+          </div>
         </div>
       }
 

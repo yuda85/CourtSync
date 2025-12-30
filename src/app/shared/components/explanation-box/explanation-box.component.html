@@ -1,0 +1,39 @@
+<div
+  class="explanation-box"
+  [class.explanation-box--correct]="isCorrect()"
+  [class.explanation-box--incorrect]="!isCorrect()"
+>
+  <!-- Header -->
+  <div class="explanation-box__header">
+    @if (isCorrect()) {
+      <span class="material-icons header-icon">check_circle</span>
+      <span class="header-text">נכון!</span>
+    } @else {
+      <span class="material-icons header-icon">cancel</span>
+      <span class="header-text">לא נכון</span>
+    }
+  </div>
+
+  <!-- Explanation Content -->
+  <div class="explanation-box__content">
+    <h4 class="explanation-box__title">הסבר:</h4>
+    <p class="explanation-box__text">
+      {{ explanation() }}
+    </p>
+  </div>
+
+  <!-- Related Lesson Link -->
+  @if (relatedLesson()) {
+    <div class="explanation-box__lesson">
+      <button
+        type="button"
+        class="lesson-link"
+        (click)="onLessonClick()"
+      >
+        <span class="material-icons-outlined">menu_book</span>
+        <span>חזור לשיעור: {{ relatedLesson()!.title }}</span>
+        <span class="material-icons-outlined">arrow_back</span>
+      </button>
+    </div>
+  }
+</div>

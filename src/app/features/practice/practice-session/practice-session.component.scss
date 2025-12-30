@@ -1,0 +1,190 @@
+.practice-session {
+  @apply w-full max-w-2xl mx-auto;
+  @apply px-4 sm:px-6;
+  min-height: 100dvh;
+  padding-bottom: env(safe-area-inset-bottom, 24px);
+}
+
+// =====================
+// HEADER
+// =====================
+.session-header {
+  @apply sticky top-0 z-10;
+  @apply flex items-center gap-4;
+  @apply py-4;
+  background: var(--bg);
+
+  // Fade effect at bottom
+  &::after {
+    content: '';
+    @apply absolute left-0 right-0;
+    bottom: -20px;
+    height: 20px;
+    background: linear-gradient(to bottom, var(--bg), transparent);
+    pointer-events: none;
+  }
+}
+
+.exit-button {
+  @apply flex-shrink-0;
+  @apply w-10 h-10;
+  @apply flex items-center justify-center;
+  @apply rounded-full;
+  @apply transition-all duration-200;
+  @apply cursor-pointer;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+
+  &:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  &:focus-visible {
+    @apply outline-none ring-2;
+    ring-color: var(--primary);
+  }
+
+  .material-icons {
+    @apply text-xl;
+  }
+}
+
+.progress-container {
+  @apply flex-1;
+  @apply flex items-center gap-3;
+}
+
+.progress-text {
+  @apply flex-shrink-0;
+  @apply text-sm font-medium;
+  color: var(--muted);
+  min-width: 50px;
+  text-align: left;
+}
+
+// =====================
+// MAIN CONTENT
+// =====================
+.session-content {
+  @apply pt-4 pb-8;
+}
+
+// =====================
+// OPTIONS CONTAINER
+// =====================
+.options-container {
+  @apply flex flex-col gap-3;
+  @apply mt-6;
+}
+
+// =====================
+// ACTION CONTAINER
+// =====================
+.action-container {
+  @apply mt-6;
+
+  .btn-icon {
+    @apply mr-2;
+  }
+}
+
+// =====================
+// EXPLANATION CONTAINER
+// =====================
+.explanation-container {
+  @apply mt-6;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =====================
+// EMPTY STATE
+// =====================
+.empty-state {
+  @apply flex flex-col items-center justify-center;
+  @apply min-h-[60vh];
+  @apply text-center;
+
+  .material-icons-outlined {
+    @apply text-6xl mb-4;
+    color: var(--muted);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  p {
+    @apply text-lg;
+    color: var(--muted);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+// =====================
+// RESPONSIVE
+// =====================
+@media (max-width: 640px) {
+  .practice-session {
+    @apply px-4;
+  }
+
+  .session-header {
+    @apply py-3;
+  }
+
+  .options-container {
+    @apply gap-2;
+    @apply mt-4;
+  }
+
+  .action-container {
+    @apply mt-4;
+  }
+
+  .explanation-container {
+    @apply mt-4;
+  }
+}
+
+// =====================
+// KEYBOARD FOCUS SUPPORT
+// =====================
+.practice-session {
+  // Ensure proper focus order
+  & > *:focus-visible {
+    @apply outline-none ring-2;
+    ring-color: var(--primary);
+  }
+}
+
+// =====================
+// RTL SUPPORT
+// =====================
+[dir="rtl"] {
+  .progress-text {
+    text-align: right;
+  }
+
+  .btn-icon {
+    @apply ml-2 mr-0;
+  }
+}

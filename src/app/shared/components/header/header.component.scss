@@ -162,6 +162,29 @@
   }
 }
 
+// Admin Link
+.admin-link {
+  @apply flex items-center gap-1.5;
+  @apply px-3 py-2 rounded-lg;
+  @apply text-sm font-medium no-underline;
+  @apply transition-all duration-200;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+
+  &:hover {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .material-icons {
+    @apply text-lg;
+  }
+
+  .admin-text {
+    @apply hidden sm:inline;
+  }
+}
+
 // User Info
 .user-info {
   @apply flex items-center gap-2;

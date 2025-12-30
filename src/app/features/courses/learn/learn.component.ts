@@ -128,4 +128,9 @@ export class LearnComponent implements OnInit, OnDestroy {
     if (mins === 0) return `${hours} שעות`;
     return `${hours} שעות ו-${mins} דקות`;
   }
+
+  /** Navigate to practice */
+  onPractice(): void {
+    this.router.navigate(['/app/courses', this.courseId, 'practice']);
+  }
 }
