@@ -1,0 +1,20 @@
+<div
+  class="progress-bar"
+  [class]="sizeClass() + ' ' + colorClass()"
+  role="progressbar"
+  [attr.aria-valuenow]="clampedPercent()"
+  aria-valuemin="0"
+  aria-valuemax="100"
+>
+  <div class="progress-bar__track">
+    <div
+      class="progress-bar__fill"
+      [style.width.%]="clampedPercent()"
+    >
+      <div class="progress-bar__shine"></div>
+    </div>
+  </div>
+  @if (showLabel()) {
+    <span class="progress-bar__label">{{ clampedPercent() }}%</span>
+  }
+</div>

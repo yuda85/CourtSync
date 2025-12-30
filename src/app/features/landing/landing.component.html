@@ -37,7 +37,7 @@
             variant="primary"
             size="lg"
             [loading]="isLoading()"
-            (clicked)="onGetStarted()"
+            (buttonClick)="onGetStarted()"
           >
             <span>התחל ללמוד בחינם</span>
             <svg class="btn-arrow" viewBox="0 0 20 20" fill="currentColor">
@@ -277,7 +277,7 @@
       />
 
       <div class="featured-cta">
-        <app-button variant="outline" size="lg" (clicked)="onViewAllCourses()">
+        <app-button variant="outline" size="lg" (buttonClick)="onViewAllCourses()">
           <svg class="btn-arrow-rtl" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
           </svg>
@@ -351,7 +351,7 @@
             variant="primary"
             size="lg"
             [loading]="isLoading()"
-            (clicked)="onGetStarted()"
+            (buttonClick)="onGetStarted()"
           >
             <svg class="google-icon" viewBox="0 0 24 24" fill="currentColor">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

@@ -10,4 +10,6 @@
   @apply max-w-7xl w-full mx-auto;
   @apply px-4 sm:px-6 lg:px-8;
   @apply py-6 sm:py-8;
+  // Add top padding to account for fixed header height (h-20 = 5rem, sm:h-22 ≈ 5.5rem)
+  @apply pt-24 sm:pt-28;
 }

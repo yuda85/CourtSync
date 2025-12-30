@@ -3,6 +3,8 @@
   @apply flex flex-col;
   font-family: 'Heebo', 'Inter', sans-serif;
   background: var(--color-bg-primary);
+  // Prevent scroll issues with embedded videos
+  overflow-x: hidden;
 }
 
 // Loading
@@ -31,13 +33,15 @@
   to { transform: rotate(360deg); }
 }
 
-// Top Bar
+// Top Bar - Sticky for better UX
 .lesson-page__topbar {
   @apply flex items-center justify-between;
   @apply px-4 sm:px-6 py-3;
   @apply border-b;
   @apply bg-white;
   border-color: var(--color-border);
+  // Make topbar sticky so it stays visible while scrolling
+  @apply sticky top-0 z-20;
 }
 
 :host-context([data-theme="dark"]) .lesson-page__topbar {
@@ -106,9 +110,15 @@
   @apply rounded-2xl overflow-hidden;
   @apply bg-black;
   aspect-ratio: 16 / 9;
+  // Prevent video from capturing scroll events unintentionally
+  touch-action: manipulation;
+  // Contain layout to prevent scroll jumps
+  contain: layout;
 
   iframe, video {
     @apply absolute inset-0 w-full h-full;
+    // Prevent iframe from causing scroll issues
+    pointer-events: auto;
   }
 }
 
@@ -153,13 +163,15 @@
   @apply bg-slate-800;
 }
 
-// Actions
+// Actions - Sticky at bottom for easy navigation
 .lesson-page__actions {
   @apply flex flex-col sm:flex-row items-center justify-between gap-4;
   @apply px-4 sm:px-6 py-4;
   @apply border-t;
   @apply bg-white;
   border-color: var(--color-border);
+  // Make actions sticky at the bottom
+  @apply sticky bottom-0 z-20;
 }
 
 :host-context([data-theme="dark"]) .lesson-page__actions {

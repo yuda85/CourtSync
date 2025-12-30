@@ -34,11 +34,11 @@ export class ButtonComponent {
   iconOnly = input(false);
 
   /** Click event */
-  clicked = output<MouseEvent>();
+  buttonClick = output<MouseEvent>();
 
   onClick(event: MouseEvent): void {
     if (!this.disabled() && !this.loading()) {
-      this.clicked.emit(event);
+      this.buttonClick.emit(event);
     }
   }
 

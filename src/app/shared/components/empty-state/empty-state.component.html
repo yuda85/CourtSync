@@ -1,0 +1,47 @@
+<div class="empty-state" [class]="'empty-state--' + size()">
+  <!-- Decorative Background -->
+  <div class="empty-state__bg">
+    <div class="empty-state__ring empty-state__ring--1"></div>
+    <div class="empty-state__ring empty-state__ring--2"></div>
+  </div>
+
+  <!-- Icon -->
+  <div class="empty-state__icon">
+    @switch (icon()) {
+      @case ('book') {
+        <span class="material-icons-outlined">menu_book</span>
+      }
+      @case ('search') {
+        <span class="material-icons-outlined">search</span>
+      }
+      @case ('chart') {
+        <span class="material-icons-outlined">bar_chart</span>
+      }
+      @case ('folder') {
+        <span class="material-icons-outlined">folder</span>
+      }
+      @case ('calendar') {
+        <span class="material-icons-outlined">calendar_today</span>
+      }
+    }
+  </div>
+
+  <!-- Content -->
+  <h3 class="empty-state__title">{{ title() }}</h3>
+
+  @if (description()) {
+    <p class="empty-state__description">{{ description() }}</p>
+  }
+
+  <!-- CTA Button -->
+  @if (ctaText()) {
+    <div class="empty-state__action">
+      <app-button
+        variant="primary"
+        (buttonClick)="onCtaClick()"
+      >
+        {{ ctaText() }}
+      </app-button>
+    </div>
+  }
+</div>

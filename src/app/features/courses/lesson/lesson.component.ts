@@ -39,18 +39,53 @@ export class LessonComponent implements OnInit, OnDestroy {
   readonly isLoading = signal(true);
   readonly isMarkingComplete = signal(false);
 
+  /** Cached video embed URL - prevents iframe reload on every change detection */
+  readonly videoEmbedUrl = computed(() => {
+    const currentLesson = this.lesson();
+    if (currentLesson?.type === 'video' && currentLesson.videoUrl) {
+      return this.createVideoEmbedUrl(currentLesson.videoUrl);
+    }
+    return null;
+  });
+
+  /** Check if current lesson is a YouTube video */
+  readonly isYouTube = computed(() => {
+    const currentLesson = this.lesson();
+    if (currentLesson?.videoUrl) {
+      return currentLesson.videoUrl.includes('youtube.com') || currentLesson.videoUrl.includes('youtu.be');
+    }
+    return false;
+  });
+
   /** Route params */
   private courseId = '';
   private lessonId = '';
 
   ngOnInit(): void {
-    this.courseId = this.route.snapshot.paramMap.get('id') || '';
-    this.lessonId = this.route.snapshot.paramMap.get('lessonId') || '';
+    // Subscribe to route param changes - component is reused when navigating between lessons
+    this.route.paramMap.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
+      this.courseId = params.get('id') || '';
+      this.lessonId = params.get('lessonId') || '';
 
-    // Track this lesson as current
-    this.learningService.updateCurrentLesson(this.courseId, this.lessonId);
+      console.log('[Lesson] Route params changed:', { courseId: this.courseId, lessonId: this.lessonId });
 
-    // Load lesson data
+      // Set loading state for new lesson
+      this.isLoading.set(true);
+
+      // Track this lesson as current
+      this.learningService.updateCurrentLesson(this.courseId, this.lessonId);
+
+      // Load lesson data for new params
+      this.loadLessonData();
+    });
+  }
+
+  /** Load all lesson data for current lessonId */
+  private loadLessonData(): void {
+    console.log('[Lesson] Loading data for lesson:', this.lessonId);
+
     combineLatest([
       this.learningService.getLesson$(this.lessonId),
       this.learningService.getNextLesson$(this.courseId, this.lessonId),
@@ -58,8 +93,10 @@ export class LessonComponent implements OnInit, OnDestroy {
       this.learningService.getLessonPosition$(this.courseId, this.lessonId),
       this.learningService.isLessonCompleted$(this.courseId, this.lessonId)
     ]).pipe(
-      takeUntil(this.destroy$)
+      take(1) // Take one emission per navigation
     ).subscribe(([lesson, next, prev, pos, completed]) => {
+      console.log('[Lesson] Data loaded:', { lesson: lesson?.title, next: next?.id, prev: prev?.id, pos, completed });
+
       this.lesson.set(lesson);
       this.nextLesson.set(next);
       this.prevLesson.set(prev);
@@ -82,6 +119,7 @@ export class LessonComponent implements OnInit, OnDestroy {
   /** Navigate to previous lesson */
   onPrevious(): void {
     const prev = this.prevLesson();
+    console.log('[Lesson] onPrevious called, navigating to:', prev?.id);
     if (prev) {
       this.router.navigate(['/app/courses', this.courseId, 'learn', prev.id]);
     }
@@ -90,6 +128,7 @@ export class LessonComponent implements OnInit, OnDestroy {
   /** Navigate to next lesson */
   onNext(): void {
     const next = this.nextLesson();
+    console.log('[Lesson] onNext called, navigating to:', next?.id);
     if (next) {
       this.router.navigate(['/app/courses', this.courseId, 'learn', next.id]);
     }
@@ -97,27 +136,33 @@ export class LessonComponent implements OnInit, OnDestroy {
 
   /** Mark lesson as complete */
   async onMarkComplete(): Promise<void> {
-    if (this.isCompleted() || this.isMarkingComplete()) return;
+    console.log('[Lesson] onMarkComplete called for:', this.lessonId);
+    if (this.isCompleted() || this.isMarkingComplete()) {
+      console.log('[Lesson] Already completed or marking, skipping');
+      return;
+    }
 
     this.isMarkingComplete.set(true);
     try {
       await this.learningService.markComplete(this.courseId, this.lessonId);
+      console.log('[Lesson] Marked complete successfully');
       this.isCompleted.set(true);
 
       // Auto-navigate to next lesson after a short delay
       const next = this.nextLesson();
       if (next) {
+        console.log('[Lesson] Auto-navigating to next lesson in 1s:', next.id);
         setTimeout(() => this.onNext(), 1000);
       }
     } catch (err) {
-      console.error('Error marking complete:', err);
+      console.error('[Lesson] Error marking complete:', err);
     } finally {
       this.isMarkingComplete.set(false);
     }
   }
 
-  /** Get video embed URL (supports YouTube) - returns sanitized URL */
-  getVideoEmbedUrl(url: string): SafeResourceUrl {
+  /** Create video embed URL (supports YouTube) - returns sanitized URL */
+  private createVideoEmbedUrl(url: string): SafeResourceUrl {
     // YouTube URL patterns
     const youtubeMatch = url.match(
       /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
@@ -129,10 +174,5 @@ export class LessonComponent implements OnInit, OnDestroy {
     }
 
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
-  }
-
-  /** Check if URL is a YouTube video */
-  isYouTubeUrl(url: string): boolean {
-    return url?.includes('youtube.com') || url?.includes('youtu.be');
   }
 }

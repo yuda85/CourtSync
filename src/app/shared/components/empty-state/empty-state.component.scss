@@ -1,0 +1,155 @@
+.empty-state {
+  @apply relative flex flex-col items-center justify-center;
+  @apply text-center px-6;
+  @apply py-12;
+}
+
+// Decorative background rings
+.empty-state__bg {
+  @apply absolute inset-0 pointer-events-none;
+  @apply flex items-center justify-center;
+  @apply overflow-hidden;
+}
+
+.empty-state__ring {
+  @apply absolute rounded-full;
+  border: 1px dashed var(--border);
+  opacity: 0.5;
+
+  [data-theme="dark"] & {
+    opacity: 0.3;
+  }
+}
+
+.empty-state__ring--1 {
+  @apply w-48 h-48;
+  animation: pulse-ring 4s ease-in-out infinite;
+}
+
+.empty-state__ring--2 {
+  @apply w-72 h-72;
+  animation: pulse-ring 4s ease-in-out infinite 1s;
+}
+
+@keyframes pulse-ring {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+}
+
+// Icon container
+.empty-state__icon {
+  @apply relative z-10;
+  @apply w-20 h-20 mb-5;
+  @apply flex items-center justify-center;
+  @apply rounded-2xl;
+  background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 4px 16px -4px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  [data-theme="dark"] & {
+    background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface) 100%);
+    box-shadow:
+      0 4px 16px -4px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  svg {
+    @apply w-10 h-10;
+    color: var(--muted);
+    stroke-width: 1.25;
+
+    [data-theme="dark"] & {
+      color: var(--text);
+      opacity: 0.7;
+    }
+  }
+}
+
+// Title
+.empty-state__title {
+  @apply relative z-10;
+  @apply text-xl font-bold mb-2;
+  color: var(--text);
+}
+
+// Description
+.empty-state__description {
+  @apply relative z-10;
+  @apply text-base mb-6;
+  @apply max-w-sm;
+  @apply leading-relaxed;
+  color: var(--muted);
+}
+
+// Action button container
+.empty-state__action {
+  @apply relative z-10;
+}
+
+// Size variants
+.empty-state--sm {
+  @apply py-8;
+
+  .empty-state__icon {
+    @apply w-14 h-14 mb-3;
+    @apply rounded-xl;
+
+    svg {
+      @apply w-7 h-7;
+    }
+  }
+
+  .empty-state__ring--1 {
+    @apply w-32 h-32;
+  }
+
+  .empty-state__ring--2 {
+    @apply w-48 h-48;
+  }
+
+  .empty-state__title {
+    @apply text-lg;
+  }
+
+  .empty-state__description {
+    @apply text-sm mb-4;
+  }
+}
+
+.empty-state--lg {
+  @apply py-16;
+
+  .empty-state__icon {
+    @apply w-28 h-28 mb-6;
+    @apply rounded-3xl;
+
+    svg {
+      @apply w-14 h-14;
+    }
+  }
+
+  .empty-state__ring--1 {
+    @apply w-64 h-64;
+  }
+
+  .empty-state__ring--2 {
+    @apply w-96 h-96;
+  }
+
+  .empty-state__title {
+    @apply text-2xl mb-3;
+  }
+
+  .empty-state__description {
+    @apply text-lg mb-8;
+    @apply max-w-md;
+  }
+}

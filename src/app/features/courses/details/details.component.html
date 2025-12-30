@@ -26,7 +26,7 @@
       </div>
       <h2 class="not-found-title">הקורס לא נמצא</h2>
       <p class="not-found-text">הקורס שחיפשת לא קיים או הוסר</p>
-      <app-button variant="primary" (clicked)="onBack()">
+      <app-button variant="primary" (buttonClick)="onBack()">
         חזרה לקטלוג
       </app-button>
     </div>
@@ -95,7 +95,7 @@
               variant="primary"
               size="lg"
               [fullWidth]="true"
-              (clicked)="onContinueLearning()"
+              (buttonClick)="onContinueLearning()"
             >
               <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polygon points="5,3 19,12 5,21" fill="currentColor" />
@@ -109,7 +109,7 @@
               size="lg"
               [fullWidth]="true"
               [loading]="isPurchasing()"
-              (clicked)="onEnroll()"
+              (buttonClick)="onEnroll()"
             >
               @if (!isAuthenticated()) {
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">

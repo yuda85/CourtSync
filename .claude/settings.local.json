@@ -9,7 +9,13 @@
       "Skill(frontend-design:*)",
       "Bash(ls:*)",
       "Bash(cat:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(npm view:*)",
+      "Bash(/usr/local/bin/npm run build)",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\")",
+      "Bash(/opt/homebrew/bin/npm run build)",
+      "Bash(export PATH=\"/opt/homebrew/bin:$PATH\")",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/bin:$PATH\")"
     ]
   }
 }

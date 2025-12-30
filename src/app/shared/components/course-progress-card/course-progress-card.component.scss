@@ -1,0 +1,236 @@
+.progress-card {
+  @apply relative flex flex-col;
+  @apply bg-white rounded-2xl overflow-hidden;
+  @apply border border-slate-200/60;
+  @apply transition-all duration-300 ease-out;
+  @apply cursor-pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    @apply border-slate-300;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+
+    .progress-card__image {
+      transform: scale(1.05);
+    }
+  }
+
+  &:focus-visible {
+    @apply outline-none ring-2 ring-offset-2;
+    ring-color: var(--primary);
+  }
+
+  &:active {
+    transform: translateY(-2px);
+  }
+
+  [data-theme="dark"] & {
+    @apply bg-slate-800/80 border-slate-700/60;
+
+    &:hover {
+      @apply border-slate-600;
+      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.4);
+    }
+  }
+}
+
+// Cover Section
+.progress-card__cover {
+  @apply relative aspect-[16/10] overflow-hidden;
+  @apply flex-shrink-0;
+}
+
+.progress-card__image {
+  @apply w-full h-full object-cover;
+  @apply transition-transform duration-300;
+}
+
+.progress-card__gradient {
+  @apply w-full h-full;
+  @apply flex items-center justify-center;
+  @apply text-white/90;
+}
+
+.progress-card__icon {
+  @apply w-12 h-12;
+  @apply opacity-80;
+}
+
+.progress-card__subject {
+  @apply absolute top-3 right-3;
+}
+
+// Status Badge
+.progress-card__status {
+  @apply absolute top-3 left-3;
+}
+
+.status-badge {
+  @apply px-2.5 py-1 rounded-full;
+  @apply text-xs font-bold;
+  @apply shadow-sm;
+
+  &--new {
+    @apply bg-blue-500 text-white;
+
+    [data-theme="dark"] & {
+      @apply bg-blue-600;
+    }
+  }
+
+  &--progress {
+    @apply bg-amber-500 text-white;
+
+    [data-theme="dark"] & {
+      @apply bg-amber-600;
+    }
+  }
+
+  &--complete {
+    @apply bg-emerald-500 text-white;
+
+    [data-theme="dark"] & {
+      @apply bg-emerald-600;
+    }
+  }
+}
+
+// Subject Badge (reuse from course-card)
+.subject-badge {
+  @apply px-2.5 py-1 rounded-full;
+  @apply text-xs font-medium;
+  @apply backdrop-blur-sm;
+
+  &--blue {
+    @apply bg-blue-100/90 text-blue-700;
+
+    [data-theme="dark"] & {
+      @apply bg-blue-900/50 text-blue-300;
+    }
+  }
+
+  &--red {
+    @apply bg-red-100/90 text-red-700;
+
+    [data-theme="dark"] & {
+      @apply bg-red-900/50 text-red-300;
+    }
+  }
+
+  &--green {
+    @apply bg-green-100/90 text-green-700;
+
+    [data-theme="dark"] & {
+      @apply bg-green-900/50 text-green-300;
+    }
+  }
+
+  &--purple {
+    @apply bg-purple-100/90 text-purple-700;
+
+    [data-theme="dark"] & {
+      @apply bg-purple-900/50 text-purple-300;
+    }
+  }
+
+  &--amber {
+    @apply bg-amber-100/90 text-amber-700;
+
+    [data-theme="dark"] & {
+      @apply bg-amber-900/50 text-amber-300;
+    }
+  }
+
+  &--pink {
+    @apply bg-pink-100/90 text-pink-700;
+
+    [data-theme="dark"] & {
+      @apply bg-pink-900/50 text-pink-300;
+    }
+  }
+
+  &--slate {
+    @apply bg-slate-100/90 text-slate-700;
+
+    [data-theme="dark"] & {
+      @apply bg-slate-900/50 text-slate-300;
+    }
+  }
+}
+
+// Content Section
+.progress-card__content {
+  @apply flex flex-col flex-1;
+  @apply p-4;
+}
+
+.progress-card__title {
+  @apply text-base font-bold;
+  @apply text-slate-900 leading-snug;
+  @apply mb-2;
+  @apply line-clamp-2;
+
+  [data-theme="dark"] & {
+    @apply text-white;
+  }
+}
+
+// Last Activity
+.progress-card__activity {
+  @apply flex items-center gap-1.5;
+  @apply text-xs mb-3;
+  color: var(--muted);
+
+  svg {
+    @apply w-3.5 h-3.5 flex-shrink-0;
+  }
+}
+
+// Progress Section
+.progress-card__progress {
+  @apply mb-4;
+}
+
+.progress-card__progress-text {
+  @apply block text-xs mt-1.5;
+  @apply text-right;
+  color: var(--muted);
+}
+
+// Action Button
+.progress-card__action {
+  @apply mt-auto;
+
+  .btn-icon {
+    @apply w-4 h-4 ml-1.5;
+  }
+}
+
+// Compact Mode
+.progress-card--compact {
+  .progress-card__cover {
+    @apply aspect-[16/8];
+  }
+
+  .progress-card__content {
+    @apply p-3;
+  }
+
+  .progress-card__title {
+    @apply text-sm mb-1.5;
+    @apply line-clamp-1;
+  }
+
+  .progress-card__activity {
+    @apply mb-2;
+  }
+
+  .progress-card__progress {
+    @apply mb-3;
+  }
+
+  .progress-card__progress-text {
+    @apply text-[10px];
+  }
+}

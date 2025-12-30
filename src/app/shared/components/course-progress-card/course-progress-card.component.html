@@ -1,0 +1,75 @@
+<article
+  class="progress-card"
+  [class.progress-card--compact]="compact()"
+  tabindex="0"
+  (click)="onClick()"
+  (keydown)="onKeydown($event)"
+>
+  <!-- Cover / Gradient Header -->
+  <div class="progress-card__cover">
+    @if (data().course.coverImageUrl) {
+      <img
+        [src]="data().course.coverImageUrl"
+        [alt]="data().course.title"
+        class="progress-card__image"
+      />
+    } @else {
+      <div class="progress-card__gradient bg-gradient-to-br {{ subjectGradient() }}">
+        <span class="material-icons-outlined progress-card__icon">school</span>
+      </div>
+    }
+
+    <!-- Subject Badge -->
+    <span class="progress-card__subject subject-badge {{ subjectColorClass() }}">
+      {{ data().course.subject }}
+    </span>
+
+    <!-- Status Badge -->
+    <span class="progress-card__status status-badge status-badge--{{ data().statusColor }}">
+      {{ data().status }}
+    </span>
+  </div>
+
+  <!-- Content -->
+  <div class="progress-card__content">
+    <!-- Title -->
+    <h3 class="progress-card__title">{{ data().course.title }}</h3>
+
+    <!-- Last Activity -->
+    @if (data().lastActivityLabel) {
+      <div class="progress-card__activity">
+        <span class="material-icons-outlined">schedule</span>
+        <span>{{ data().lastActivityLabel }}</span>
+      </div>
+    }
+
+    <!-- Progress Section -->
+    <div class="progress-card__progress">
+      <app-progress-bar
+        [percent]="data().progressPercent"
+        [color]="progressColor()"
+        size="sm"
+      />
+      <span class="progress-card__progress-text">{{ progressText() }}</span>
+    </div>
+
+    <!-- Action -->
+    <div class="progress-card__action">
+      <app-button
+        variant="primary"
+        size="sm"
+        [fullWidth]="true"
+        (buttonClick)="onButtonClick($event)"
+      >
+        @if (data().statusColor === 'complete') {
+          <span class="material-icons btn-icon">refresh</span>
+        } @else if (data().statusColor === 'progress') {
+          <span class="material-icons btn-icon">play_arrow</span>
+        } @else {
+          <span class="material-icons-outlined btn-icon">arrow_back</span>
+        }
+        {{ data().ctaText }}
+      </app-button>
+    </div>
+  </div>
+</article>
