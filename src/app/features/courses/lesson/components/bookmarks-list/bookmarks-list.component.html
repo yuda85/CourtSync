@@ -23,6 +23,7 @@
     id="bookmarks-content"
     [attr.aria-hidden]="!isExpanded()"
   >
+    <div class="bookmarks__inner">
     <!-- Add Bookmark Button -->
     <div class="bookmarks__add-section">
       @if (pendingTimestamp() !== null) {
@@ -151,5 +152,6 @@
         <p class="bookmarks-empty__hint">לחץ על כפתור הסימניה כדי לשמור רגעים חשובים</p>
       </div>
     }
+    </div>
   </div>
 </div>

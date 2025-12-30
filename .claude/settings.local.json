@@ -16,7 +16,9 @@
       "Bash(/opt/homebrew/bin/npm run build)",
       "Bash(export PATH=\"/opt/homebrew/bin:$PATH\")",
       "Bash(export PATH=\"/opt/homebrew/bin:/usr/bin:$PATH\")",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(git push)",
+      "Bash(git add:*)"
     ]
   }
 }

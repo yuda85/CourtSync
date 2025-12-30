@@ -78,16 +78,16 @@ $transition-speed: 200ms;
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows $transition-speed ease;
-  overflow: hidden;
 
   .bookmarks--expanded & {
     grid-template-rows: 1fr;
   }
+}
 
-  > * {
-    min-height: 0;
-    overflow: hidden;
-  }
+// Inner wrapper for grid animation
+.bookmarks__inner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 // Add Section
