@@ -20,7 +20,8 @@
       "Bash(git push)",
       "Bash(git add:*)",
       "Bash(find:*)",
-      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:/usr/bin:$PATH\")"
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:/usr/bin:$PATH\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Consolidate Dashboard into unified Profile page\n\n- Merge Dashboard functionality into Profile as the single user hub\n- Add Continue Learning hero section with progress bar and CTA\n- Display all purchased courses sorted by recent activity\n- Show unified stats cards \\(active, completed, lessons\\)\n- Apply premium editorial design with glass-morphism effects\n- Delete separate Dashboard component and redirect /app/dashboard to /app/profile\n\nFix: Profile courses not loading\n- Add take\\(1\\) to Firestore observables in DashboardService for forkJoin completion\n- Update Firestore rules to allow authenticated users to read courses by ID\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }
