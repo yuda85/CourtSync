@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, combineLatest, of, forkJoin } from 'rxjs';
-import { map, switchMap, shareReplay, catchError } from 'rxjs/operators';
+import { map, switchMap, shareReplay, catchError, take } from 'rxjs/operators';
 import { Timestamp } from '@angular/fire/firestore';
 import { EntitlementsRepo } from '@core/repos/entitlements.repo';
 import { ProgressRepo } from '@core/repos/progress.repo';
@@ -138,8 +138,10 @@ export class DashboardService {
 
         // Fetch course details for all purchased courses
         const courseIds = courseEntitlements.map(e => e.refId);
+
+        // Use take(1) to complete each observable - forkJoin needs completion
         const courseObservables = courseIds.map(id =>
-          this.catalogService.getCourse$(id)
+          this.catalogService.getCourse$(id).pipe(take(1))
         );
 
         return forkJoin(courseObservables).pipe(
@@ -147,8 +149,10 @@ export class DashboardService {
             const validCourses = courses.filter((c): c is Course => c !== null);
 
             // Fetch lesson counts for each course
+            // Use take(1) to complete each observable - forkJoin needs completion
             const lessonCountObservables = validCourses.map(course =>
               this.lessonsRepo.getLessonsForCourse$(course.id).pipe(
+                take(1),
                 map(lessons => ({ courseId: course.id, count: lessons.length, lessons }))
               )
             );

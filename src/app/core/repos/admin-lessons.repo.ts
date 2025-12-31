@@ -338,6 +338,15 @@ export class AdminLessonsRepo {
       throw new Error('You do not have permission to add lessons to this course');
     }
 
+    // Sample video URLs - using free test videos from various reliable sources
+    const sampleVideoUrls = [
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+    ];
+
     const sampleLessons = [
       // Video lessons (5)
       {
@@ -346,7 +355,7 @@ export class AdminLessonsRepo {
         type: 'video' as const,
         order: 1,
         durationMinutes: 15,
-        videoUrl: 'https://example.com/video1',
+        videoUrl: sampleVideoUrls[0],
       },
       {
         title: 'עקרונות יסוד',
@@ -354,7 +363,7 @@ export class AdminLessonsRepo {
         type: 'video' as const,
         order: 2,
         durationMinutes: 25,
-        videoUrl: 'https://example.com/video2',
+        videoUrl: sampleVideoUrls[1],
       },
       {
         title: 'ניתוח מקרה ראשון',
@@ -362,7 +371,7 @@ export class AdminLessonsRepo {
         type: 'video' as const,
         order: 3,
         durationMinutes: 30,
-        videoUrl: 'https://example.com/video3',
+        videoUrl: sampleVideoUrls[2],
       },
       {
         title: 'יישום מעשי',
@@ -370,7 +379,7 @@ export class AdminLessonsRepo {
         type: 'video' as const,
         order: 4,
         durationMinutes: 35,
-        videoUrl: 'https://example.com/video4',
+        videoUrl: sampleVideoUrls[3],
       },
       {
         title: 'סוגיות מתקדמות',
@@ -378,7 +387,7 @@ export class AdminLessonsRepo {
         type: 'video' as const,
         order: 5,
         durationMinutes: 40,
-        videoUrl: 'https://example.com/video5',
+        videoUrl: sampleVideoUrls[4],
       },
       // Quiz lessons (4)
       {

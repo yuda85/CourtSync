@@ -76,7 +76,7 @@ const CRIMINAL_LAW_LESSONS: Lesson[] = [
     type: 'video',
     order: 3,
     durationMinutes: 25,
-    videoUrl: 'https://file-examples.com/wp-content/storage/2017/04/file_example_MP4_640_3MG.mp4'
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
   },
   {
     id: 'criminal-law-lesson-4',

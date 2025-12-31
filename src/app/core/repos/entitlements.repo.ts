@@ -131,10 +131,10 @@ export class EntitlementsRepo {
       }
 
       // Step 2: Create new entitlement document
-      const entitlementId = `course_${courseId}_${Date.now()}`;
+      // Use courseId as the document ID for easy lookup and Firestore rule checks
       const entitlementRef = doc(
         this.firestore,
-        `users/${user.uid}/entitlements/${entitlementId}`
+        `users/${user.uid}/entitlements/${courseId}`
       );
 
       const entitlementData: Omit<Entitlement, 'id'> = {
@@ -147,7 +147,7 @@ export class EntitlementsRepo {
 
       await setDoc(entitlementRef, entitlementData);
 
-      console.log('Demo entitlement created:', entitlementId);
+      console.log('Demo entitlement created for course:', courseId);
 
       // Step 3: Create course enrollment record for admin queries
       await this.courseEnrollmentsRepo.enrollUser({

@@ -38,80 +38,125 @@
         </div>
       </div>
 
+      <!-- Continue Learning Hero -->
+      @if (continueLearning() && continueLearning()!.type !== 'empty') {
+        <div class="profile__hero">
+          <div class="hero-card">
+            <div class="hero-badge">
+              @if (continueLearning()!.type === 'resume') {
+                <span class="material-icons">play_arrow</span>
+                המשך מאיפה שהפסקת
+              } @else {
+                <span class="material-icons-outlined">play_circle</span>
+                התחל ללמוד
+              }
+            </div>
+
+            <div class="hero-content">
+              <div class="hero-info">
+                <h2 class="hero-course-title">{{ continueLearning()!.course?.title }}</h2>
+                @if (continueLearning()!.lesson) {
+                  <p class="hero-lesson-title">{{ continueLearning()!.lesson!.title }}</p>
+                }
+                @if (continueLearning()!.lastActivityLabel) {
+                  <span class="hero-activity">
+                    <span class="material-icons-outlined">schedule</span>
+                    {{ continueLearning()!.lastActivityLabel }}
+                  </span>
+                }
+              </div>
+
+              <div class="hero-progress">
+                @if (continueLearning()!.progressPercent !== undefined) {
+                  <app-progress-bar
+                    [percent]="continueLearning()!.progressPercent!"
+                    size="md"
+                    [showLabel]="true"
+                  />
+                  <span class="hero-progress-text">{{ continueLearning()!.progressText }}</span>
+                }
+              </div>
+            </div>
+
+            <div class="hero-action">
+              <app-button
+                variant="primary"
+                size="lg"
+                (buttonClick)="onContinueLearning()"
+              >
+                <span class="material-icons btn-icon">play_arrow</span>
+                {{ continueLearning()!.ctaText }}
+              </app-button>
+            </div>
+          </div>
+        </div>
+      }
+
       <!-- Stats Section -->
       <div class="profile__stats">
         <div class="stat-card">
-          <div class="stat-card__icon stat-card__icon--purchased">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-            </svg>
+          <div class="stat-card__icon stat-card__icon--active">
+            <span class="material-icons-outlined">menu_book</span>
           </div>
-          <div class="stat-card__value">{{ purchasedCount() }}</div>
-          <div class="stat-card__label">קורסים נרכשו</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-card__icon stat-card__icon--progress">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
-          </div>
-          <div class="stat-card__value">{{ inProgressCount() }}</div>
-          <div class="stat-card__label">בתהליך למידה</div>
+          <div class="stat-card__value">{{ activeCourses() }}</div>
+          <div class="stat-card__label">קורסים פעילים</div>
         </div>
 
         <div class="stat-card">
           <div class="stat-card__icon stat-card__icon--completed">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
+            <span class="material-icons">check_circle</span>
           </div>
-          <div class="stat-card__value">{{ completedCount() }}</div>
-          <div class="stat-card__label">קורסים הושלמו</div>
+          <div class="stat-card__value">{{ completedCourses() }}</div>
+          <div class="stat-card__label">קורסים שהושלמו</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card__icon stat-card__icon--lessons">
+            <span class="material-icons">star</span>
+          </div>
+          <div class="stat-card__value">{{ totalLessonsCompleted() }}</div>
+          <div class="stat-card__label">שיעורים שהושלמו</div>
         </div>
       </div>
 
-      <!-- Recent Activity Section -->
+      <!-- My Courses Section -->
       <div class="profile__section">
-        <div class="section-header">
-          <h2 class="section-title">פעילות אחרונה</h2>
-          @if (recentCourses().length > 0) {
-            <button class="section-link" (click)="onViewLibrary()">
-              הספרייה שלי
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"/>
-              </svg>
-            </button>
-          }
-        </div>
+        <h2 class="section-title">הקורסים שלי</h2>
 
-        @if (recentCourses().length > 0) {
+        @if (hasCourses()) {
           <div class="course-list">
-            @for (item of recentCourses(); track item.course.id) {
-              <div class="course-item" (click)="onCourseClick(item.course.id)">
+            @for (card of allCourses(); track card.course.id) {
+              <div class="course-item" (click)="onCourseClick(card)">
                 <div class="course-item__info">
-                  <div class="course-item__title">{{ item.course.title }}</div>
-                  <div class="course-item__subject">{{ item.course.subject }}</div>
+                  <div class="course-item__title">{{ card.course.title }}</div>
+                  <div class="course-item__meta">
+                    <span class="course-item__subject">{{ card.course.subject }}</span>
+                    @if (card.lastActivityLabel) {
+                      <span class="course-item__activity">{{ card.lastActivityLabel }}</span>
+                    }
+                  </div>
                 </div>
-                <div class="course-item__progress">
-                  <app-progress-pill
-                    [percent]="item.progress?.progressPercent || 0"
-                    size="sm"
-                  />
+                <div class="course-item__end">
+                  <div class="course-item__progress">
+                    <app-progress-pill
+                      [percent]="card.progressPercent"
+                      size="sm"
+                    />
+                  </div>
+                  <span class="course-item__status" [attr.data-status]="card.statusColor">
+                    {{ card.status }}
+                  </span>
                 </div>
               </div>
             }
           </div>
         } @else {
           <div class="empty-state">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-            </svg>
-            <p>אין עדיין קורסים בספרייה</p>
+            <div class="empty-state__icon">
+              <span class="material-icons-outlined">menu_book</span>
+            </div>
+            <h3 class="empty-state__title">עדיין לא רכשת קורסים</h3>
+            <p class="empty-state__description">גלה את מגוון הקורסים שלנו והתחל את המסע שלך להכנה למבחן</p>
             <app-button variant="primary" (buttonClick)="onBrowseCatalog()">
               עיין בקטלוג
             </app-button>

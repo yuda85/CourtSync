@@ -1,62 +1,96 @@
-// Enhanced Video Player Styles
-// Clean, minimal controls with focus on content
+// ═══════════════════════════════════════════════════════════════════════════
+// REFINED VIDEO PLAYER
+// A premium, cinematic video experience with glass-morphism controls
+// Designed for focused learning with elegant micro-interactions
+// ═══════════════════════════════════════════════════════════════════════════
 
-$controls-height: 48px;
-$transition-speed: 200ms;
+// Design Tokens
+$controls-height: 52px;
+$glass-bg: rgba(12, 12, 14, 0.85);
+$glass-border: rgba(255, 255, 255, 0.08);
+$glass-highlight: rgba(255, 255, 255, 0.12);
+$transition-smooth: 240ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Main Container
+// ─────────────────────────────────────────────────────────────────────────────
 .video-player {
   position: relative;
   width: 100%;
   background: #000;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   aspect-ratio: 16 / 9;
+  isolation: isolate;
 
-  // Focus outline for accessibility
+  // Subtle inner shadow for depth
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+    z-index: 10;
+  }
+
   &:focus-visible {
     outline: 2px solid var(--focus);
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
 }
 
-// YouTube iframe container
+// ─────────────────────────────────────────────────────────────────────────────
+// YouTube Embed
+// ─────────────────────────────────────────────────────────────────────────────
 .video-player__youtube {
   position: absolute;
   inset: 0;
+  background: #000;
 
   iframe {
     width: 100%;
     height: 100%;
+    border: none;
   }
 }
 
-// HTML5 video element
+// ─────────────────────────────────────────────────────────────────────────────
+// HTML5 Video Element
+// ─────────────────────────────────────────────────────────────────────────────
 .video-player__video {
   width: 100%;
   height: 100%;
   object-fit: contain;
   cursor: pointer;
+  background: #000;
 }
 
-// Controls overlay
+// ─────────────────────────────────────────────────────────────────────────────
+// Controls Overlay - Refined Glass Morphism
+// ─────────────────────────────────────────────────────────────────────────────
 .video-player__overlay {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.3) 30%,
-    transparent 60%
-  );
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity $transition-speed ease,
-    visibility $transition-speed ease;
+    opacity $transition-smooth,
+    visibility $transition-smooth;
   pointer-events: none;
+
+  // Cinematic gradient - deeper, more dramatic
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.88) 0%,
+    rgba(0, 0, 0, 0.5) 20%,
+    rgba(0, 0, 0, 0.15) 40%,
+    transparent 65%
+  );
 
   &--visible {
     opacity: 1;
@@ -65,14 +99,16 @@ $transition-speed: 200ms;
   }
 }
 
-// Big play button
+// ─────────────────────────────────────────────────────────────────────────────
+// Big Play Button - Premium Glass Effect
+// ─────────────────────────────────────────────────────────────────────────────
 .video-player__big-play {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,51 +116,79 @@ $transition-speed: 200ms;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  transition: all $transition-speed ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition:
+    transform $transition-spring,
+    box-shadow $transition-smooth,
+    background $transition-smooth;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  z-index: 5;
 
   .material-icons {
-    font-size: 36px;
-    color: #1a1a1a;
-    margin-right: -2px; // Optical centering for play icon
+    font-size: 40px;
+    color: #0a0a0a;
+    margin-right: -3px; // Optical centering for play triangle
+    transition: transform $transition-smooth;
   }
 
   &:hover {
     transform: translate(-50%, -50%) scale(1.08);
-    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.35);
+    background: #fff;
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.45),
+      0 0 0 1px rgba(255, 255, 255, 0.2),
+      0 0 60px rgba(var(--primary), 0.15);
+
+    .material-icons {
+      transform: scale(1.05);
+    }
   }
 
   &:focus-visible {
     outline: 3px solid var(--focus);
-    outline-offset: 3px;
+    outline-offset: 4px;
   }
 
   &:active {
-    transform: translate(-50%, -50%) scale(0.95);
+    transform: translate(-50%, -50%) scale(0.96);
+    transition-duration: 100ms;
   }
 }
 
-// Controls container
+// ─────────────────────────────────────────────────────────────────────────────
+// Controls Container - Glass Panel
+// ─────────────────────────────────────────────────────────────────────────────
 .video-player__controls {
-  padding: 0 16px 12px;
+  padding: 0 20px 16px;
+  position: relative;
 }
 
-// Progress bar
+// ─────────────────────────────────────────────────────────────────────────────
+// Progress Bar - Refined Scrubber
+// ─────────────────────────────────────────────────────────────────────────────
 .progress-bar {
-  height: 20px;
+  height: 24px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  position: relative;
 
   &:hover {
     .progress-bar__track {
-      height: 6px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.25);
     }
 
     .progress-bar__handle {
       opacity: 1;
-      transform: scale(1);
+      transform: translateY(-50%) scale(1);
+    }
+
+    .progress-bar__fill {
+      filter: brightness(1.1);
     }
   }
 }
@@ -132,120 +196,181 @@ $transition-speed: 200ms;
 .progress-bar__track {
   position: relative;
   width: 100%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 2px;
-  transition: height 150ms ease;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition:
+    height $transition-smooth,
+    background $transition-smooth;
+  overflow: hidden;
 }
 
 .progress-bar__fill {
   position: absolute;
   top: 0;
-  right: 0; // RTL
+  right: 0; // RTL support
   height: 100%;
-  background: var(--primary);
-  border-radius: 2px;
-  transition: width 100ms linear;
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    color-mix(in srgb, var(--primary) 85%, #fff) 100%
+  );
+  border-radius: 4px;
+  transition:
+    width 80ms linear,
+    filter $transition-smooth;
+
+  // Subtle glow effect
+  box-shadow: 0 0 12px rgba(48, 184, 240, 0.3);
 }
 
 .progress-bar__handle {
   position: absolute;
   top: 50%;
   transform: translateY(-50%) scale(0);
-  width: 14px;
-  height: 14px;
-  background: var(--primary);
-  border: 2px solid white;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border: 2px solid var(--primary);
   border-radius: 50%;
   opacity: 0;
   transition:
-    opacity 150ms ease,
-    transform 150ms ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    opacity $transition-smooth,
+    transform $transition-spring;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 0 0 3px rgba(255, 255, 255, 0.1);
+  z-index: 2;
 }
 
-// Controls row
+// ─────────────────────────────────────────────────────────────────────────────
+// Controls Row - Refined Layout
+// ─────────────────────────────────────────────────────────────────────────────
 .controls-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
 
   &__start,
   &__end {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
   }
 }
 
-// Control button
+// ─────────────────────────────────────────────────────────────────────────────
+// Control Button - Premium Interactive
+// ─────────────────────────────────────────────────────────────────────────────
 .control-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   border: none;
   background: transparent;
-  color: white;
-  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 150ms ease;
+  transition:
+    all $transition-smooth,
+    transform $transition-spring;
+  position: relative;
 
   .material-icons,
   .material-icons-outlined {
-    font-size: 22px;
+    font-size: 24px;
+    transition: transform $transition-smooth;
+  }
+
+  // Subtle background on hover
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: $glass-highlight;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity $transition-smooth;
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+
+    &::before {
+      opacity: 1;
+    }
+
+    .material-icons,
+    .material-icons-outlined {
+      transform: scale(1.08);
+    }
   }
 
   &:focus-visible {
     outline: 2px solid var(--focus);
-    outline-offset: 1px;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.94);
+    transition-duration: 100ms;
   }
 
   &--active {
     color: var(--primary);
+
+    &:hover {
+      color: color-mix(in srgb, var(--primary) 85%, #fff);
+    }
   }
 }
 
-// Time display
+// ─────────────────────────────────────────────────────────────────────────────
+// Time Display - Refined Typography
+// ─────────────────────────────────────────────────────────────────────────────
 .time-display {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: white;
+  color: rgba(255, 255, 255, 0.95);
   font-variant-numeric: tabular-nums;
-  margin-inline-start: 8px;
+  margin-inline-start: 10px;
+  letter-spacing: 0.02em;
+  font-family: 'Heebo', system-ui, sans-serif;
 
   &__separator {
-    opacity: 0.6;
+    opacity: 0.5;
+    font-weight: 400;
   }
 
   &__duration {
-    opacity: 0.8;
+    opacity: 0.7;
   }
 }
 
-// Speed control
+// ─────────────────────────────────────────────────────────────────────────────
+// Speed Control - Glass Dropdown
+// ─────────────────────────────────────────────────────────────────────────────
 .speed-control {
   position: relative;
 
   &__trigger {
     width: auto;
-    padding: 0 10px;
+    min-width: 48px;
+    padding: 0 12px;
     font-size: 0.8125rem;
     font-weight: 600;
+    letter-spacing: 0.01em;
   }
 
   &__label {
-    min-width: 28px;
+    min-width: 32px;
     text-align: center;
   }
 
@@ -254,93 +379,123 @@ $transition-speed: 200ms;
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    margin-bottom: 8px;
-    background: rgba(28, 28, 28, 0.95);
-    backdrop-filter: blur(8px);
-    border-radius: 8px;
-    padding: 4px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    animation: fadeIn 150ms ease;
+    margin-bottom: 10px;
+    background: $glass-bg;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid $glass-border;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    animation: menuSlideIn 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 100;
   }
 
   &__option {
     display: block;
     width: 100%;
-    padding: 8px 16px;
+    padding: 10px 20px;
     font-size: 0.8125rem;
     font-weight: 500;
-    color: white;
+    color: rgba(255, 255, 255, 0.9);
     text-align: center;
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 150ms ease;
+    transition: all $transition-smooth;
     white-space: nowrap;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: $glass-highlight;
+      color: #fff;
     }
 
     &--active {
       color: var(--primary);
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(48, 184, 240, 0.12);
+      font-weight: 600;
+
+      &:hover {
+        background: rgba(48, 184, 240, 0.18);
+      }
     }
   }
 }
 
-// Keyboard shortcuts hints
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Keyboard Shortcuts Hints - Refined Toast
+// ─────────────────────────────────────────────────────────────────────────────
 .video-player__hints {
   position: absolute;
-  bottom: $controls-height + 20px;
+  bottom: $controls-height + 24px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 16px;
-  padding: 8px 16px;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
-  border-radius: 8px;
+  gap: 20px;
+  padding: 10px 20px;
+  background: $glass-bg;
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid $glass-border;
+  border-radius: 12px;
   font-size: 0.6875rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.85);
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 200ms ease,
-    visibility 200ms ease;
+    opacity $transition-smooth,
+    visibility $transition-smooth;
   pointer-events: none;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 
   .video-player:focus-within & {
     opacity: 1;
     visibility: visible;
-    animation: fadeInUp 300ms ease;
+    animation: hintsReveal 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   span {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     white-space: nowrap;
   }
 
   kbd {
-    display: inline-block;
-    padding: 2px 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    padding: 3px 7px;
     font-size: 0.625rem;
-    font-family: inherit;
+    font-family: 'Heebo', system-ui, sans-serif;
     font-weight: 600;
-    color: white;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 }
 
-// Animations
-@keyframes fadeIn {
+@keyframes hintsReveal {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(4px);
+    transform: translateX(-50%) translateY(12px);
   }
   to {
     opacity: 1;
@@ -348,60 +503,151 @@ $transition-speed: 200ms;
   }
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-// Fullscreen adjustments
+// ─────────────────────────────────────────────────────────────────────────────
+// Fullscreen Adjustments
+// ─────────────────────────────────────────────────────────────────────────────
 :fullscreen {
   .video-player {
     border-radius: 0;
-  }
 
-  .video-player__big-play {
-    width: 96px;
-    height: 96px;
-
-    .material-icons {
-      font-size: 48px;
+    &::before {
+      display: none;
     }
   }
 
+  .video-player__big-play {
+    width: 100px;
+    height: 100px;
+
+    .material-icons {
+      font-size: 52px;
+    }
+  }
+
+  .video-player__controls {
+    padding: 0 32px 24px;
+  }
+
+  .progress-bar {
+    height: 28px;
+    margin-bottom: 12px;
+  }
+
+  .progress-bar__track {
+    height: 6px;
+  }
+
+  .progress-bar__handle {
+    width: 18px;
+    height: 18px;
+  }
+
   .control-btn {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
 
     .material-icons,
     .material-icons-outlined {
-      font-size: 26px;
+      font-size: 28px;
     }
   }
 
   .time-display {
     font-size: 0.9375rem;
+    margin-inline-start: 14px;
+  }
+
+  .video-player__hints {
+    padding: 12px 24px;
+    font-size: 0.75rem;
+    gap: 24px;
   }
 }
 
-// Mobile adjustments
+// ─────────────────────────────────────────────────────────────────────────────
+// Mobile Optimizations
+// ─────────────────────────────────────────────────────────────────────────────
 @media (max-width: 640px) {
+  .video-player {
+    border-radius: 12px;
+  }
+
   .video-player__big-play {
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
 
     .material-icons {
-      font-size: 28px;
+      font-size: 32px;
     }
   }
 
   .video-player__controls {
-    padding: 0 12px 8px;
+    padding: 0 14px 12px;
+  }
+
+  .progress-bar {
+    height: 32px; // Larger touch target
+    margin-bottom: 6px;
+  }
+
+  .progress-bar__track {
+    height: 6px; // Thicker for touch
+  }
+
+  .progress-bar__handle {
+    width: 18px;
+    height: 18px;
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+
+  .control-btn {
+    width: 36px;
+    height: 36px;
+    -webkit-tap-highlight-color: transparent;
+
+    .material-icons,
+    .material-icons-outlined {
+      font-size: 22px;
+    }
+  }
+
+  .time-display {
+    font-size: 0.75rem;
+    margin-inline-start: 6px;
+    gap: 4px;
+  }
+
+  .speed-control__trigger {
+    min-width: 42px;
+    padding: 0 8px;
+  }
+
+  .video-player__hints {
+    display: none;
+  }
+
+  // Hide PiP on mobile (not well supported)
+  .controls-row__end {
+    .control-btn:has(.material-icons-outlined[class*="picture"]) {
+      display: none;
+    }
+  }
+
+  .controls-row {
+    gap: 8px;
+
+    &__start,
+    &__end {
+      gap: 4px;
+    }
+  }
+}
+
+// Small mobile devices
+@media (max-width: 380px) {
+  .video-player__controls {
+    padding: 0 10px 10px;
   }
 
   .control-btn {
@@ -415,31 +661,46 @@ $transition-speed: 200ms;
   }
 
   .time-display {
+    font-size: 0.6875rem;
+  }
+
+  .speed-control__trigger {
+    min-width: 36px;
     font-size: 0.75rem;
-    margin-inline-start: 4px;
-  }
-
-  .video-player__hints {
-    display: none;
-  }
-
-  // Hide some controls on mobile
-  .controls-row__end {
-    .control-btn:has(.material-icons-outlined[class*="picture"]) {
-      display: none;
-    }
   }
 }
 
-// Reduced motion
+// ─────────────────────────────────────────────────────────────────────────────
+// Reduced Motion
+// ─────────────────────────────────────────────────────────────────────────────
 @media (prefers-reduced-motion: reduce) {
   .video-player__overlay,
   .video-player__big-play,
   .progress-bar__track,
+  .progress-bar__fill,
   .progress-bar__handle,
+  .control-btn,
   .speed-control__menu,
   .video-player__hints {
     transition: none;
     animation: none;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Touch Device Optimizations
+// ─────────────────────────────────────────────────────────────────────────────
+@media (hover: none) {
+  .progress-bar__handle {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+
+  .progress-bar__track {
+    height: 6px;
+  }
+
+  .control-btn::before {
+    display: none;
   }
 }

@@ -51,6 +51,11 @@ service cloud.firestore {
       // Anyone can read published courses
       allow read: if resource.data.isPublished == true;
 
+      // Authenticated users can read any course by ID
+      // (entitlement check is done in the app before showing protected content)
+      // This allows the profile/dashboard to show purchased course metadata
+      allow read: if isAuthenticated();
+
       // Admins can read their own courses (even unpublished)
       allow read: if isAdmin() && resource.data.creatorUid == request.auth.uid;
 

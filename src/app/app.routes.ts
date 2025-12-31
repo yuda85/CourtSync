@@ -37,9 +37,11 @@ export const routes: Routes = [
     loadComponent: () => import('@features/shell/shell.component').then(m => m.ShellComponent),
     canActivate: [authGuard],
     children: [
+      // Redirect old dashboard route to profile
       {
         path: 'dashboard',
-        loadComponent: () => import('@features/dashboard/dashboard.component').then(m => m.DashboardComponent)
+        redirectTo: 'profile',
+        pathMatch: 'full'
       },
       {
         path: 'courses',

@@ -63,25 +63,34 @@
           }
 
           <!-- Video Content -->
-          @if (lesson()!.type === 'video' && lesson()!.videoUrl) {
-            <app-video-player
-              [videoUrl]="lesson()!.videoUrl!"
-              [savedProgress]="videoProgress()"
-              [courseId]="getCourseId()"
-              [lessonId]="getLessonId()"
-              (timeUpdate)="onVideoTimeUpdate($event)"
-              (bookmarkRequest)="onBookmarkRequest($event)"
-            />
-
-            <!-- Bookmarks (for video lessons) -->
-            <div class="lesson-extras">
-              <app-bookmarks-list
-                [lessonId]="getLessonId()"
+          @if (lesson()!.type === 'video') {
+            @if (lesson()!.videoUrl && lesson()!.videoUrl!.trim() !== '') {
+              <app-video-player
+                [videoUrl]="lesson()!.videoUrl!"
+                [savedProgress]="videoProgress()"
                 [courseId]="getCourseId()"
-                [currentTime]="currentVideoTime()"
-                (seek)="onTimestampClick($event)"
+                [lessonId]="getLessonId()"
+                (timeUpdate)="onVideoTimeUpdate($event)"
+                (bookmarkRequest)="onBookmarkRequest($event)"
               />
-            </div>
+
+              <!-- Bookmarks (for video lessons) -->
+              <div class="lesson-extras">
+                <app-bookmarks-list
+                  [lessonId]="getLessonId()"
+                  [courseId]="getCourseId()"
+                  [currentTime]="currentVideoTime()"
+                  (seek)="onTimestampClick($event)"
+                />
+              </div>
+            } @else {
+              <!-- Video URL missing -->
+              <div class="lesson-page__no-content">
+                <span class="material-icons-outlined placeholder-icon">videocam_off</span>
+                <h3>הווידאו עדיין לא הועלה</h3>
+                <p>הווידאו לשיעור זה יהיה זמין בקרוב</p>
+              </div>
+            }
           }
 
           <!-- Text Content -->

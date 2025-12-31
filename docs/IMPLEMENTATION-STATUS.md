@@ -126,73 +126,80 @@ CourtSync is an exam-focused online learning platform for law students. It helps
 
 ---
 
-## 7. Learning Experience (Learn Flow) 🚧
+## 7. Learning Experience (Learn Flow) ✅
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Course Learn Home | 🚧 | In progress |
-| Outline display | 🚧 | In progress |
-| Progress summary | 🚧 | In progress |
-| Continue learning action | 🚧 | In progress |
-| Lesson Player | 🚧 | Component exists, functionality partial |
-| Video playback (provider-ready) | ❌ | Placeholder only |
-| Lesson navigation | 🚧 | In progress |
-| Mark lesson as completed | 🚧 | In progress |
-| Optimized for mobile learning | 🚧 | Layout exists |
+| Course Learn Home | ✅ | Full outline with sections and lessons |
+| Outline display | ✅ | Expandable sections with progress indicators |
+| Progress summary | ✅ | Overall + per-section progress with visual rings |
+| Continue learning action | ✅ | Resume from last position |
+| Lesson Player | ✅ | Full-featured with video/text/quiz support |
+| Video playback | ✅ | HTML5 + YouTube, speed controls, PiP, fullscreen |
+| Lesson navigation | ✅ | Prev/next with sticky sidebar |
+| Mark lesson as completed | ✅ | Manual + auto-complete on video end |
+| Optimized for mobile learning | ✅ | Responsive with slide-out sidebar |
+| Notes system | ✅ | Per-lesson notes with timestamps |
+| Bookmarks | ✅ | Video timestamp bookmarks |
+| Lesson flagging | ✅ | Mark lessons for later review |
+| Dark mode support | ✅ | Full theme integration |
 
 **Key Files:**
 - `src/app/features/courses/learn/learn.component.ts`
 - `src/app/features/courses/lesson/lesson.component.ts`
+- `src/app/features/courses/lesson/lesson.component.scss`
+- `src/app/features/courses/lesson/components/video-player/`
+- `src/app/features/courses/lesson/components/lesson-sidebar/`
+- `src/app/features/courses/lesson/components/notes-panel/`
+- `src/app/features/courses/lesson/components/bookmarks-list/`
 - `src/app/core/repos/lessons.repo.ts`
-
----
-
-## 8. Progress Tracking 🚧
-
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Per-user, per-course progress | 🚧 | Repository in progress |
-| Completed lessons tracking | 🚧 | In progress |
-| Last viewed lesson | 🚧 | In progress |
-| Playback position persistence | ❌ | Not implemented |
-| Automatic resume | ❌ | Not implemented |
-| Course completion detection | ❌ | Not implemented |
-
-**Key Files:**
 - `src/app/core/repos/progress.repo.ts`
 
 ---
 
-## 9. User Dashboard (Progress Dashboard) 🚧
+## 8. Progress Tracking ✅
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Primary post-login entry point | ✅ | Route configured |
-| Welcome section with user info | ✅ | Basic implementation |
-| Stats cards | ✅ | Placeholder data |
-| "Continue Learning" hero section | 🚧 | Designed, partial implementation |
-| Progress overview for all courses | 🚧 | Partial |
-| Status indicators (New/In progress/Completed) | 🚧 | Designed |
-| Recent activity | 🚧 | Partial |
-| Quick navigation shortcuts | ✅ | Links to library, catalog |
+| Per-user, per-course progress | ✅ | Firestore subcollection per user/course |
+| Completed lessons tracking | ✅ | Set of completed lesson IDs |
+| Last viewed lesson | ✅ | Tracked and restored on resume |
+| Playback position persistence | ✅ | Auto-save every 10 seconds |
+| Automatic resume | ✅ | Resumes video from last position |
+| Course completion detection | ✅ | Detects when all lessons complete |
+| Flagged lessons | ✅ | Mark lessons for later review |
 
 **Key Files:**
-- `src/app/features/dashboard/dashboard.component.ts`
-- `docs/features/user-profile-dashboard.md` (design spec)
+- `src/app/core/repos/progress.repo.ts`
+- `src/app/core/models/progress.interface.ts`
 
 ---
 
-## 10. User Profile 🚧
+## 9. User Profile (Unified Dashboard) ✅
+
+The Profile page now serves as the unified user hub, consolidating the previous Dashboard and Profile pages into a single cohesive experience.
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| User details (name, email, avatar) | ✅ | From Firebase Auth |
-| Theme preferences | ✅ | Persisted |
-| Purchased courses list | 🚧 | Recently implemented |
-| Quick access to learning | 🚧 | In progress |
-| Purchase metadata | 🚧 | Partial |
+| Primary post-login entry point | ✅ | Default route after login |
+| User identity section | ✅ | Avatar, name, email, role badge, member since |
+| Continue Learning hero | ✅ | Resume course with progress bar and CTA |
+| Stats cards | ✅ | Active courses, completed courses, lessons completed |
+| All courses list | ✅ | Full list sorted by recent activity |
+| Status indicators | ✅ | New/In progress/Completed badges |
+| Theme preferences | ✅ | Light/Dark/System toggle |
+| Admin quick access | ✅ | Link to admin panel for admins |
+| Sign out | ✅ | Prominent sign out button |
+| Premium design | ✅ | Glass-morphism, animations, responsive |
 
-**Recent:** "working user profile" commit indicates active development.
+**Key Files:**
+- `src/app/features/profile/profile.component.ts`
+- `src/app/features/profile/profile.component.html`
+- `src/app/features/profile/profile.component.scss`
+- `src/app/core/services/dashboard.service.ts` (data aggregation)
+- `docs/features/profile.md` (documentation)
+
+**Note:** The separate Dashboard component was removed. The `/app/dashboard` route now redirects to `/app/profile`.
 
 ---
 
@@ -273,24 +280,22 @@ CourtSync is an exam-focused online learning platform for law students. It helps
 
 ## Summary by Status
 
-### ✅ Complete (10 features)
+### ✅ Complete (12 features)
 1. Landing & Public Experience
 2. Authentication & User Management
 3. Shared Course Catalog
 4. Course Details Pages
 5. Entitlements & Access Control
 6. My Library
-7. Design System & UX Foundations
-8. Architecture & Scalability
-9. Admin System (Phases 1-6)
-10. Admin Phase 7: Cleanup
+7. **Learning Experience (Learn Flow)** ← *Completed Dec 31, 2024*
+8. **Progress Tracking** ← *Completed Dec 31, 2024*
+9. **User Profile (Unified Dashboard)** ← *Completed Dec 31, 2024*
+10. Design System & UX Foundations
+11. Architecture & Scalability
+12. Admin System (Phases 1-8)
 
-### 🚧 In Progress (5 features)
-1. Learning Experience (Learn Flow)
-2. Progress Tracking
-3. User Dashboard
-4. User Profile
-5. Smart Practice Engine
+### 🚧 In Progress (1 feature)
+1. Smart Practice Engine
 
 ### ❌ Not Started (1 feature)
 1. Exam Simulation Engine
@@ -467,17 +472,76 @@ These features are documented but not planned for current development:
 1. ~~**Phase 6: Firestore Catalog Integration**~~ ✅ Complete
 2. ~~**Phase 7: Cleanup**~~ ✅ Complete
 3. ~~**Phase 8: Admin Access to Enrolled Students**~~ ✅ Complete
-4. **Complete Learning Experience** - Video playback, lesson completion
-5. **Complete Progress Tracking** - Resume functionality, completion detection
-6. **Complete Smart Practice Engine** - All practice modes, feedback system
-7. **Build Exam Simulation Engine** - Full exam experience
-8. **Polish Dashboard** - Full progress aggregation, recent activity
+4. ~~**Complete Learning Experience**~~ ✅ Complete - Full video player, notes, bookmarks, progress
+5. ~~**Complete Progress Tracking**~~ ✅ Complete - Auto-save, resume, completion detection
+6. ~~**Complete User Profile**~~ ✅ Complete - Unified dashboard with continue learning, all courses, premium design
+7. **Complete Smart Practice Engine** - All practice modes, feedback system
+8. **Build Exam Simulation Engine** - Full exam experience
 
 ---
 
 ## Session Handoff Notes (December 31, 2024)
 
-### What Was Completed Today
+### Profile Page Consolidation (Latest Session)
+
+**Dashboard merged into Profile:**
+- Dashboard component deleted (`src/app/features/dashboard/`)
+- All Dashboard functionality moved to Profile page
+- `/app/dashboard` route now redirects to `/app/profile`
+- Profile is now the unified user hub
+
+**Profile Page Features:**
+- User identity section (avatar, name, email, role badge, member since)
+- Continue Learning hero (resume course with progress bar and CTA)
+- Stats cards (active courses, completed courses, lessons completed)
+- All courses list (sorted by recent activity with progress indicators)
+- Theme settings (light/dark/system toggle)
+- Sign out button
+
+**Premium Design Applied:**
+- Editorial luxury aesthetic with warm amber accents
+- Glass-morphism cards with backdrop blur
+- Subtle grain texture overlay
+- Animated gradient orb in hero section
+- Staggered fade-in animations
+- Hover effects with accent line reveals
+- Golden ring pulse around avatar
+- Fully responsive with mobile optimizations
+
+**Key Files:**
+- `src/app/features/profile/profile.component.ts` - Uses DashboardService for data
+- `src/app/features/profile/profile.component.html` - Hero, stats, courses, settings
+- `src/app/features/profile/profile.component.scss` - Premium editorial design
+- `src/app/app.routes.ts` - Dashboard route redirects to profile
+- `docs/features/profile.md` - Full documentation
+
+---
+
+### Learning Experience Polish (Earlier Today)
+
+**UI/UX Enhancements Applied:**
+- Premium "Refined Scholarly" design aesthetic with glass-morphism effects
+- Video player with polished controls, gradient progress bar, and smooth animations
+- Lesson page with subtle ambient gradients and premium card designs
+- Sidebar with enhanced progress indicators, pulsing current-lesson dot, gradient checkmarks
+- Working demo videos using Google's sample video library (Big Buck Bunny, etc.)
+
+**Sticky Sidebar Implementation:**
+- Sidebar sticks 80px from top (below fixed header)
+- Proper max-height with internal scrolling for long course outlines
+- Positioned on the right side of the page (appropriate for RTL Hebrew layout)
+- Full-width layout breaking out of shell container constraints
+
+**Key Files Modified:**
+- `src/app/features/courses/lesson/lesson.component.scss` - Host breakout, flex layout
+- `src/app/features/courses/lesson/components/lesson-sidebar/lesson-sidebar.component.scss` - Sticky positioning
+- `src/app/features/courses/lesson/components/video-player/video-player.component.scss` - Premium controls
+- `src/app/core/repos/admin-lessons.repo.ts` - Sample video URLs
+- `src/app/core/repos/lessons.repo.ts` - Working video URL for mock data
+
+---
+
+### What Was Completed Earlier Today
 
 **Phase 7: Cleanup** - Complete:
 - Removed hardcoded superadmin email from `role.service.ts`
@@ -548,3 +612,7 @@ firebase/firestore.rules                            # Added courseEnrollments ru
 - User can see their role in profile page
 - Admins can only view students enrolled in their own courses
 - Superadmins retain full user management capabilities
+- **Profile courses not loading (Dec 31, 2024):**
+  - Root cause: `forkJoin` was waiting forever because Firestore `docData()` observables never complete
+  - Fix: Added `take(1)` to course and lesson fetches in `DashboardService.buildDashboardVM$()`
+  - Also updated Firestore rules to allow authenticated users to read any course by ID

@@ -1,32 +1,23 @@
 import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { Subject, combineLatest } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Auth, user } from '@angular/fire/auth';
-import { UserProfile, UserRole } from '@core/models/user-profile.interface';
-import { Entitlement } from '@core/models/entitlement.interface';
-import { CourseProgress } from '@core/models/progress.interface';
-import { Course } from '@core/models/course.interface';
+import { UserProfile } from '@core/models/user-profile.interface';
 import { UserProfileService } from '@core/services/user-profile.service';
-import { EntitlementsRepo } from '@core/repos/entitlements.repo';
-import { LearningService } from '@core/services/learning.service';
-import { CoursesCatalogService } from '@core/services/courses-catalog.service';
 import { AuthService } from '@core/services/auth.service';
 import { ThemeService, ThemeMode } from '@core/services/theme.service';
 import { RoleService } from '@core/services/role.service';
+import { DashboardService, DashboardVM, ContinueLearningVM, CourseProgressCardVM } from '@core/services/dashboard.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { ProgressBarComponent } from '@shared/components/progress-bar/progress-bar.component';
 import { ProgressPillComponent } from '@shared/components/progress-pill/progress-pill.component';
-
-interface CourseWithProgress {
-  course: Course;
-  progress: CourseProgress | null;
-}
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, ProgressPillComponent, RouterLink],
+  imports: [CommonModule, ButtonComponent, ProgressBarComponent, ProgressPillComponent, RouterLink],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -34,12 +25,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly auth = inject(Auth);
   private readonly profileService = inject(UserProfileService);
-  private readonly entitlementsRepo = inject(EntitlementsRepo);
-  private readonly learningService = inject(LearningService);
-  private readonly catalogService = inject(CoursesCatalogService);
   private readonly authService = inject(AuthService);
   private readonly themeService = inject(ThemeService);
   private readonly roleService = inject(RoleService);
+  private readonly dashboardService = inject(DashboardService);
   private readonly destroy$ = new Subject<void>();
 
   /** User profile data */
@@ -48,14 +37,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   /** Firebase user for display info */
   readonly firebaseUser = signal<any>(null);
 
-  /** Entitlements */
-  readonly entitlements = signal<Entitlement[]>([]);
-
-  /** Progress data */
-  readonly progressList = signal<CourseProgress[]>([]);
-
-  /** Recent courses with progress */
-  readonly recentCourses = signal<CourseWithProgress[]>([]);
+  /** Dashboard data (courses, stats, continue learning) */
+  readonly dashboardData = signal<DashboardVM | null>(null);
 
   /** Loading state */
   readonly isLoading = signal(true);
@@ -63,18 +46,25 @@ export class ProfileComponent implements OnInit, OnDestroy {
   /** Current theme */
   readonly currentTheme = computed(() => this.themeService.themeMode());
 
-  /** Stats */
-  readonly purchasedCount = computed(() =>
-    this.entitlements().filter(e => e.type === 'course').length
-  );
+  /** Continue learning hero data */
+  readonly continueLearning = computed<ContinueLearningVM | null>(() => {
+    const data = this.dashboardData();
+    return data?.continueLearning ?? null;
+  });
 
-  readonly completedCount = computed(() =>
-    this.progressList().filter(p => p.progressPercent === 100).length
-  );
+  /** All courses sorted by recent activity */
+  readonly allCourses = computed<CourseProgressCardVM[]>(() => {
+    const data = this.dashboardData();
+    return data?.myCourses ?? [];
+  });
 
-  readonly inProgressCount = computed(() =>
-    this.progressList().filter(p => p.progressPercent > 0 && p.progressPercent < 100).length
-  );
+  /** Stats from dashboard */
+  readonly activeCourses = computed(() => this.dashboardData()?.stats.activeCourses ?? 0);
+  readonly completedCourses = computed(() => this.dashboardData()?.stats.completedCourses ?? 0);
+  readonly totalLessonsCompleted = computed(() => this.dashboardData()?.stats.totalLessonsCompleted ?? 0);
+
+  /** Check if user has any courses */
+  readonly hasCourses = computed(() => this.allCourses().length > 0);
 
   /** Member since formatted date */
   readonly memberSince = computed(() => {
@@ -111,19 +101,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Load entitlements
-    this.entitlementsRepo.myEntitlements$().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(ents => {
-      this.entitlements.set(ents);
-      this.loadRecentCourses(ents);
-    });
+    // Load dashboard data (courses, progress, continue learning)
+    // Refresh to ensure we get fresh data
+    this.dashboardService.refresh();
 
-    // Load progress
-    this.learningService.getAllProgress$().pipe(
+    this.dashboardService.dashboardVM$().pipe(
       takeUntil(this.destroy$)
-    ).subscribe(progress => {
-      this.progressList.set(progress);
+    ).subscribe({
+      next: (data) => {
+        this.dashboardData.set(data);
+      },
+      error: (err) => {
+        console.error('Error loading dashboard data:', err);
+      }
     });
   }
 
@@ -143,52 +133,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  private loadRecentCourses(entitlements: Entitlement[]): void {
-    const courseIds = entitlements
-      .filter(e => e.type === 'course')
-      .slice(0, 5)
-      .map(e => e.refId);
-
-    if (courseIds.length === 0) {
-      this.recentCourses.set([]);
-      return;
+  /** Navigate to continue learning */
+  onContinueLearning(): void {
+    const cl = this.continueLearning();
+    if (cl?.route) {
+      this.router.navigate([cl.route]);
     }
-
-    // Load each course with its progress
-    const courseObservables = courseIds.map(id =>
-      combineLatest([
-        this.catalogService.getCourse$(id),
-        this.learningService.getCourseProgress$(id)
-      ])
-    );
-
-    combineLatest(courseObservables).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(results => {
-      const courses: CourseWithProgress[] = results
-        .filter(([course]) => course !== null)
-        .map(([course, progress]) => ({
-          course: course!,
-          progress
-        }));
-
-      this.recentCourses.set(courses);
-    });
   }
 
   /** Navigate to course */
-  onCourseClick(courseId: string): void {
-    this.router.navigate(['/app/courses', courseId, 'learn']);
+  onCourseClick(card: CourseProgressCardVM): void {
+    this.router.navigate([card.ctaRoute]);
   }
 
   /** Navigate to catalog */
   onBrowseCatalog(): void {
     this.router.navigate(['/app/courses']);
-  }
-
-  /** Navigate to library */
-  onViewLibrary(): void {
-    this.router.navigate(['/app/library']);
   }
 
   /** Set theme */
