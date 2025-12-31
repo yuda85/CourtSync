@@ -14,6 +14,7 @@ import {
   Timestamp
 } from '@angular/fire/firestore';
 import { Entitlement } from '@core/models/entitlement.interface';
+import { CourseEnrollmentsRepo } from './course-enrollments.repo';
 
 /**
  * Entitlements Repository
@@ -26,6 +27,7 @@ import { Entitlement } from '@core/models/entitlement.interface';
 export class EntitlementsRepo {
   private readonly auth = inject(Auth);
   private readonly firestore = inject(Firestore);
+  private readonly courseEnrollmentsRepo = inject(CourseEnrollmentsRepo);
 
   /** Cached auth state observable to avoid injection context issues */
   private readonly authState$: Observable<User | null>;
@@ -147,13 +149,24 @@ export class EntitlementsRepo {
 
       console.log('Demo entitlement created:', entitlementId);
 
-      // Step 3: Update user profile with lastPurchaseAt
+      // Step 3: Create course enrollment record for admin queries
+      await this.courseEnrollmentsRepo.enrollUser({
+        courseId,
+        userId: user.uid,
+        userEmail: user.email || '',
+        userDisplayName: user.displayName || 'Unknown',
+        source: 'demo'
+      });
+
+      console.log('Course enrollment created for:', courseId);
+
+      // Step 4: Update user profile with lastPurchaseAt
       const userRef = doc(this.firestore, 'users', user.uid);
       await setDoc(userRef, {
         lastPurchaseAt: Timestamp.now()
       }, { merge: true });
 
-      // Step 4: Invalidate cache to force refresh
+      // Step 5: Invalidate cache to force refresh
       this.invalidateCache();
 
     } catch (err) {

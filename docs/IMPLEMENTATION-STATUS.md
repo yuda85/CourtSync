@@ -1,6 +1,6 @@
 # CourtSync Implementation Status
 
-**Last Updated:** December 30, 2024
+**Last Updated:** December 31, 2024
 
 This document tracks the implementation status of all features defined in the CourtSync product overview.
 
@@ -273,7 +273,7 @@ CourtSync is an exam-focused online learning platform for law students. It helps
 
 ## Summary by Status
 
-### ✅ Complete (9 features)
+### ✅ Complete (10 features)
 1. Landing & Public Experience
 2. Authentication & User Management
 3. Shared Course Catalog
@@ -282,7 +282,8 @@ CourtSync is an exam-focused online learning platform for law students. It helps
 6. My Library
 7. Design System & UX Foundations
 8. Architecture & Scalability
-9. Admin System (Phases 1-5)
+9. Admin System (Phases 1-6)
+10. Admin Phase 7: Cleanup
 
 ### 🚧 In Progress (5 features)
 1. Learning Experience (Learn Flow)
@@ -294,9 +295,10 @@ CourtSync is an exam-focused online learning platform for law students. It helps
 ### ❌ Not Started (1 feature)
 1. Exam Simulation Engine
 
-### 📋 Planned Admin Phases
+### 📋 Admin Phases (All Complete)
 1. ~~Phase 6: Firestore Catalog Integration~~ ✅ Complete
-2. Phase 7: Cleanup
+2. ~~Phase 7: Cleanup~~ ✅ Complete
+3. ~~Phase 8: Admin Access to Enrolled Students~~ ✅ Complete
 
 ---
 
@@ -402,13 +404,51 @@ The admin system provides content management capabilities for authorized users (
 | Seed sample questions | ✅ | Button in admin question list (5 questions per quiz) |
 | Practice routes | ✅ | All 6 practice routes added to app.routes.ts |
 
-### Phase 7: Cleanup (Planned)
+### Phase 7: Cleanup ✅
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Remove hardcoded superadmin | ❌ | Use Firestore roles only |
-| Add role management UI | ❌ | In user profile |
-| Polish admin UI | ❌ | Final styling |
+| Remove hardcoded superadmin | ✅ | RoleService now uses Firestore roles only |
+| Shareable invite links | ✅ | Link-based invites (no email required), one-time use, configurable expiration |
+| Support superadmin invites | ✅ | Can invite both admin and superadmin roles |
+| Invite acceptance page | ✅ | `/invite/:inviteId` route for accepting invites |
+| Admin logout button | ✅ | Added to admin sidebar footer |
+| Admin dashboard real stats | ✅ | Shows actual course, user, and invite counts |
+| Role badge in profile | ✅ | Shows user role and quick link to admin |
+
+**Key Files:**
+- `src/app/core/services/role.service.ts` - Removed hardcoded superadmin
+- `src/app/core/models/invite.interface.ts` - Updated for link-based invites
+- `src/app/core/repos/invites.repo.ts` - New link-based invite system
+- `src/app/features/invite/invite-accept.component.ts` - Invite acceptance page
+- `src/app/features/admin/invites/invite-list/invite-list.component.ts` - New invite UI
+- `src/app/shared/components/admin-sidebar/` - Added logout button
+- `src/app/features/admin/dashboard/admin-dashboard.component.ts` - Real stats
+- `src/app/features/profile/profile.component.ts` - Role badge display
+
+### Phase 8: Admin Access to Enrolled Students ✅
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Course enrollments collection | ✅ | `/courseEnrollments/{courseId}/users/{userId}` reverse-index |
+| Admin sees only their students | ✅ | Admins see users enrolled in their courses |
+| Superadmin sees all users | ✅ | Full user list with all stats |
+| Role-aware sidebar labels | ✅ | "Users" for superadmin, "My Students" for admin |
+| Role-aware page titles | ✅ | Dynamic titles based on user role |
+| Hide promote/demote for admins | ✅ | Only superadmins can change user roles |
+| Admin student stats | ✅ | Dashboard shows enrolled student count for admins |
+| Firestore rules for enrollments | ✅ | Admins can read enrollments for their courses |
+
+**Key Files:**
+- `src/app/core/models/course-enrollment.interface.ts` - New enrollment model
+- `src/app/core/repos/course-enrollments.repo.ts` - New enrollment repository
+- `src/app/core/repos/entitlements.repo.ts` - Creates enrollment on purchase
+- `src/app/core/repos/users.repo.ts` - Added `getUsersForAdmin$()`, `getMyEnrolledStudents$()`
+- `src/app/features/admin/users/user-list/user-list.component.ts` - Role-filtered user list
+- `src/app/features/admin/dashboard/admin-dashboard.component.ts` - Admin-specific stats
+- `src/app/shared/components/admin-sidebar/admin-sidebar.component.ts` - Role-aware labels
+- `src/app/app.routes.ts` - Removed superadminGuard from users route
+- `firebase/firestore.rules` - Added courseEnrollments rules
 
 ---
 
@@ -425,62 +465,86 @@ These features are documented but not planned for current development:
 ## Next Steps (Recommended Priority)
 
 1. ~~**Phase 6: Firestore Catalog Integration**~~ ✅ Complete
-2. **Phase 7: Cleanup** - Remove hardcoded superadmin email, use Firestore roles only
-3. **Complete Learning Experience** - Video playback, lesson completion
-4. **Complete Progress Tracking** - Resume functionality, completion detection
-5. **Complete Smart Practice Engine** - All practice modes, feedback system
-6. **Build Exam Simulation Engine** - Full exam experience
-7. **Polish Dashboard** - Full progress aggregation, recent activity
+2. ~~**Phase 7: Cleanup**~~ ✅ Complete
+3. ~~**Phase 8: Admin Access to Enrolled Students**~~ ✅ Complete
+4. **Complete Learning Experience** - Video playback, lesson completion
+5. **Complete Progress Tracking** - Resume functionality, completion detection
+6. **Complete Smart Practice Engine** - All practice modes, feedback system
+7. **Build Exam Simulation Engine** - Full exam experience
+8. **Polish Dashboard** - Full progress aggregation, recent activity
 
 ---
 
-## Session Handoff Notes (December 30, 2024)
+## Session Handoff Notes (December 31, 2024)
 
 ### What Was Completed Today
 
-**Phase 6: Firestore Catalog Integration** - Complete:
-- `courses.repo.ts` - Now fetches from Firestore with fallback to sample data
-- `admin-courses.repo.ts` - Fixed undefined values bug in updateCourse
-- Featured courses toggle - Superadmins can star/unstar courses from admin list
-- Practice routes - Added all 6 missing practice routes to app.routes.ts
-- Seed functionality:
-  - `seedSampleCourses()` - Creates 3 sample law courses
-  - `seedSampleLessons()` - Creates 10 lessons per course (5 videos, 4 quizzes, 1 final exam)
-  - `seedSampleQuestions()` - Creates 5 questions per quiz lesson (Hebrew law questions)
+**Phase 7: Cleanup** - Complete:
+- Removed hardcoded superadmin email from `role.service.ts`
+- New shareable invite link system (replaces email-based invites):
+  - Invites are now one-time use links with configurable expiration
+  - Superadmins can create invites for both admin and superadmin roles
+  - New invite acceptance page at `/invite/:inviteId`
+  - No email required - just share the link
+- Admin logout button added to sidebar
+- Admin dashboard now shows real stats (courses, users, invites)
+- User profile now shows role badge and quick link to admin panel
+
+**Phase 8: Admin Access to Enrolled Students** - Complete:
+- New `courseEnrollments` collection structure for reverse-indexing enrolled users
+- Admins can only see students enrolled in their courses
+- Superadmins retain full access to all users
+- Role-aware UI throughout:
+  - Sidebar: "משתמשים" for superadmin, "הסטודנטים שלי" for admin
+  - Page titles change based on role
+  - Promote/demote buttons hidden for regular admins
+- Admin dashboard shows "My Students" count instead of total users
+- Enrollments are automatically created when users purchase courses
 
 ### Current State
 
 - Dev server runs on `http://localhost:4300/`
 - All builds passing (no errors)
-- Superadmin access: Login with `yuda8855@gmail.com` to access `/admin`
-- Firestore collections in use: `users`, `courses`, `lessons`, `questions`, `invites`
-- Courses now load from Firestore and appear in catalog/landing page
+- **Important:** The hardcoded superadmin is removed. Ensure existing superadmin user has the role in Firestore before testing.
+- Firestore collections in use: `users`, `courses`, `lessons`, `questions`, `invites`, `courseEnrollments`
+- Invite system now uses shareable links instead of email-based invites
+- **Deploy Firestore rules:** Run `firebase deploy --only firestore:rules` to enable courseEnrollments
 
 ### To Continue Development
 
 1. **Start dev server:** `npm start` (runs on port 4300)
-2. **Access admin:** Sign in with superadmin email, click "ניהול" in header
-3. **To seed data:**
-   - Go to Admin > Courses > Click "צור קורסים לדוגמה"
-   - Then for each course: Lessons > Click "צור שיעורים לדוגמה"
-   - Then for each course: Questions > Click "צור שאלות לדוגמה"
-4. **Next task:** Phase 7 - Cleanup (remove hardcoded superadmin, polish UI)
+2. **Access admin:** Sign in with a superadmin account, click "ניהול" in header
+3. **To create new admin/superadmin:**
+   - Go to Admin > Invites (הזמנות)
+   - Click "צור קישור הזמנה"
+   - Select role (admin or superadmin) and expiration
+   - Share the generated link with the invitee
+4. **Testing admin student access:**
+   - Create an admin user via invite
+   - Admin creates courses
+   - Students purchase those courses
+   - Admin can only see those enrolled students
+5. **Next task:** Complete Learning Experience (video playback, lesson completion)
 
-### Key Files Modified in Phase 6
+### Key Files Modified in Phase 8
 
 ```
-src/app/core/repos/courses.repo.ts          # Firestore integration with fallback
-src/app/core/repos/admin-courses.repo.ts    # Fixed undefined bug + seed courses
-src/app/core/repos/admin-lessons.repo.ts    # Seed lessons functionality
-src/app/core/repos/admin-questions.repo.ts  # Seed questions functionality
-src/app/app.routes.ts                       # Added 6 practice routes
-src/app/features/admin/courses/course-list/ # Featured toggle + seed button
-src/app/features/admin/lessons/lesson-list/ # Seed lessons button
-src/app/features/admin/questions/question-list/ # Seed questions button
+src/app/core/models/course-enrollment.interface.ts  # NEW - Enrollment model
+src/app/core/repos/course-enrollments.repo.ts       # NEW - Enrollment repository
+src/app/core/repos/entitlements.repo.ts             # Creates enrollment on purchase
+src/app/core/repos/users.repo.ts                    # Added filtered access methods
+src/app/features/admin/users/user-list/             # Role-filtered user list
+src/app/features/admin/dashboard/                   # Admin-specific stats
+src/app/shared/components/admin-sidebar/            # Role-aware labels
+src/app/app.routes.ts                               # Removed superadminGuard from users
+firebase/firestore.rules                            # Added courseEnrollments rules
 ```
 
 ### Resolved Issues
 
-- Courses created in admin now appear in catalog (Firestore integration)
-- Practice/exam routes now work (were missing, redirected to profile)
-- Course update no longer fails with undefined values
+- Hardcoded superadmin email removed (now uses Firestore roles only)
+- Admin can now logout without navigating away
+- Dashboard stats now reflect real data
+- User can see their role in profile page
+- Admins can only view students enrolled in their own courses
+- Superadmins retain full user management capabilities

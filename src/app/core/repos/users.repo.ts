@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, of, combineLatest } from 'rxjs';
+import { Observable, of, combineLatest, forkJoin, from } from 'rxjs';
 import { map, switchMap, catchError, take } from 'rxjs/operators';
 import {
   Firestore,
@@ -21,6 +21,8 @@ import {
 import { Auth } from '@angular/fire/auth';
 import { UserProfile, UserRole } from '@core/models/user-profile.interface';
 import { RoleService } from '@core/services/role.service';
+import { CourseEnrollmentsRepo } from './course-enrollments.repo';
+import { AdminCoursesRepo } from './admin-courses.repo';
 
 /**
  * User with entitlements count for admin view
@@ -51,8 +53,25 @@ export class UsersRepo {
   private readonly firestore = inject(Firestore);
   private readonly auth = inject(Auth);
   private readonly roleService = inject(RoleService);
+  private readonly courseEnrollmentsRepo = inject(CourseEnrollmentsRepo);
+  private readonly adminCoursesRepo = inject(AdminCoursesRepo);
 
   private readonly usersCollection = collection(this.firestore, 'users');
+
+  /**
+   * Get all users (superadmin only - for internal use)
+   */
+  private getAllUsersInternal$(): Observable<AdminUser[]> {
+    const q = query(this.usersCollection, orderBy('lastLoginAt', 'desc'));
+
+    return collectionData(q, { idField: 'uid' }).pipe(
+      map((users) => users as AdminUser[]),
+      catchError((err) => {
+        console.error('Error fetching users:', err);
+        return of([]);
+      })
+    );
+  }
 
   /**
    * Get all users (superadmin only)
@@ -63,14 +82,92 @@ export class UsersRepo {
       return of([]);
     }
 
-    const q = query(this.usersCollection, orderBy('lastLoginAt', 'desc'));
+    return this.getAllUsersInternal$();
+  }
 
-    return collectionData(q, { idField: 'uid' }).pipe(
-      map((users) => users as AdminUser[]),
+  /**
+   * Get students enrolled in the current admin's courses
+   * For admins: returns only users enrolled in their courses
+   * For superadmins: falls back to getAllUsers$
+   */
+  getMyEnrolledStudents$(): Observable<AdminUser[]> {
+    if (this.roleService.isSuperAdmin()) {
+      return this.getAllUsers$();
+    }
+
+    if (!this.roleService.isAdmin()) {
+      return of([]);
+    }
+
+    // Get admin's courses, then get enrollments for those courses
+    return this.adminCoursesRepo.getMyCourses$().pipe(
+      switchMap((courses) => {
+        if (courses.length === 0) {
+          return of([]);
+        }
+
+        const courseIds = courses.map((c) => c.id);
+        return this.courseEnrollmentsRepo.getEnrollmentsForCourses$(courseIds);
+      }),
+      switchMap((enrollments) => {
+        if (enrollments.length === 0) {
+          return of([]);
+        }
+
+        // Get unique user IDs
+        const userIds = [...new Set(enrollments.map((e) => e.userId))];
+
+        // Fetch user profiles for enrolled users
+        const userObservables = userIds.map((uid) => {
+          const userRef = doc(this.firestore, 'users', uid);
+          return docData(userRef, { idField: 'uid' }).pipe(
+            map((user) => user as AdminUser),
+            catchError(() => of(null))
+          );
+        });
+
+        return forkJoin(userObservables).pipe(
+          map((users) => users.filter((u): u is AdminUser => u !== null))
+        );
+      }),
       catchError((err) => {
-        console.error('Error fetching users:', err);
+        console.error('Error fetching enrolled students:', err);
         return of([]);
       })
+    );
+  }
+
+  /**
+   * Get users for admin view
+   * - Superadmin: all users
+   * - Admin: only their enrolled students
+   */
+  getUsersForAdmin$(): Observable<AdminUser[]> {
+    if (this.roleService.isSuperAdmin()) {
+      return this.getAllUsers$();
+    }
+    return this.getMyEnrolledStudents$();
+  }
+
+  /**
+   * Get student stats for admin
+   * - Superadmin: total users stats
+   * - Admin: stats for their enrolled students only
+   */
+  getMyStudentStats$(): Observable<{
+    total: number;
+    newThisMonth: number;
+  }> {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    return this.getUsersForAdmin$().pipe(
+      map((users) => ({
+        total: users.length,
+        newThisMonth: users.filter(
+          (u) => u.createdAt && u.createdAt.toMillis() > thirtyDaysAgo.getTime()
+        ).length,
+      }))
     );
   }
 

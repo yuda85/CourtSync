@@ -97,13 +97,27 @@
   @apply border-t border-[var(--color-border)];
 }
 
-.back-link {
+.back-link,
+.logout-btn {
   @apply mx-2 px-3 py-3;
   @apply flex items-center gap-3;
   @apply rounded-lg;
   @apply text-[var(--color-text-secondary)] no-underline;
   @apply hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)];
   @apply transition-all duration-200;
+}
+
+.logout-btn {
+  @apply w-[calc(100%-1rem)] border-none bg-transparent cursor-pointer;
+  @apply text-red-500;
+
+  &:hover {
+    @apply bg-red-50 text-red-600;
+  }
+}
+
+:host-context([data-theme='dark']) .logout-btn:hover {
+  @apply bg-red-900/20 text-red-400;
 }
 
 // Dark theme adjustments

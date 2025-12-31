@@ -64,6 +64,17 @@
           <span class="stat-label">הזמנות ממתינות</span>
         </div>
       </div>
+    } @else {
+      <!-- Admin sees their enrolled students count -->
+      <div class="stat-card">
+        <div class="stat-icon users">
+          <span class="material-icons">people</span>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ stats().myStudents }}</span>
+          <span class="stat-label">סטודנטים בקורסים שלי</span>
+        </div>
+      </div>
     }
   </div>
 
@@ -90,6 +101,11 @@
         <a routerLink="/admin/invites" class="action-card">
           <span class="material-icons action-icon">person_add</span>
           <span class="action-label">הזמנת מנהל</span>
+        </a>
+      } @else {
+        <a routerLink="/admin/users" class="action-card">
+          <span class="material-icons action-icon">group</span>
+          <span class="action-label">הסטודנטים שלי</span>
         </a>
       }
     </div>

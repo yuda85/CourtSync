@@ -1,10 +1,10 @@
 import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Subject, combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Auth, user } from '@angular/fire/auth';
-import { UserProfile } from '@core/models/user-profile.interface';
+import { UserProfile, UserRole } from '@core/models/user-profile.interface';
 import { Entitlement } from '@core/models/entitlement.interface';
 import { CourseProgress } from '@core/models/progress.interface';
 import { Course } from '@core/models/course.interface';
@@ -14,6 +14,7 @@ import { LearningService } from '@core/services/learning.service';
 import { CoursesCatalogService } from '@core/services/courses-catalog.service';
 import { AuthService } from '@core/services/auth.service';
 import { ThemeService, ThemeMode } from '@core/services/theme.service';
+import { RoleService } from '@core/services/role.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { ProgressPillComponent } from '@shared/components/progress-pill/progress-pill.component';
 
@@ -25,7 +26,7 @@ interface CourseWithProgress {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, ProgressPillComponent],
+  imports: [CommonModule, ButtonComponent, ProgressPillComponent, RouterLink],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -38,6 +39,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private readonly catalogService = inject(CoursesCatalogService);
   private readonly authService = inject(AuthService);
   private readonly themeService = inject(ThemeService);
+  private readonly roleService = inject(RoleService);
   private readonly destroy$ = new Subject<void>();
 
   /** User profile data */
@@ -85,6 +87,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
       month: 'long'
     }).format(date);
   });
+
+  /** User roles for display */
+  readonly isAdmin = this.roleService.isAdmin;
+  readonly isSuperAdmin = this.roleService.isSuperAdmin;
+
+  /** Get role label in Hebrew */
+  getRoleLabel(): string {
+    if (this.isSuperAdmin()) return 'מנהל ראשי';
+    if (this.isAdmin()) return 'מנהל תוכן';
+    return 'סטודנט';
+  }
 
   ngOnInit(): void {
     // Get Firebase user

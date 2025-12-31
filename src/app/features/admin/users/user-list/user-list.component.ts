@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { UsersRepo, AdminUser } from '@core/repos/users.repo';
 import { UserRole } from '@core/models/user-profile.interface';
+import { RoleService } from '@core/services/role.service';
 
 @Component({
   selector: 'app-user-list',
@@ -11,28 +12,42 @@ import { UserRole } from '@core/models/user-profile.interface';
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <div class="page-header">
-      <h1>ניהול משתמשים</h1>
+      <h1>{{ isSuperAdmin() ? 'ניהול משתמשים' : 'הסטודנטים שלי' }}</h1>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-row">
-      <div class="stat-item">
-        <span class="stat-value">{{ stats().total }}</span>
-        <span class="stat-label">סה"כ משתמשים</span>
+    <!-- Stats for Superadmin -->
+    @if (isSuperAdmin()) {
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-value">{{ stats().total }}</span>
+          <span class="stat-label">סה"כ משתמשים</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ stats().admins }}</span>
+          <span class="stat-label">מנהלים</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ stats().superadmins }}</span>
+          <span class="stat-label">מנהלים ראשיים</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ stats().recentSignups }}</span>
+          <span class="stat-label">הצטרפו החודש</span>
+        </div>
       </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ stats().admins }}</span>
-        <span class="stat-label">מנהלים</span>
+    } @else {
+      <!-- Stats for Admin (students only) -->
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-value">{{ studentStats().total }}</span>
+          <span class="stat-label">סטודנטים בקורסים שלי</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ studentStats().newThisMonth }}</span>
+          <span class="stat-label">הצטרפו החודש</span>
+        </div>
       </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ stats().superadmins }}</span>
-        <span class="stat-label">מנהלים ראשיים</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ stats().recentSignups }}</span>
-        <span class="stat-label">הצטרפו החודש</span>
-      </div>
-    </div>
+    }
 
     <!-- Filters -->
     <div class="filters-bar">
@@ -46,14 +61,16 @@ import { UserRole } from '@core/models/user-profile.interface';
         />
       </div>
 
-      <div class="filter-group">
-        <select [(ngModel)]="roleFilter" (ngModelChange)="onFilterChange()">
-          <option value="all">כל התפקידים</option>
-          <option value="superadmin">מנהל ראשי</option>
-          <option value="admin">מנהל</option>
-          <option value="student">סטודנט</option>
-        </select>
-      </div>
+      @if (isSuperAdmin()) {
+        <div class="filter-group">
+          <select [(ngModel)]="roleFilter" (ngModelChange)="onFilterChange()">
+            <option value="all">כל התפקידים</option>
+            <option value="superadmin">מנהל ראשי</option>
+            <option value="admin">מנהל</option>
+            <option value="student">סטודנט</option>
+          </select>
+        </div>
+      }
     </div>
 
     <!-- Loading -->
@@ -132,26 +149,29 @@ import { UserRole } from '@core/models/user-profile.interface';
                       <span class="material-icons">visibility</span>
                     </a>
 
-                    @if (!isCurrentUser(user.uid) && !isSuperAdmin(user)) {
-                      <button
-                        class="action-btn action-promote"
-                        (click)="promoteToAdmin(user)"
-                        [disabled]="isUpdating()"
-                        title="הפוך למנהל"
-                      >
-                        <span class="material-icons">admin_panel_settings</span>
-                      </button>
-                    }
+                    <!-- Only superadmins can promote/demote users -->
+                    @if (isSuperAdmin()) {
+                      @if (!isCurrentUser(user.uid) && !isUserSuperAdmin(user)) {
+                        <button
+                          class="action-btn action-promote"
+                          (click)="promoteToAdmin(user)"
+                          [disabled]="isUpdating()"
+                          title="הפוך למנהל"
+                        >
+                          <span class="material-icons">admin_panel_settings</span>
+                        </button>
+                      }
 
-                    @if (!isCurrentUser(user.uid) && isAdmin(user) && !isSuperAdmin(user)) {
-                      <button
-                        class="action-btn action-demote"
-                        (click)="demoteFromAdmin(user)"
-                        [disabled]="isUpdating()"
-                        title="הסר הרשאות מנהל"
-                      >
-                        <span class="material-icons">person_remove</span>
-                      </button>
+                      @if (!isCurrentUser(user.uid) && isUserAdmin(user) && !isUserSuperAdmin(user)) {
+                        <button
+                          class="action-btn action-demote"
+                          (click)="demoteFromAdmin(user)"
+                          [disabled]="isUpdating()"
+                          title="הסר הרשאות מנהל"
+                        >
+                          <span class="material-icons">person_remove</span>
+                        </button>
+                      }
                     }
                   </div>
                 </td>
@@ -468,6 +488,7 @@ import { UserRole } from '@core/models/user-profile.interface';
 })
 export class UserListComponent implements OnInit {
   private readonly usersRepo = inject(UsersRepo);
+  private readonly roleService = inject(RoleService);
 
   readonly isLoading = signal(true);
   readonly isUpdating = signal(false);
@@ -475,12 +496,21 @@ export class UserListComponent implements OnInit {
   readonly userToModify = signal<AdminUser | null>(null);
   readonly pendingAction = signal<'promote' | 'demote' | null>(null);
 
+  /** Check if current user is superadmin */
+  readonly isSuperAdmin = this.roleService.isSuperAdmin;
+
   readonly stats = signal({
     total: 0,
     admins: 0,
     superadmins: 0,
     students: 0,
     recentSignups: 0,
+  });
+
+  /** Stats for admins (their enrolled students) */
+  readonly studentStats = signal({
+    total: 0,
+    newThisMonth: 0,
   });
 
   searchTerm = '';
@@ -519,7 +549,8 @@ export class UserListComponent implements OnInit {
   private loadUsers(): void {
     this.isLoading.set(true);
 
-    this.usersRepo.getAllUsers$().subscribe({
+    // Use filtered method that respects role
+    this.usersRepo.getUsersForAdmin$().subscribe({
       next: (users) => {
         this.users.set(users);
         this.isLoading.set(false);
@@ -532,14 +563,27 @@ export class UserListComponent implements OnInit {
   }
 
   private loadStats(): void {
-    this.usersRepo.getUserStats$().subscribe({
-      next: (stats) => {
-        this.stats.set(stats);
-      },
-      error: (err) => {
-        console.error('Error loading user stats:', err);
-      },
-    });
+    if (this.isSuperAdmin()) {
+      // Full stats for superadmins
+      this.usersRepo.getUserStats$().subscribe({
+        next: (stats) => {
+          this.stats.set(stats);
+        },
+        error: (err) => {
+          console.error('Error loading user stats:', err);
+        },
+      });
+    } else {
+      // Student stats for admins
+      this.usersRepo.getMyStudentStats$().subscribe({
+        next: (stats) => {
+          this.studentStats.set(stats);
+        },
+        error: (err) => {
+          console.error('Error loading student stats:', err);
+        },
+      });
+    }
   }
 
   onSearchChange(): void {
@@ -574,11 +618,13 @@ export class UserListComponent implements OnInit {
     return uid === this.currentUserUid;
   }
 
-  isAdmin(user: AdminUser): boolean {
+  /** Check if a user has admin role */
+  isUserAdmin(user: AdminUser): boolean {
     return user.roles?.includes('admin') || user.roles?.includes('superadmin');
   }
 
-  isSuperAdmin(user: AdminUser): boolean {
+  /** Check if a user has superadmin role */
+  isUserSuperAdmin(user: AdminUser): boolean {
     return user.roles?.includes('superadmin');
   }
 

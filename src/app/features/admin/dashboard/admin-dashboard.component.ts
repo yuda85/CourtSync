@@ -1,10 +1,15 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Subject, combineLatest } from 'rxjs';
+import { takeUntil, map } from 'rxjs/operators';
 import { RoleService } from '@core/services/role.service';
 import { AdminCoursesRepo } from '@core/repos/admin-courses.repo';
 import { AdminLessonsRepo } from '@core/repos/admin-lessons.repo';
 import { AdminQuestionsRepo } from '@core/repos/admin-questions.repo';
+import { UsersRepo } from '@core/repos/users.repo';
+import { InvitesRepo } from '@core/repos/invites.repo';
+import { CourseEnrollmentsRepo } from '@core/repos/course-enrollments.repo';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -14,28 +19,92 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit, OnDestroy {
   private readonly roleService = inject(RoleService);
   private readonly adminCoursesRepo = inject(AdminCoursesRepo);
   private readonly adminLessonsRepo = inject(AdminLessonsRepo);
   private readonly adminQuestionsRepo = inject(AdminQuestionsRepo);
+  private readonly usersRepo = inject(UsersRepo);
+  private readonly invitesRepo = inject(InvitesRepo);
+  private readonly courseEnrollmentsRepo = inject(CourseEnrollmentsRepo);
+  private readonly destroy$ = new Subject<void>();
 
   readonly isSuperAdmin = this.roleService.isSuperAdmin;
   readonly userProfile = signal(this.roleService.getProfile());
   readonly isSeedingQuestions = signal(false);
   readonly seedingStatus = signal('');
+  readonly isLoadingStats = signal(true);
 
-  // Stats (placeholder values)
+  // Stats with real data
   readonly stats = signal({
     totalCourses: 0,
     publishedCourses: 0,
     totalUsers: 0,
     pendingInvites: 0,
+    myStudents: 0, // For regular admins
   });
 
   ngOnInit(): void {
     // Refresh profile on init
     this.userProfile.set(this.roleService.getProfile());
+
+    // Load real stats
+    this.loadStats();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private loadStats(): void {
+    this.isLoadingStats.set(true);
+
+    // Load course stats
+    this.adminCoursesRepo.getAllCourses$().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(courses => {
+      this.stats.update(current => ({
+        ...current,
+        totalCourses: courses.length,
+        publishedCourses: courses.filter(c => c.isPublished).length,
+      }));
+
+      // For regular admins, load their enrolled students count
+      if (!this.isSuperAdmin()) {
+        const courseIds = courses.map(c => c.id);
+        if (courseIds.length > 0) {
+          this.courseEnrollmentsRepo.getTotalEnrollmentCount$(courseIds).pipe(
+            takeUntil(this.destroy$)
+          ).subscribe(count => {
+            this.stats.update(current => ({
+              ...current,
+              myStudents: count,
+            }));
+            this.isLoadingStats.set(false);
+          });
+        } else {
+          this.isLoadingStats.set(false);
+        }
+      }
+    });
+
+    // Load user and invite stats only for superadmins
+    if (this.isSuperAdmin()) {
+      combineLatest([
+        this.usersRepo.getAllUsers$(),
+        this.invitesRepo.getInviteCounts$()
+      ]).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(([users, inviteCounts]) => {
+        this.stats.update(current => ({
+          ...current,
+          totalUsers: users.length,
+          pendingInvites: inviteCounts.pending,
+        }));
+        this.isLoadingStats.set(false);
+      });
+    }
   }
 
   async seedAllQuestions(): Promise<void> {

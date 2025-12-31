@@ -1,4 +1,5 @@
 import { Timestamp } from '@angular/fire/firestore';
+import { UserRole } from './user-profile.interface';
 
 /**
  * Status of an admin invite
@@ -6,15 +7,19 @@ import { Timestamp } from '@angular/fire/firestore';
 export type InviteStatus = 'pending' | 'accepted' | 'expired' | 'revoked';
 
 /**
+ * Invite role - can be admin or superadmin
+ */
+export type InviteRole = 'admin' | 'superadmin';
+
+/**
  * Admin invite stored in /invites/{inviteId}
- * Used to invite new admins to the platform
+ * Uses shareable links instead of email-based invites.
+ * The invite ID serves as the unique token for the link.
  */
 export interface AdminInvite {
   id: string;
-  /** Email of invitee (normalized to lowercase) */
-  email: string;
   /** Role to assign when invite is accepted */
-  role: 'admin';
+  role: InviteRole;
   /** Current status of the invite */
   status: InviteStatus;
   /** When the invite was created */
@@ -23,12 +28,14 @@ export interface AdminInvite {
   createdBy: string;
   /** Display name of creator for audit purposes */
   createdByName: string;
-  /** When the invite expires (default: 7 days from creation) */
+  /** When the invite expires */
   expiresAt: Timestamp;
   /** When the invite was accepted */
   acceptedAt?: Timestamp;
   /** UID of user who accepted the invite */
   acceptedBy?: string;
+  /** Email of user who accepted (for audit) */
+  acceptedByEmail?: string;
   /** When the invite was revoked */
   revokedAt?: Timestamp;
   /** UID of superadmin who revoked the invite */
@@ -39,6 +46,7 @@ export interface AdminInvite {
  * Data required to create a new invite
  */
 export interface CreateInviteData {
-  email: string;
-  role: 'admin';
+  role: InviteRole;
+  /** Expiration in days (default: 7) */
+  expirationDays?: number;
 }

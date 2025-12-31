@@ -25,6 +25,12 @@ export const routes: Routes = [
     loadComponent: () => import('@features/courses/details/details.component').then(m => m.DetailsComponent)
   },
 
+  // Public invite acceptance page
+  {
+    path: 'invite/:inviteId',
+    loadComponent: () => import('@features/invite/invite-accept.component').then(m => m.InviteAcceptComponent)
+  },
+
   // Protected routes (requires authentication)
   {
     path: 'app',
@@ -187,14 +193,15 @@ export const routes: Routes = [
             '@features/admin/questions/question-editor/question-editor.component'
           ).then((m) => m.QuestionEditorComponent),
       },
-      // Superadmin-only routes
+      // User management (admins see their students, superadmins see all)
       {
         path: 'users',
         loadComponent: () =>
           import('@features/admin/users/user-list/user-list.component').then(
             (m) => m.UserListComponent
           ),
-        canActivate: [superadminGuard],
+        // No additional guard - adminGuard on parent is sufficient
+        // Component handles filtering based on role
       },
       {
         path: 'users/:userId',
@@ -202,7 +209,7 @@ export const routes: Routes = [
           import('@features/admin/users/user-detail/user-detail.component').then(
             (m) => m.UserDetailComponent
           ),
-        canActivate: [superadminGuard],
+        // No additional guard - component handles access control
       },
       {
         path: 'invites',

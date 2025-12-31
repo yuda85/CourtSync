@@ -19,10 +19,21 @@
         </div>
 
         <div class="profile__info">
-          <h1 class="profile__name">{{ firebaseUser()?.displayName || 'משתמש' }}</h1>
+          <div class="profile__name-row">
+            <h1 class="profile__name">{{ firebaseUser()?.displayName || 'משתמש' }}</h1>
+            <span class="profile__role-badge" [attr.data-role]="isSuperAdmin() ? 'superadmin' : (isAdmin() ? 'admin' : 'student')">
+              {{ getRoleLabel() }}
+            </span>
+          </div>
           <p class="profile__email">{{ firebaseUser()?.email }}</p>
           @if (memberSince()) {
             <p class="profile__member-since">חבר מ{{ memberSince() }}</p>
+          }
+          @if (isAdmin()) {
+            <a routerLink="/admin/dashboard" class="profile__admin-link">
+              <span class="material-icons">admin_panel_settings</span>
+              ממשק ניהול
+            </a>
           }
         </div>
       </div>

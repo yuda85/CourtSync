@@ -1,25 +1,17 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, shareReplay, catchError, tap } from 'rxjs/operators';
+import { map, switchMap, shareReplay, catchError } from 'rxjs/operators';
 import { Auth, authState, User } from '@angular/fire/auth';
 import {
   Firestore,
   doc,
   docData,
-  setDoc,
-  serverTimestamp,
 } from '@angular/fire/firestore';
 import {
   UserProfile,
   UserRole,
   ROLE_HIERARCHY,
 } from '@core/models/user-profile.interface';
-
-/**
- * Hardcoded initial superadmin email
- * TODO: Remove this after initial setup is confirmed working
- */
-const INITIAL_SUPERADMIN_EMAIL = 'yuda8855@gmail.com';
 
 @Injectable({
   providedIn: 'root',
@@ -133,31 +125,14 @@ export class RoleService {
   }
 
   /**
-   * Get user roles, handling initial superadmin setup
+   * Get user roles from Firestore
    */
   private getUserRoles$(user: User): Observable<UserRole[]> {
     const userRef = doc(this.firestore, 'users', user.uid);
 
     return docData(userRef).pipe(
-      switchMap(async (data) => {
+      map((data) => {
         const profile = data as UserProfile | undefined;
-
-        // Handle initial superadmin setup for designated email
-        if (
-          user.email?.toLowerCase() === INITIAL_SUPERADMIN_EMAIL.toLowerCase()
-        ) {
-          if (!profile?.roles || !profile.roles.includes('superadmin')) {
-            console.log('Setting up initial superadmin for:', user.email);
-            await this.setupInitialSuperadmin(user);
-            // Return the new roles
-            const updatedProfile: UserProfile = {
-              ...(profile || ({} as UserProfile)),
-              roles: ['student', 'superadmin'],
-            };
-            this.currentProfile.set(updatedProfile);
-            return ['student', 'superadmin'] as UserRole[];
-          }
-        }
 
         if (profile) {
           this.currentProfile.set(profile);
@@ -171,27 +146,5 @@ export class RoleService {
         return of(['student'] as UserRole[]);
       })
     );
-  }
-
-  /**
-   * One-time setup for initial superadmin
-   * This method adds superadmin role to the designated user
-   *
-   * TODO: Remove this method and INITIAL_SUPERADMIN_EMAIL constant
-   * after initial deployment and confirmation that superadmin is set up
-   */
-  private async setupInitialSuperadmin(user: User): Promise<void> {
-    const userRef = doc(this.firestore, 'users', user.uid);
-
-    await setDoc(
-      userRef,
-      {
-        roles: ['student', 'superadmin'],
-        lastLoginAt: serverTimestamp(),
-      },
-      { merge: true }
-    );
-
-    console.log('Initial superadmin setup complete for:', user.email);
   }
 }

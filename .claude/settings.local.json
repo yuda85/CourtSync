@@ -18,7 +18,9 @@
       "Bash(export PATH=\"/opt/homebrew/bin:/usr/bin:$PATH\")",
       "Bash(xargs ls:*)",
       "Bash(git push)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(find:*)",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:/usr/bin:$PATH\")"
     ]
   }
 }

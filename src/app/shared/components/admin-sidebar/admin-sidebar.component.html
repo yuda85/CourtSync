@@ -27,11 +27,11 @@
         [routerLink]="item.route"
         routerLinkActive="active"
         class="nav-item"
-        [title]="collapsed() ? item.label : ''"
+        [title]="collapsed() ? item.displayLabel : ''"
       >
         <span class="material-icons nav-icon">{{ item.icon }}</span>
         @if (!collapsed()) {
-          <span class="nav-label">{{ item.label }}</span>
+          <span class="nav-label">{{ item.displayLabel }}</span>
         }
       </a>
     }
@@ -45,5 +45,11 @@
         <span class="nav-label">חזרה לאתר</span>
       }
     </a>
+    <button class="nav-item logout-btn" (click)="onSignOut()" title="התנתק">
+      <span class="material-icons nav-icon">logout</span>
+      @if (!collapsed()) {
+        <span class="nav-label">התנתק</span>
+      }
+    </button>
   </div>
 </aside>

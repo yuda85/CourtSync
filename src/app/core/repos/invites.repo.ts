@@ -14,15 +14,15 @@ import {
   orderBy,
   serverTimestamp,
   Timestamp,
-  limit,
 } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
-import { AdminInvite, InviteStatus, CreateInviteData } from '@core/models/invite.interface';
+import { AdminInvite, InviteStatus, CreateInviteData, InviteRole } from '@core/models/invite.interface';
 import { RoleService } from '@core/services/role.service';
 
 /**
  * Invites Repository
- * Manages admin invitations - superadmin only
+ * Manages shareable invite links - superadmin only
+ * Invites are one-time use and have expiration dates
  */
 @Injectable({
   providedIn: 'root',
@@ -35,9 +35,9 @@ export class InvitesRepo {
   private readonly invitesCollection = collection(this.firestore, 'invites');
 
   /**
-   * Default invite expiration time (7 days in milliseconds)
+   * Default invite expiration time (7 days)
    */
-  private readonly INVITE_EXPIRY_DAYS = 7;
+  private readonly DEFAULT_EXPIRY_DAYS = 7;
 
   /**
    * Get all invites (superadmin only)
@@ -106,7 +106,8 @@ export class InvitesRepo {
   }
 
   /**
-   * Get a single invite by ID
+   * Get a single invite by ID (token)
+   * This is public - anyone with the link can check if it's valid
    */
   getInviteById$(inviteId: string): Observable<AdminInvite | null> {
     const inviteRef = doc(this.firestore, 'invites', inviteId);
@@ -121,40 +122,37 @@ export class InvitesRepo {
   }
 
   /**
-   * Find a pending invite by email
-   * Used during sign-in to auto-assign roles
+   * Validate an invite link
+   * Returns the invite if valid (pending and not expired), null otherwise
    */
-  findPendingInviteByEmail$(email: string): Observable<AdminInvite | null> {
-    const normalizedEmail = email.toLowerCase().trim();
-
-    const q = query(
-      this.invitesCollection,
-      where('email', '==', normalizedEmail),
-      where('status', '==', 'pending'),
-      limit(1)
-    );
-
-    return collectionData(q, { idField: 'id' }).pipe(
-      map((invites) => {
-        if (invites.length === 0) return null;
-        const invite = invites[0] as AdminInvite;
-
-        // Check if invite has expired
-        if (invite.expiresAt && invite.expiresAt.toMillis() < Date.now()) {
-          return null;
+  async validateInvite(inviteId: string): Promise<AdminInvite | null> {
+    return new Promise((resolve) => {
+      this.getInviteById$(inviteId).subscribe((invite) => {
+        if (!invite) {
+          resolve(null);
+          return;
         }
 
-        return invite;
-      }),
-      catchError((err) => {
-        console.error('Error finding invite by email:', err);
-        return of(null);
-      })
-    );
+        // Check if already used or revoked
+        if (invite.status !== 'pending') {
+          resolve(null);
+          return;
+        }
+
+        // Check if expired
+        if (invite.expiresAt && invite.expiresAt.toMillis() < Date.now()) {
+          resolve(null);
+          return;
+        }
+
+        resolve(invite);
+      });
+    });
   }
 
   /**
-   * Create a new invite (superadmin only)
+   * Create a new invite link (superadmin only)
+   * Returns the invite ID which serves as the shareable token
    */
   async createInvite(data: CreateInviteData): Promise<string> {
     if (!this.roleService.isSuperAdmin()) {
@@ -166,25 +164,12 @@ export class InvitesRepo {
       throw new Error('User must be authenticated to create an invite');
     }
 
-    const normalizedEmail = data.email.toLowerCase().trim();
-
-    // Check if there's already a pending invite for this email
-    const existingInvite = await new Promise<AdminInvite | null>((resolve) => {
-      this.findPendingInviteByEmail$(normalizedEmail).subscribe((invite) =>
-        resolve(invite)
-      );
-    });
-
-    if (existingInvite) {
-      throw new Error('יש כבר הזמנה ממתינה לכתובת אימייל זו');
-    }
-
     const profile = this.roleService.getProfile();
+    const expirationDays = data.expirationDays || this.DEFAULT_EXPIRY_DAYS;
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + this.INVITE_EXPIRY_DAYS);
+    expiresAt.setDate(expiresAt.getDate() + expirationDays);
 
     const inviteData = {
-      email: normalizedEmail,
       role: data.role,
       status: 'pending' as InviteStatus,
       createdAt: serverTimestamp(),
@@ -210,16 +195,20 @@ export class InvitesRepo {
       throw new Error('User must be authenticated');
     }
 
-    const invite = await new Promise<AdminInvite | null>((resolve) => {
-      this.getInviteById$(inviteId).subscribe((i) => resolve(i));
-    });
-
+    const invite = await this.validateInvite(inviteId);
     if (!invite) {
-      throw new Error('Invite not found');
-    }
+      // Check if it exists but is already used/expired
+      const existingInvite = await new Promise<AdminInvite | null>((resolve) => {
+        this.getInviteById$(inviteId).subscribe((i) => resolve(i));
+      });
 
-    if (invite.status !== 'pending') {
-      throw new Error('Only pending invites can be revoked');
+      if (!existingInvite) {
+        throw new Error('Invite not found');
+      }
+
+      if (existingInvite.status !== 'pending') {
+        throw new Error('Only pending invites can be revoked');
+      }
     }
 
     const inviteRef = doc(this.firestore, 'invites', inviteId);
@@ -231,45 +220,26 @@ export class InvitesRepo {
   }
 
   /**
-   * Accept an invite (called during sign-in)
-   * This marks the invite as accepted
+   * Accept an invite (called when user clicks the invite link and signs in)
+   * This marks the invite as accepted and cannot be used again
    */
-  async acceptInvite(inviteId: string, userId: string): Promise<void> {
+  async acceptInvite(inviteId: string, userId: string, userEmail: string): Promise<InviteRole> {
+    const invite = await this.validateInvite(inviteId);
+
+    if (!invite) {
+      throw new Error('Invalid or expired invite link');
+    }
+
     const inviteRef = doc(this.firestore, 'invites', inviteId);
 
     await updateDoc(inviteRef, {
       status: 'accepted' as InviteStatus,
       acceptedAt: serverTimestamp(),
       acceptedBy: userId,
-    });
-  }
-
-  /**
-   * Resend an invite (creates new invite with same email)
-   */
-  async resendInvite(inviteId: string): Promise<string> {
-    if (!this.roleService.isSuperAdmin()) {
-      throw new Error('Only superadmins can resend invites');
-    }
-
-    const invite = await new Promise<AdminInvite | null>((resolve) => {
-      this.getInviteById$(inviteId).subscribe((i) => resolve(i));
+      acceptedByEmail: userEmail,
     });
 
-    if (!invite) {
-      throw new Error('Invite not found');
-    }
-
-    // Revoke old invite if pending
-    if (invite.status === 'pending') {
-      await this.revokeInvite(inviteId);
-    }
-
-    // Create new invite
-    return this.createInvite({
-      email: invite.email,
-      role: invite.role,
-    });
+    return invite.role;
   }
 
   /**
@@ -304,22 +274,11 @@ export class InvitesRepo {
   }
 
   /**
-   * Search invites by email
+   * Generate the full invite URL for sharing
    */
-  searchInvitesByEmail$(searchTerm: string): Observable<AdminInvite[]> {
-    if (!this.roleService.isSuperAdmin()) {
-      return of([]);
-    }
-
-    // Firestore doesn't support native text search
-    // We'll filter client-side for small datasets
-    return this.getAllInvites$().pipe(
-      map((invites) =>
-        invites.filter((invite) =>
-          invite.email.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      )
-    );
+  getInviteUrl(inviteId: string): string {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/invite/${inviteId}`;
   }
 
   /**

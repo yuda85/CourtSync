@@ -114,6 +114,9 @@ service cloud.firestore {
       // User can read their own profile
       allow read: if isOwner(userId);
 
+      // Admins can read user profiles (filtered client-side by enrollment)
+      allow read: if isAdmin();
+
       // Superadmin can read all profiles
       allow read: if isSuperAdmin();
 
@@ -186,19 +189,47 @@ service cloud.firestore {
       }
     }
 
-    // ============ ADMIN INVITES ============
-    match /invites/{inviteId} {
-      // Only superadmin can read all invites
+    // ============ COURSE ENROLLMENTS ============
+    // Reverse index of users enrolled in each course
+    // Allows admins to query their students efficiently
+    match /courseEnrollments/{courseId}/users/{userId} {
+      // Superadmins can read all enrollments
       allow read: if isSuperAdmin();
 
-      // Superadmin can create invites
+      // Admins can read enrollments for their own courses
+      allow read: if isAdmin() && isCourseCreator(courseId);
+
+      // Authenticated users can create enrollments (via purchase flow)
+      allow create: if isAuthenticated()
+        && request.resource.data.keys().hasAll(['courseId', 'userEmail', 'userDisplayName', 'enrolledAt', 'source']);
+
+      // Allow updates for progress tracking
+      allow update: if isAuthenticated()
+        && (isOwner(userId) || isSuperAdmin() || (isAdmin() && isCourseCreator(courseId)));
+
+      // Prevent deletes to maintain audit trail
+      allow delete: if false;
+    }
+
+    // ============ ADMIN INVITES ============
+    match /invites/{inviteId} {
+      // Anyone can read a specific invite (to validate the link)
+      // This allows the invite acceptance page to check if an invite is valid
+      allow read: if true;
+
+      // Superadmin can create invites (no email required, supports admin/superadmin roles)
       allow create: if isSuperAdmin()
-        && request.resource.data.keys().hasAll(['email', 'role', 'status', 'createdAt', 'createdBy', 'createdByName', 'expiresAt'])
-        && request.resource.data.role == 'admin'
+        && request.resource.data.keys().hasAll(['role', 'status', 'createdAt', 'createdBy', 'createdByName', 'expiresAt'])
+        && request.resource.data.role in ['admin', 'superadmin']
         && request.resource.data.status == 'pending';
 
-      // Superadmin can update invites (revoke, mark as accepted)
-      allow update: if isSuperAdmin();
+      // Superadmin can update invites (revoke)
+      // Authenticated users can update to accept (mark as accepted with their info)
+      allow update: if isSuperAdmin()
+        || (isAuthenticated()
+            && resource.data.status == 'pending'
+            && request.resource.data.status == 'accepted'
+            && request.resource.data.acceptedBy == request.auth.uid);
 
       // Prevent deletes to maintain audit trail
       allow delete: if false;
